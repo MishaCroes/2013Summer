@@ -1,0 +1,391 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1582F2EF1746C80900C24ED3 /* xacUIBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = 1582F2EE1746C80900C24ED3 /* xacUIBehavior.m */; };
+		15A374F317416DE400A09609 /* xacTouchVis.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A374F217416DE400A09609 /* xacTouchVis.m */; };
+		15A374F9174174D600A09609 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15A374F8174174D600A09609 /* QuartzCore.framework */; };
+		15A374FF1741776700A09609 /* xacUIShadow.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A374FD1741776700A09609 /* xacUIShadow.m */; };
+		15A3750617440EC800A09609 /* xacTouchLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A3750517440EC800A09609 /* xacTouchLogger.m */; };
+		15A37509174410AC00A09609 /* xacTouchData.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A37508174410AC00A09609 /* xacTouchData.m */; };
+		15A3750C1744209D00A09609 /* xacFeatureTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A3750B1744209D00A09609 /* xacFeatureTable.m */; };
+		15A3751D1745869B00A09609 /* TouchClassifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A3751C1745869B00A09609 /* TouchClassifier.m */; };
+		15E56F6C1713017A0000BFC0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15E56F6B1713017A0000BFC0 /* UIKit.framework */; };
+		15E56F6E1713017A0000BFC0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15E56F6D1713017A0000BFC0 /* Foundation.framework */; };
+		15E56F701713017A0000BFC0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15E56F6F1713017A0000BFC0 /* CoreGraphics.framework */; };
+		15E56F761713017A0000BFC0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 15E56F741713017A0000BFC0 /* InfoPlist.strings */; };
+		15E56F781713017A0000BFC0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 15E56F771713017A0000BFC0 /* main.m */; };
+		15E56F7C1713017A0000BFC0 /* xacAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 15E56F7B1713017A0000BFC0 /* xacAppDelegate.m */; };
+		15E56F7E1713017A0000BFC0 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 15E56F7D1713017A0000BFC0 /* Default.png */; };
+		15E56F801713017A0000BFC0 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15E56F7F1713017A0000BFC0 /* Default@2x.png */; };
+		15E56F821713017A0000BFC0 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15E56F811713017A0000BFC0 /* Default-568h@2x.png */; };
+		15E56F851713017A0000BFC0 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E56F831713017A0000BFC0 /* MainStoryboard.storyboard */; };
+		15E56F881713017A0000BFC0 /* xacViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15E56F871713017A0000BFC0 /* xacViewController.m */; };
+		15E56F91171304AC0000BFC0 /* xacStroke.m in Sources */ = {isa = PBXBuildFile; fileRef = 15E56F90171304AC0000BFC0 /* xacStroke.m */; };
+		15E56F9417130A970000BFC0 /* xacCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 15E56F9317130A970000BFC0 /* xacCanvas.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1582F2EE1746C80900C24ED3 /* xacUIBehavior.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacUIBehavior.m; sourceTree = "<group>"; };
+		15A374F117416DE400A09609 /* xacTouchVis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacTouchVis.h; sourceTree = "<group>"; };
+		15A374F217416DE400A09609 /* xacTouchVis.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacTouchVis.m; sourceTree = "<group>"; };
+		15A374F8174174D600A09609 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		15A374FA1741776700A09609 /* xacUIBehavior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacUIBehavior.h; sourceTree = "<group>"; };
+		15A374FC1741776700A09609 /* xacUIShadow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacUIShadow.h; sourceTree = "<group>"; };
+		15A374FD1741776700A09609 /* xacUIShadow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacUIShadow.m; sourceTree = "<group>"; };
+		15A3750417440EC800A09609 /* xacTouchLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacTouchLogger.h; sourceTree = "<group>"; };
+		15A3750517440EC800A09609 /* xacTouchLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacTouchLogger.m; sourceTree = "<group>"; };
+		15A37507174410AC00A09609 /* xacTouchData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacTouchData.h; sourceTree = "<group>"; };
+		15A37508174410AC00A09609 /* xacTouchData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacTouchData.m; sourceTree = "<group>"; };
+		15A3750A1744209D00A09609 /* xacFeatureTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacFeatureTable.h; sourceTree = "<group>"; };
+		15A3750B1744209D00A09609 /* xacFeatureTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacFeatureTable.m; sourceTree = "<group>"; };
+		15A3751B1745869B00A09609 /* TouchClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchClassifier.h; sourceTree = "<group>"; };
+		15A3751C1745869B00A09609 /* TouchClassifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchClassifier.m; sourceTree = "<group>"; };
+		15E56F681713017A0000BFC0 /* Suketchi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Suketchi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		15E56F6B1713017A0000BFC0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		15E56F6D1713017A0000BFC0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		15E56F6F1713017A0000BFC0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		15E56F731713017A0000BFC0 /* Suketchi-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Suketchi-Info.plist"; sourceTree = "<group>"; };
+		15E56F751713017A0000BFC0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		15E56F771713017A0000BFC0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		15E56F791713017A0000BFC0 /* Suketchi-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Suketchi-Prefix.pch"; sourceTree = "<group>"; };
+		15E56F7A1713017A0000BFC0 /* xacAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xacAppDelegate.h; sourceTree = "<group>"; };
+		15E56F7B1713017A0000BFC0 /* xacAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = xacAppDelegate.m; sourceTree = "<group>"; };
+		15E56F7D1713017A0000BFC0 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		15E56F7F1713017A0000BFC0 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		15E56F811713017A0000BFC0 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		15E56F841713017A0000BFC0 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		15E56F861713017A0000BFC0 /* xacViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xacViewController.h; sourceTree = "<group>"; };
+		15E56F871713017A0000BFC0 /* xacViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = xacViewController.m; sourceTree = "<group>"; };
+		15E56F8F171304AC0000BFC0 /* xacStroke.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacStroke.h; sourceTree = "<group>"; };
+		15E56F90171304AC0000BFC0 /* xacStroke.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacStroke.m; sourceTree = "<group>"; };
+		15E56F9217130A970000BFC0 /* xacCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacCanvas.h; sourceTree = "<group>"; };
+		15E56F9317130A970000BFC0 /* xacCanvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacCanvas.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		15E56F651713017A0000BFC0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15A374F9174174D600A09609 /* QuartzCore.framework in Frameworks */,
+				15E56F6C1713017A0000BFC0 /* UIKit.framework in Frameworks */,
+				15E56F6E1713017A0000BFC0 /* Foundation.framework in Frameworks */,
+				15E56F701713017A0000BFC0 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		15A3750317440EA000A09609 /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				15A3750417440EC800A09609 /* xacTouchLogger.h */,
+				15A3750517440EC800A09609 /* xacTouchLogger.m */,
+				15A37507174410AC00A09609 /* xacTouchData.h */,
+				15A37508174410AC00A09609 /* xacTouchData.m */,
+				15A3750A1744209D00A09609 /* xacFeatureTable.h */,
+				15A3750B1744209D00A09609 /* xacFeatureTable.m */,
+			);
+			name = Logging;
+			sourceTree = "<group>";
+		};
+		15A3750D1745693100A09609 /* Classifier */ = {
+			isa = PBXGroup;
+			children = (
+				15A3751B1745869B00A09609 /* TouchClassifier.h */,
+				15A3751C1745869B00A09609 /* TouchClassifier.m */,
+			);
+			name = Classifier;
+			sourceTree = "<group>";
+		};
+		15E56F5F1713017A0000BFC0 = {
+			isa = PBXGroup;
+			children = (
+				15E56F711713017A0000BFC0 /* Suketchi */,
+				15E56F6A1713017A0000BFC0 /* Frameworks */,
+				15E56F691713017A0000BFC0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		15E56F691713017A0000BFC0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				15E56F681713017A0000BFC0 /* Suketchi.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		15E56F6A1713017A0000BFC0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				15A374F8174174D600A09609 /* QuartzCore.framework */,
+				15E56F6B1713017A0000BFC0 /* UIKit.framework */,
+				15E56F6D1713017A0000BFC0 /* Foundation.framework */,
+				15E56F6F1713017A0000BFC0 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		15E56F711713017A0000BFC0 /* Suketchi */ = {
+			isa = PBXGroup;
+			children = (
+				15A3750D1745693100A09609 /* Classifier */,
+				15A3750317440EA000A09609 /* Logging */,
+				15E56F8E1713049C0000BFC0 /* UI */,
+				15E56F7A1713017A0000BFC0 /* xacAppDelegate.h */,
+				15E56F7B1713017A0000BFC0 /* xacAppDelegate.m */,
+				15E56F831713017A0000BFC0 /* MainStoryboard.storyboard */,
+				15E56F861713017A0000BFC0 /* xacViewController.h */,
+				15E56F871713017A0000BFC0 /* xacViewController.m */,
+				15E56F721713017A0000BFC0 /* Supporting Files */,
+			);
+			path = Suketchi;
+			sourceTree = "<group>";
+		};
+		15E56F721713017A0000BFC0 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				15E56F731713017A0000BFC0 /* Suketchi-Info.plist */,
+				15E56F741713017A0000BFC0 /* InfoPlist.strings */,
+				15E56F771713017A0000BFC0 /* main.m */,
+				15E56F791713017A0000BFC0 /* Suketchi-Prefix.pch */,
+				15E56F7D1713017A0000BFC0 /* Default.png */,
+				15E56F7F1713017A0000BFC0 /* Default@2x.png */,
+				15E56F811713017A0000BFC0 /* Default-568h@2x.png */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		15E56F8E1713049C0000BFC0 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				1582F2EE1746C80900C24ED3 /* xacUIBehavior.m */,
+				15A374FA1741776700A09609 /* xacUIBehavior.h */,
+				15A374FC1741776700A09609 /* xacUIShadow.h */,
+				15A374FD1741776700A09609 /* xacUIShadow.m */,
+				15E56F8F171304AC0000BFC0 /* xacStroke.h */,
+				15E56F90171304AC0000BFC0 /* xacStroke.m */,
+				15E56F9217130A970000BFC0 /* xacCanvas.h */,
+				15E56F9317130A970000BFC0 /* xacCanvas.m */,
+				15A374F117416DE400A09609 /* xacTouchVis.h */,
+				15A374F217416DE400A09609 /* xacTouchVis.m */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		15E56F671713017A0000BFC0 /* Suketchi */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 15E56F8B1713017A0000BFC0 /* Build configuration list for PBXNativeTarget "Suketchi" */;
+			buildPhases = (
+				15E56F641713017A0000BFC0 /* Sources */,
+				15E56F651713017A0000BFC0 /* Frameworks */,
+				15E56F661713017A0000BFC0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Suketchi;
+			productName = Suketchi;
+			productReference = 15E56F681713017A0000BFC0 /* Suketchi.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		15E56F601713017A0000BFC0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = xac;
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = hotnAny;
+			};
+			buildConfigurationList = 15E56F631713017A0000BFC0 /* Build configuration list for PBXProject "Suketchi" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 15E56F5F1713017A0000BFC0;
+			productRefGroup = 15E56F691713017A0000BFC0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				15E56F671713017A0000BFC0 /* Suketchi */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		15E56F661713017A0000BFC0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15E56F761713017A0000BFC0 /* InfoPlist.strings in Resources */,
+				15E56F7E1713017A0000BFC0 /* Default.png in Resources */,
+				15E56F801713017A0000BFC0 /* Default@2x.png in Resources */,
+				15E56F821713017A0000BFC0 /* Default-568h@2x.png in Resources */,
+				15E56F851713017A0000BFC0 /* MainStoryboard.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		15E56F641713017A0000BFC0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15E56F781713017A0000BFC0 /* main.m in Sources */,
+				15E56F7C1713017A0000BFC0 /* xacAppDelegate.m in Sources */,
+				15E56F881713017A0000BFC0 /* xacViewController.m in Sources */,
+				15E56F91171304AC0000BFC0 /* xacStroke.m in Sources */,
+				15E56F9417130A970000BFC0 /* xacCanvas.m in Sources */,
+				15A374F317416DE400A09609 /* xacTouchVis.m in Sources */,
+				15A374FF1741776700A09609 /* xacUIShadow.m in Sources */,
+				15A3750617440EC800A09609 /* xacTouchLogger.m in Sources */,
+				15A37509174410AC00A09609 /* xacTouchData.m in Sources */,
+				15A3750C1744209D00A09609 /* xacFeatureTable.m in Sources */,
+				15A3751D1745869B00A09609 /* TouchClassifier.m in Sources */,
+				1582F2EF1746C80900C24ED3 /* xacUIBehavior.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		15E56F741713017A0000BFC0 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				15E56F751713017A0000BFC0 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		15E56F831713017A0000BFC0 /* MainStoryboard.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				15E56F841713017A0000BFC0 /* en */,
+			);
+			name = MainStoryboard.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		15E56F891713017A0000BFC0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		15E56F8A1713017A0000BFC0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		15E56F8C1713017A0000BFC0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Suketchi/Suketchi-Prefix.pch";
+				INFOPLIST_FILE = "Suketchi/Suketchi-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		15E56F8D1713017A0000BFC0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Suketchi/Suketchi-Prefix.pch";
+				INFOPLIST_FILE = "Suketchi/Suketchi-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		15E56F631713017A0000BFC0 /* Build configuration list for PBXProject "Suketchi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				15E56F891713017A0000BFC0 /* Debug */,
+				15E56F8A1713017A0000BFC0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		15E56F8B1713017A0000BFC0 /* Build configuration list for PBXNativeTarget "Suketchi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				15E56F8C1713017A0000BFC0 /* Debug */,
+				15E56F8D1713017A0000BFC0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 15E56F601713017A0000BFC0 /* Project object */;
+}
