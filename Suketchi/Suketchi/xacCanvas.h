@@ -10,13 +10,14 @@
 #import "TouchClassifier.h"
 #import "xacTouchData.h"
 
-#define PEN 0
-#define FINGER 1
-#define PALM 2
+#define PEN     0
+#define FINGER  1
+#define PALM    2
 
 @interface xacCanvas : UIView
 
 @property BOOL isTemp;
+@property BOOL toFade;
 
 // single-stroke
 @property UIBezierPath *path;
@@ -24,6 +25,7 @@
 
 // multi-stroke
 @property NSMutableArray *touchPoints;
+@property NSMutableDictionary *touchAfterEffect;
 @property NSMutableArray *paths;
 @property NSMutableArray *drawnPaths;
 @property NSMutableDictionary *pathMap;

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1558C4311753F482007D7B8B /* xacDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1558C4301753F482007D7B8B /* xacDemoViewController.m */; };
+		1558C4361753F602007D7B8B /* xacDrawingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1558C4351753F602007D7B8B /* xacDrawingViewController.m */; };
 		1582F2EF1746C80900C24ED3 /* xacUIBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = 1582F2EE1746C80900C24ED3 /* xacUIBehavior.m */; };
 		15A374F317416DE400A09609 /* xacTouchVis.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A374F217416DE400A09609 /* xacTouchVis.m */; };
 		15A374F9174174D600A09609 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15A374F8174174D600A09609 /* QuartzCore.framework */; };
@@ -25,12 +27,15 @@
 		15E56F801713017A0000BFC0 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15E56F7F1713017A0000BFC0 /* Default@2x.png */; };
 		15E56F821713017A0000BFC0 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15E56F811713017A0000BFC0 /* Default-568h@2x.png */; };
 		15E56F851713017A0000BFC0 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E56F831713017A0000BFC0 /* MainStoryboard.storyboard */; };
-		15E56F881713017A0000BFC0 /* xacViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15E56F871713017A0000BFC0 /* xacViewController.m */; };
 		15E56F91171304AC0000BFC0 /* xacStroke.m in Sources */ = {isa = PBXBuildFile; fileRef = 15E56F90171304AC0000BFC0 /* xacStroke.m */; };
 		15E56F9417130A970000BFC0 /* xacCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 15E56F9317130A970000BFC0 /* xacCanvas.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1558C42F1753F482007D7B8B /* xacDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacDemoViewController.h; sourceTree = "<group>"; };
+		1558C4301753F482007D7B8B /* xacDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacDemoViewController.m; sourceTree = "<group>"; };
+		1558C4341753F602007D7B8B /* xacDrawingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacDrawingViewController.h; sourceTree = "<group>"; };
+		1558C4351753F602007D7B8B /* xacDrawingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacDrawingViewController.m; sourceTree = "<group>"; };
 		1582F2EE1746C80900C24ED3 /* xacUIBehavior.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacUIBehavior.m; sourceTree = "<group>"; };
 		15A374F117416DE400A09609 /* xacTouchVis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacTouchVis.h; sourceTree = "<group>"; };
 		15A374F217416DE400A09609 /* xacTouchVis.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacTouchVis.m; sourceTree = "<group>"; };
@@ -60,8 +65,6 @@
 		15E56F7F1713017A0000BFC0 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		15E56F811713017A0000BFC0 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		15E56F841713017A0000BFC0 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
-		15E56F861713017A0000BFC0 /* xacViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xacViewController.h; sourceTree = "<group>"; };
-		15E56F871713017A0000BFC0 /* xacViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = xacViewController.m; sourceTree = "<group>"; };
 		15E56F8F171304AC0000BFC0 /* xacStroke.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacStroke.h; sourceTree = "<group>"; };
 		15E56F90171304AC0000BFC0 /* xacStroke.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacStroke.m; sourceTree = "<group>"; };
 		15E56F9217130A970000BFC0 /* xacCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacCanvas.h; sourceTree = "<group>"; };
@@ -83,6 +86,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1558C4321753F5B9007D7B8B /* Demo */ = {
+			isa = PBXGroup;
+			children = (
+				1558C42F1753F482007D7B8B /* xacDemoViewController.h */,
+				1558C4301753F482007D7B8B /* xacDemoViewController.m */,
+			);
+			name = Demo;
+			sourceTree = "<group>";
+		};
+		1558C4331753F5C3007D7B8B /* Drawing */ = {
+			isa = PBXGroup;
+			children = (
+				1558C4341753F602007D7B8B /* xacDrawingViewController.h */,
+				1558C4351753F602007D7B8B /* xacDrawingViewController.m */,
+			);
+			name = Drawing;
+			sourceTree = "<group>";
+		};
 		15A3750317440EA000A09609 /* Logging */ = {
 			isa = PBXGroup;
 			children = (
@@ -136,14 +157,14 @@
 		15E56F711713017A0000BFC0 /* Suketchi */ = {
 			isa = PBXGroup;
 			children = (
+				1558C4331753F5C3007D7B8B /* Drawing */,
+				1558C4321753F5B9007D7B8B /* Demo */,
 				15A3750D1745693100A09609 /* Classifier */,
 				15A3750317440EA000A09609 /* Logging */,
 				15E56F8E1713049C0000BFC0 /* UI */,
 				15E56F7A1713017A0000BFC0 /* xacAppDelegate.h */,
 				15E56F7B1713017A0000BFC0 /* xacAppDelegate.m */,
 				15E56F831713017A0000BFC0 /* MainStoryboard.storyboard */,
-				15E56F861713017A0000BFC0 /* xacViewController.h */,
-				15E56F871713017A0000BFC0 /* xacViewController.m */,
 				15E56F721713017A0000BFC0 /* Supporting Files */,
 			);
 			path = Suketchi;
@@ -249,7 +270,6 @@
 			files = (
 				15E56F781713017A0000BFC0 /* main.m in Sources */,
 				15E56F7C1713017A0000BFC0 /* xacAppDelegate.m in Sources */,
-				15E56F881713017A0000BFC0 /* xacViewController.m in Sources */,
 				15E56F91171304AC0000BFC0 /* xacStroke.m in Sources */,
 				15E56F9417130A970000BFC0 /* xacCanvas.m in Sources */,
 				15A374F317416DE400A09609 /* xacTouchVis.m in Sources */,
@@ -259,6 +279,8 @@
 				15A3750C1744209D00A09609 /* xacFeatureTable.m in Sources */,
 				15A3751D1745869B00A09609 /* TouchClassifier.m in Sources */,
 				1582F2EF1746C80900C24ED3 /* xacUIBehavior.m in Sources */,
+				1558C4311753F482007D7B8B /* xacDemoViewController.m in Sources */,
+				1558C4361753F602007D7B8B /* xacDrawingViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
