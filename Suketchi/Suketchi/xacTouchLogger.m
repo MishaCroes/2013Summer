@@ -16,6 +16,7 @@
     if (self) {
         _masterView = masterView;
         _touchDataPoints = [[NSMutableDictionary alloc] init];
+        _touchDataArchive = [[NSMutableArray alloc] init];
         _label = @"unknown";
     }
     return self;
@@ -81,11 +82,11 @@
 
 - (void) doTouchEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    _touchDataArchive = [[NSMutableArray alloc] init];
     for(UITouch *touch in [touches allObjects])
     {
         NSString* key = [NSString stringWithFormat:@"%d", [touch hash]];
         xacTouchData* touchData = [_touchDataPoints objectForKey:key];
+        touchData.key = key;
         touchData.numTouchPoints++;        
         touchData.endPos = touchData.pos = [touch locationInView:_masterView];
         touchData.endTime = [self getCurrentTimeInMS]; // (long)(NSTimeInterval)([[NSDate date] timeIntervalSince1970]);
@@ -102,18 +103,16 @@
     }
 }
 
-- (void) detectTouch
+- (void) wipeResidua
 {
     NSDictionary *tmpTouchDataPoints = [[NSDictionary alloc] initWithDictionary: _touchDataPoints];
-    for(xacTouchData *touchData in tmpTouchDataPoints)
+    for(id key in tmpTouchDataPoints)
     {
-        UITouch* touch = touchData.uiTouch;
-        NSString* key = [NSString stringWithFormat:@"%d", [touch hash]];
+        xacTouchData *touchData = [tmpTouchDataPoints objectForKey:key];
+        UITouch *touch = touchData.uiTouch;
         if([touch phase] == UITouchPhaseEnded || [touch phase] == UITouchPhaseCancelled)
         {
-            touchData.endPos = touchData.pos = [touch locationInView:_masterView];
-            touchData.endTime = [self getCurrentTimeInMS];// (long)(NSTimeInterval)([[NSDate date] timeIntervalSince1970]);
-            
+            [_touchDataArchive addObject: touchData];
             [_touchDataPoints removeObjectForKey:key];
         }
     }
@@ -143,6 +142,10 @@
     int decimalDigits = (int)(fmod(time, 1) * 1000); // this will get the 3 missing digits
     long timeStamp = (digits * 1000) + decimalDigits;
     return timeStamp;
+}
+
+- (void) depleteArchive {
+    [_touchDataArchive removeAllObjects];
 }
 
 @end

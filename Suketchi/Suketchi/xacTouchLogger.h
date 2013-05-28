@@ -22,6 +22,8 @@
 - (id) init :(UIView*) masterView;
 - (void) initLogging;
 - (void) finishLogging;
+- (void) depleteArchive;
+- (void) wipeResidua;
 
 - (void) doTouchBegan:(NSSet *)touches withEvent:(UIEvent *)event;
 - (void) doTouchMoved:(NSSet *)touches withEvent:(UIEvent *)event;

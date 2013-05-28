@@ -31,7 +31,6 @@ BOOL isTouchDown;
         // multi-stroke
         _touchPoints = [[NSMutableArray alloc] init];
         _touchAfterEffect = [[NSMutableDictionary alloc] init];
-        _paths = [[NSMutableArray alloc] init];
         _drawnPaths = [[NSMutableArray alloc] init];
         _pathMap = [[NSMutableDictionary alloc] init];
         
@@ -40,20 +39,16 @@ BOOL isTouchDown;
             tmpPath.lineWidth = 5;
             tmpPath.miterLimit = -10;
             tmpPath.lineCapStyle = kCGLineJoinMiter;
-            [_paths addObject:tmpPath];
-//            [_drawnPaths addObject:tmpPath];
         }
         //
 
-        brushColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.85];
-        
         _isTemp = FALSE;
         _toFade = FALSE;
         isTouchDown = FALSE;
         
         [NSTimer scheduledTimerWithTimeInterval:0.1
                                          target:self
-                                       selector:@selector(detectTouch)
+                                       selector:@selector(updateCanvas)
                                        userInfo:nil
                                         repeats:YES];
         
@@ -67,6 +62,7 @@ BOOL isTouchDown;
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
+    brushColor = [UIColor colorWithRed: _isTemp ? 255 : 0 green:0 blue:0 alpha:0.85];
     [brushColor setStroke];
 
     // single-touch
@@ -74,7 +70,7 @@ BOOL isTouchDown;
     //
     
     // multi-stroke
-    float strokeAlpha = 1.0f;
+    float strokeAlpha = 0.85f;
     if(_toFade) {
         NSArray *tmpTouchPoints = [[NSArray alloc] initWithArray:_touchPoints];
         for(UITouch *touch in tmpTouchPoints) {
@@ -113,9 +109,13 @@ BOOL isTouchDown;
     //
     
     // multi-stroke
+    
+    if(_isTemp) [self clearCanvas];
+    
     isTouchDown = TRUE;
     for(UITouch *touch in [touches allObjects]) {
         NSString* key = [NSString stringWithFormat:@"%d", [touch hash]];
+        [_pathMap removeObjectForKey:key];
         
         if([_pathMap objectForKey: key]== nil) {
             
@@ -131,7 +131,6 @@ BOOL isTouchDown;
             if(tmpPath != nil) {
                 [tmpPath moveToPoint:[touch locationInView:self]];
                 [_pathMap setObject:tmpPath forKey: key];
-                [_paths removeLastObject];
             }
         }
     }
@@ -174,11 +173,9 @@ BOOL isTouchDown;
         
         if(tmpPath != nil) {
             if(_isTemp) [tmpPath removeAllPoints];
-            [_paths addObject:tmpPath];
         }
         
         if(!_toFade) {
-            [_pathMap removeObjectForKey:key];
             [_touchPoints removeObject:touch];
         }
         
@@ -188,40 +185,38 @@ BOOL isTouchDown;
     [self setNeedsDisplay];
 }
 
-- (void) mediateTouch: (NSArray*)tds {
+- (void) mediateTouch: (NSArray*)tds :(int)methods {
     for(xacTouchData* td in tds) {
         int idxClass = [_touchClassifier classify: [td packageData]];
         [self printClassResult:idxClass];
+        
+        if(methods & PALMREJECTION) {
+            if(idxClass == PALM) {
+                UIBezierPath *path = [_pathMap objectForKey:td.key];
+                [path removeAllPoints];
+                [_drawnPaths removeObject:path];
+                if(!_isTemp) NSLog(@"%@ eliminated", td.key);
+            }
+            else {
+                NSLog(@"%@ is good", td.key);   
+            }
+        }
     }
 }
 
 - (void) clearCanvas
 {
-    for(UIBezierPath *tmpPath in _drawnPaths) {
+    NSMutableArray *tmpDrawnPaths = [[NSMutableArray alloc] initWithArray:_drawnPaths];
+    for(UIBezierPath *tmpPath in tmpDrawnPaths) {
         [tmpPath removeAllPoints];
+        [_drawnPaths removeObject:tmpPath];
     }
+    NSLog(@"%d paths removed", tmpDrawnPaths.count);
     [self setNeedsDisplay];
 }
 
-- (void) detectTouch
-{
-    NSArray *tmpTouchPoints = [[NSArray alloc] initWithArray:_touchPoints];
-    for(UITouch *touch in tmpTouchPoints) {
-        NSString* key = [NSString stringWithFormat:@"%d", [touch hash]];
-        UIBezierPath *tmpPath = [_pathMap objectForKey:key];
-        
-        if(!_toFade)
-        {
-            if([touch phase] == UITouchPhaseEnded || [touch phase] == UITouchPhaseCancelled) {
-                if(tmpPath != nil) {
-                    if(_isTemp) [tmpPath removeAllPoints];
-                }
-            }
-        
-        }
-    }
-        
-    [self setNeedsDisplay];
+- (void) updateCanvas {
+    if(_toFade) [self setNeedsDisplay];
 }
 
 - (void) printClassResult: (int)idx {

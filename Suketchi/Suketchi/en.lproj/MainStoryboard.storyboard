@@ -7,13 +7,16 @@
         <!--DrawingView-->
         <scene sceneID="OWS-X2-bZk">
             <objects>
-                <viewController id="ceW-t4-EhC" userLabel="DrawingView" sceneMemberID="viewController">
+                <viewController id="ceW-t4-EhC" userLabel="DrawingView" customClass="xacDrawingViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="EkW-Jv-0jJ">
                         <rect key="frame" x="0.0" y="20" width="768" height="955"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item 2" id="8wJ-y3-ZgA" userLabel="DrawingTab"/>
+                    <tabBarItem key="tabBarItem" title="Drawing" id="8wJ-y3-ZgA" userLabel="DrawingTab"/>
+                    <connections>
+                        <outlet property="mainView" destination="EkW-Jv-0jJ" id="VSS-4z-LQ1"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TVQ-Id-iyj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -41,7 +44,7 @@
         <scene sceneID="fYu-JT-dhL">
             <objects>
                 <tabBarController definesPresentationContext="YES" id="rhZ-Sq-pOg" sceneMemberID="viewController">
-                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="ffQ-0b-TPc">
                         <rect key="frame" x="129" y="330" width="163" height="49"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -57,6 +60,20 @@
             <point key="canvasLocation" x="-858" y="-190"/>
         </scene>
     </scenes>
+    <classes>
+        <class className="xacDemoViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/xacDemoViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="mainView" candidateClass="UIView"/>
+            </relationships>
+        </class>
+        <class className="xacDrawingViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/xacDrawingViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="mainView" candidateClass="UIView"/>
+            </relationships>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>

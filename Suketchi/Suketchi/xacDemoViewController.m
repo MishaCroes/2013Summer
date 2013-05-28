@@ -29,16 +29,19 @@ int ptrLabel = 0;
     
 	// Do any additional setup after loading the view, typically from a nib.
     
+    // main view
     _mainView.multipleTouchEnabled = YES;
     float widthDevice = _mainView.frame.size.width;
     float heightDevice = _mainView.frame.size.height;
     
+    // the real canvas
     _canvas = [[xacCanvas alloc] initWithFrame:CGRectMake(0, 0, heightDevice, widthDevice)];
     [_canvas setBackgroundColor:[UIColor whiteColor]];
     _canvas.toFade = TRUE;
     [_mainView addSubview:_canvas];
     _canvas.multipleTouchEnabled = YES;
     
+    // the buffering canvas
     tmpCanvas =  [[xacCanvas alloc] initWithFrame:_canvas.frame];
     [tmpCanvas setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0]];
     tmpCanvas.isTemp = TRUE;
@@ -46,14 +49,17 @@ int ptrLabel = 0;
     [_mainView addSubview:tmpCanvas];
     tmpCanvas.multipleTouchEnabled = YES;
     
+    // the visualization of touch
     float visSizeRatio = 0.3f;
     _touchVis = [[xacTouchVis alloc] initWithFrame:CGRectMake(0, 0, _canvas.frame.size.width * visSizeRatio, _canvas.frame.size.height * visSizeRatio)];
     _touchVis.scaleRatio = visSizeRatio;
     _touchVis.backgroundColor = [UIColor grayColor];
     [_mainView addSubview:_touchVis];
     
+    // touch logging
     _touchLogger = [[xacTouchLogger alloc] init:_mainView];
     
+    // some butons and labels
     btnLogSwitch = [[UIButton alloc] initWithFrame:CGRectMake(10, _touchVis.frame.size.height, 100, 35)];
     [btnLogSwitch setBackgroundColor:[UIColor blackColor]];
     [btnLogSwitch setTitle:@"TAP TO LOG" forState:UIControlStateNormal];
@@ -76,10 +82,9 @@ int ptrLabel = 0;
     [btnClear setBackgroundColor:[UIColor blackColor]];
     [btnClear setTitle:@"CLEAR" forState:UIControlStateNormal];
     btnClear.titleLabel.font = [UIFont systemFontOfSize:15];
-    [btnClear addTarget:self action:@selector(clearCanvas) forControlEvents:UIControlEventTouchDown];
+    [btnClear addTarget:_canvas action:@selector(clearCanvas) forControlEvents:UIControlEventTouchDown];
     [_mainView addSubview:btnClear];
     
-//    _touchClassifier = [[TouchClassifier alloc] init];
 }
 
 - (void)didReceiveMemoryWarning
@@ -111,9 +116,10 @@ int ptrLabel = 0;
     [_touchVis doTouchEnded:touches withEvent:event];
     [_touchLogger doTouchEnded:touches withEvent:event];
     
-    // might need another method to swipe the residuals of touch
-    [_canvas mediateTouch:_touchLogger.touchDataArchive];
+    // might need another method to swipe the residua of touch
+    [_canvas mediateTouch:_touchLogger.touchDataArchive :NOTHING];
     [_touchVis showTouchLabel:_touchLogger.touchDataArchive];
+    [_touchLogger depleteArchive];
 }
 
 - (void) toggleLabel
@@ -133,10 +139,6 @@ int ptrLabel = 0;
         [_touchLogger finishLogging];
         [btnLogSwitch setTitle:@"TAP TO LOG" forState:UIControlStateNormal];
     }
-}
-
-- (void) clearCanvas {
-    [_canvas clearCanvas];
 }
 
 @end
