@@ -1,0 +1,8 @@
+package me.xiangchen.app.dolcefarniente;
+
+import com.sony.smallapp.SmallAppWindow;
+import com.sony.smallapp.SmallApplication;
+
+public class DolceFarNiente extends SmallApplication {
+
+}

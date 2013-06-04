@@ -1,0 +1,7 @@
+package me.xiangchen.app.dolcefarniente;
+
+import SmallApplication;
+
+public class DolceFarNiente extends SmallApplication {
+
+}
