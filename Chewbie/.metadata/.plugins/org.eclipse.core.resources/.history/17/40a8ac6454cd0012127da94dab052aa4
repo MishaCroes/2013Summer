@@ -1,0 +1,5 @@
+package com.sonyericsson.extras.liveware.extension.util;
+
+public @interface ExtensionService {
+
+}

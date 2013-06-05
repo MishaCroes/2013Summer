@@ -1,0 +1,8 @@
+package me.xiangchen.app.smartwatchtouch;
+
+import com.sony.smallapp.SmallAppWindow;
+import com.sony.smallapp.SmallApplication;
+
+public class SmartWatchTouch extends SmallApplication {
+
+}

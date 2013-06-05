@@ -1,0 +1,7 @@
+package me.xiangchen.app.smartwatchtouch;
+
+import SmallApplication;
+
+public class SmartWatchTouch extends SmallApplication {
+
+}
