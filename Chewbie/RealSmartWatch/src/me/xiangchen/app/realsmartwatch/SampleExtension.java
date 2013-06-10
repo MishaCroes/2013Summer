@@ -21,7 +21,7 @@ public class SampleExtension extends ControlExtension {
 	
 	int width;
 	int height;
-	LinearLayout layout;
+	RelativeLayout layout;
 	TextView textView;
 	ImageView imgView;
 	Bitmap bmpDora;
@@ -40,7 +40,7 @@ public class SampleExtension extends ControlExtension {
 		returnedBitmap = Bitmap.createBitmap(width, height, BITMAP_CONFIG);
 		canvas = new Canvas(returnedBitmap);
 		
-		layout = new LinearLayout(context);
+		layout = new RelativeLayout(context);
 		
 		imgView = new ImageView(context);
 		bmpDora = BitmapFactory.decodeResource(context.getResources(),R.drawable.doraemon);
