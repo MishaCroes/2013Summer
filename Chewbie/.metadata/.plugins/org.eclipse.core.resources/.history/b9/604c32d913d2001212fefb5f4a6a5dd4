@@ -1,0 +1,122 @@
+package me.xiangchen.app.accelonwatch;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
+
+import com.sonyericsson.extras.liveware.aef.control.Control;
+import com.sonyericsson.extras.liveware.aef.sensor.Sensor;
+import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensor;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorEvent;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorEventListener;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorException;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorManager;
+
+public class AccelOnWatchExtension extends ControlExtension {
+	
+	private AccessorySensor sensor = null;
+	private AccessorySensorEventListener listener;
+	
+	public AccelOnWatchExtension(Context context, String hostAppPackageName) {
+		super(context, hostAppPackageName);
+		// TODO Auto-generated constructor stub
+		
+		AccessorySensorManager manager = new AccessorySensorManager(context, hostAppPackageName);
+        sensor = manager.getSensor(Sensor.SENSOR_TYPE_ACCELEROMETER);
+		listener = new AccessorySensorEventListener() {
+
+	        public void onSensorEvent(AccessorySensorEvent sensorEvent) {
+	            streamSensorData(sensorEvent);
+	        }
+	    };
+	}
+	
+	@Override
+    public void onResume() {
+        Log.d(SampleExtensionService.LOG_TAG, "Starting control");
+        // Note: Setting the screen to be always on will drain the accessory
+        // battery. It is done here solely for demonstration purposes
+        setScreenState(Control.Intents.SCREEN_STATE_ON);
+
+        // Start listening for sensor updates.
+        if (sensor != null) {
+            try {
+            	sensor.registerInterruptListener(listener);
+            } catch (AccessorySensorException e) {
+                Log.d(SampleExtensionService.LOG_TAG, "Failed to register listener");
+            }
+        }
+    }
+	
+	@Override
+    public void onPause() {
+        // Stop sensor
+        if (sensor != null) {
+        	sensor.unregisterListener();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        // Stop sensor
+        if (sensor != null) {
+        	sensor.unregisterListener();
+        	sensor = null;
+        }
+    }
+
+	public static int getSupportedControlWidth(Context context) {
+        return context.getResources().getDimensionPixelSize(R.dimen.smart_watch_control_width);
+    }
+
+
+    public static int getSupportedControlHeight(Context context) {
+        return context.getResources().getDimensionPixelSize(R.dimen.smart_watch_control_height);
+    }
+    
+    public void streamSensorData(AccessorySensorEvent sensorEvent) {
+    	float[] values = sensorEvent.getSensorValues();
+    	new NetworkTask().execute(
+    			String.format("%.1f, %.1f, %.1f", values[0], values[1], values[2]));
+    }
+    
+	class NetworkTask extends AsyncTask<String, Void, Void> {
+		final static String ipToSend = "10.142.224.68";
+
+		@Override
+		protected Void doInBackground(String... arg0) {
+			// TODO Auto-generated method stub
+			DatagramSocket clientSocket;
+			try {
+				clientSocket = new DatagramSocket();
+				InetAddress IPAddress = InetAddress.getByName(ipToSend);
+				byte[] sendData = new byte[1024];
+				byte[] receiveData = new byte[1024];
+				String sentence = (String) arg0[0];
+				sendData = sentence.getBytes();
+				DatagramPacket sendPacket = new DatagramPacket(sendData,
+						sendData.length, IPAddress, 1027);
+				// Log.d("UDP Android", sentence + ": " + sendData.length);
+				clientSocket.send(sendPacket);
+				DatagramPacket receivePacket = new DatagramPacket(receiveData,
+						receiveData.length);
+				clientSocket.receive(receivePacket);
+				String modifiedSentence = new String(receivePacket.getData());
+				System.out.println("FROM SERVER:" + modifiedSentence);
+				clientSocket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+	}
+}

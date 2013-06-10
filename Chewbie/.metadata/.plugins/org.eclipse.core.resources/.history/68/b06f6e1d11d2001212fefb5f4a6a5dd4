@@ -1,0 +1,35 @@
+package me.xiangchen.app.accelonwatch;
+
+import android.content.Context;
+
+import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorEvent;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorEventListener;
+
+public class AccelOnWatchExtension extends ControlExtension {
+	
+	private AccessorySensorEventListener listener;
+	
+	public AccelOnWatchExtension(Context context, String hostAppPackageName) {
+		super(context, hostAppPackageName);
+		// TODO Auto-generated constructor stub
+		
+		listener =  = new AccessorySensorEventListener() {
+
+	        public void onSensorEvent(AccessorySensorEvent sensorEvent) {
+	            updateDisplay(sensorEvent);
+	            
+	        }
+	    };
+
+	}
+
+	public static int getSupportedControlWidth(Context context) {
+        return context.getResources().getDimensionPixelSize(R.dimen.smart_watch_control_width);
+    }
+
+
+    public static int getSupportedControlHeight(Context context) {
+        return context.getResources().getDimensionPixelSize(R.dimen.smart_watch_control_height);
+    }
+}

@@ -1,0 +1,128 @@
+package me.xiangchen.app.realsmartwatch;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.os.Environment;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.LinearLayout.LayoutParams;
+
+import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
+
+public class SampleExtension extends ControlExtension {
+
+	static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.ARGB_8888;
+	
+	int width;
+	int height;
+//	LinearLayout root;
+	LinearLayout layout;
+	TextView textView;
+	ImageView imgView;
+	Bitmap bmpDora;
+	Bitmap returnedBitmap;
+	Paint paint;
+	Canvas canvas;
+//	Context context;
+//	boolean isInitialized = false;
+	
+	public SampleExtension(Context context, String hostAppPackageName) {
+		super(context, hostAppPackageName);
+		// TODO Auto-generated constructor stub
+//		this.context = context;
+		
+		width = getSupportedControlWidth(context);
+		height = getSupportedControlHeight(context);
+		
+		paint = new Paint();
+		paint.setColor(Color.WHITE);
+		returnedBitmap = Bitmap.createBitmap(width, height, BITMAP_CONFIG);
+		canvas = new Canvas(returnedBitmap);
+		
+		layout = new LinearLayout(context);
+		
+//		textView = new TextView(context);
+//		textView.setBackgroundColor(Color.WHITE);
+//		textView.setText("Hello world!");
+		
+		imgView = new ImageView(context);
+		bmpDora = BitmapFactory.decodeResource(context.getResources(),R.drawable.doraemon);
+		imgView.setImageBitmap(bmpDora);
+//		imgView.layout(0, 0, width, height);
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, height);
+		params.addRule(RelativeLayout.ALIGN_TOP, 0);
+		layout.addView(imgView);//, params);
+	}
+	
+	@Override
+	public void onStart() {
+		
+	}
+	
+	@Override
+	public void onResume() {
+		
+		
+//		canvas.drawColor(Color.MAGENTA);
+//		canvas.drawText("Hello world", width/4, height/4, paint);
+		canvas.drawBitmap(returnedBitmap, 0, 0, paint);
+		layout.draw(canvas);
+//		layout.invalidate();
+//		imgView.dispatchDraw(canvas);
+//		Drawable bgDrawable = layout.getBackground();
+//	    if (bgDrawable!=null) 
+//	        bgDrawable.draw(canvas);
+//	    else 
+//	        canvas.drawColor(Color.WHITE);
+//		layout.draw(canvas);
+		showBitmap(returnedBitmap);
+	}
+	
+	@Override
+    public void onStop() {
+        
+    }
+	
+	@Override
+    public void onDestroy() {
+	
+	}
+	
+    public static int getSupportedControlWidth(Context context) {
+        return context.getResources().getDimensionPixelSize(R.dimen.smart_watch_control_width);
+    }
+
+
+    public static int getSupportedControlHeight(Context context) {
+        return context.getResources().getDimensionPixelSize(R.dimen.smart_watch_control_height);
+    }
+    
+//    private void saveBitmap(Bitmap bmp) throws IOException {
+//    	ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//    	bmp.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
+//
+//    	//you can create a new file name "test.jpg" in sdcard folder.
+//    	File f = new File(Environment.getExternalStorageDirectory()
+//    	                        + File.separator + "test.jpg");
+//    	f.createNewFile();
+//    	//write the bytes in file
+//    	FileOutputStream fo = new FileOutputStream(f);
+//    	fo.write(bytes.toByteArray());
+//
+//    	// remember close de FileOutput
+//    	fo.close();
+//    }
+
+}

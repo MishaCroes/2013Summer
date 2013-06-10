@@ -1,0 +1,79 @@
+package me.xiangchen.app.realsmartwatch;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.LinearLayout.LayoutParams;
+
+import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
+
+public class SampleExtension extends ControlExtension {
+
+	static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.RGB_565;
+	
+	int width;
+	int height;
+//	LinearLayout root;
+	LinearLayout layout;
+//	ImageView imgView;
+//	Context context;
+//	boolean isInitialized = false;
+	
+	public SampleExtension(Context context, String hostAppPackageName) {
+		super(context, hostAppPackageName);
+		// TODO Auto-generated constructor stub
+//		this.context = context;
+		
+		width = getSupportedControlWidth(context);
+		height = getSupportedControlHeight(context);
+		
+		layout = new LinearLayout(context);
+		layout.setBackgroundColor(Color.WHITE);
+		TextView textView = new TextView(context);
+		textView.setText("Hello world!");
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, height);
+//				LayoutParams.MATCH_PARENT,
+//				LayoutParams.MATCH_PARENT);
+		params.addRule(RelativeLayout.ALIGN_TOP, 0);
+		layout.addView(textView, params);
+	}
+	
+	@Override
+	public void onStart() {
+		
+	}
+	
+	@Override
+	public void onResume() {
+		Bitmap bitmap = Bitmap.createBitmap(width, height, BITMAP_CONFIG);
+		layout.setBackgroundColor(Color.GREEN);
+		Canvas canvas = new Canvas(bitmap);
+//		canvas.drawColor(Color.MAGENTA);
+		layout.draw(canvas);
+		showBitmap(bitmap);
+	}
+	
+	@Override
+    public void onStop() {
+        
+    }
+	
+	@Override
+    public void onDestroy() {
+	
+	}
+	
+    public static int getSupportedControlWidth(Context context) {
+        return context.getResources().getDimensionPixelSize(R.dimen.smart_watch_control_width);
+    }
+
+
+    public static int getSupportedControlHeight(Context context) {
+        return context.getResources().getDimensionPixelSize(R.dimen.smart_watch_control_height);
+    }
+
+}

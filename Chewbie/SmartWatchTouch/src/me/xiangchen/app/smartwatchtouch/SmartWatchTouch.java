@@ -32,13 +32,13 @@ public class SmartWatchTouch extends SmallApplication {
 				LayoutParams.FILL_PARENT,
 				LayoutParams.WRAP_CONTENT));
     	
-    	imgView.setOnTouchListener(new View.OnTouchListener() {
+    	layout.setOnTouchListener(new View.OnTouchListener() {
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// TODO Auto-generated method stub
-				System.out.println(event.getPointerCount());
-				return false;
+				System.out.println(event.getActionMasked());
+				return true;
 			}
 		});
         

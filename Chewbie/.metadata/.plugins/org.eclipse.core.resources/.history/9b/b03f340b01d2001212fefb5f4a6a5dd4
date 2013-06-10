@@ -1,0 +1,64 @@
+package me.xiangchen.app.udpandroid;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
+import android.app.Activity;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.Menu;
+import android.widget.LinearLayout;
+
+public class MainActivity extends Activity {
+	
+	final static String ipToSend = "10.142.212.93";
+	
+	LinearLayout layout;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+//		setContentView(R.layout.activity_main);
+		
+		layout = new LinearLayout(this);
+		layout.setBackgroundColor(Color.BLACK);
+		setContentView(layout);
+		try {
+			sendTestPacket();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	private static void sendTestPacket() throws IOException {
+		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(
+				System.in));
+		DatagramSocket clientSocket = new DatagramSocket();
+		InetAddress IPAddress = InetAddress.getByName(ipToSend);
+		byte[] sendData = new byte[1024];
+		byte[] receiveData = new byte[1024];
+		String sentence = inFromUser.readLine();
+		sendData = sentence.getBytes();
+		DatagramPacket sendPacket = new DatagramPacket(sendData,
+				sendData.length, IPAddress, 9876);
+		clientSocket.send(sendPacket);
+		DatagramPacket receivePacket = new DatagramPacket(receiveData,
+				receiveData.length);
+		clientSocket.receive(receivePacket);
+		String modifiedSentence = new String(receivePacket.getData());
+		System.out.println("FROM SERVER:" + modifiedSentence);
+		clientSocket.close();
+	}
+}

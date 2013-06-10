@@ -1,0 +1,33 @@
+package me.xiangchen.app.eerv2;
+
+import android.graphics.Point;
+import android.view.MotionEvent.PointerCoords;
+
+public class xacTouch {
+
+	PointerCoords start;
+	Point end;
+	
+	public void setStart(PointerCoords s) {
+		start = s;
+	}
+	
+	public Point getStart() {
+		return start;
+	}
+	
+	public void setEnd(Point e) {
+		end = e;
+	}
+	
+	public Point getEnd() {
+		return end;
+	}
+	
+	public Point getOffset() {
+		Point offset = new Point();
+		offset.x = end.x - start.x;
+		offset.y = end.y - start.y;
+		return offset;
+	}
+}

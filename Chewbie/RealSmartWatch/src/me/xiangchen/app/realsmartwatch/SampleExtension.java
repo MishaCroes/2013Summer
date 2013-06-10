@@ -1,19 +1,26 @@
 package me.xiangchen.app.realsmartwatch;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
+import com.sonyericsson.extras.liveware.extension.util.control.ControlTouchEvent;
 
 public class SampleExtension extends ControlExtension {
 
@@ -36,11 +43,21 @@ public class SampleExtension extends ControlExtension {
 		height = getSupportedControlHeight(context);
 		
 		paint = new Paint();
-		paint.setColor(Color.WHITE);
 		returnedBitmap = Bitmap.createBitmap(width, height, BITMAP_CONFIG);
 		canvas = new Canvas(returnedBitmap);
 		
 		layout = new RelativeLayout(context);
+//		layout.setBackgroundColor(Color.BLACK);
+//		layout.setOnTouchListener(new View.OnTouchListener() {
+//			@Override
+//			public boolean onTouch(View v, MotionEvent event) {
+//				// TODO Auto-generated method stub
+////				layout.setAlpha(layout.getAlpha() - 0.1f);
+//				Log.e("RealWatch", "touch!");
+//				new NetworkTask().execute();
+//				return true;
+//			}
+//		});
 		
 		imgView = new ImageView(context);
 		bmpDora = BitmapFactory.decodeResource(context.getResources(),R.drawable.doraemon);
@@ -64,6 +81,12 @@ public class SampleExtension extends ControlExtension {
 				LayoutParams.MATCH_PARENT);
 		paramsText.addRule(RelativeLayout.ABOVE, 0);
 		layout.addView(textView, paramsText);
+	}
+	
+	@Override
+    public void onTouch(final ControlTouchEvent event) {
+		Log.e("RealWatch", "touch!");
+		new NetworkTask().execute();
 	}
 	
 	@Override
@@ -96,5 +119,39 @@ public class SampleExtension extends ControlExtension {
     public static int getSupportedControlHeight(Context context) {
         return context.getResources().getDimensionPixelSize(R.dimen.smart_watch_control_height);
     }
+    
+    class NetworkTask extends AsyncTask {
+		final static String ipToSend = "10.142.224.68";
+		
+		@Override
+		protected Object doInBackground(Object... arg0) {
+			// TODO Auto-generated method stub
+			DatagramSocket clientSocket;
+			try {
+				clientSocket = new DatagramSocket();
+				InetAddress IPAddress = InetAddress.getByName(ipToSend);
+				byte[] sendData = new byte[1024];
+				byte[] receiveData = new byte[1024];
+				String sentence = "form follows functions";
+				sendData = sentence.getBytes();
+				DatagramPacket sendPacket = new DatagramPacket(sendData,
+						sendData.length, IPAddress, 1027);
+				Log.d("UDP Android", sentence + ": " + sendData.length);
+				clientSocket.send(sendPacket);
+				DatagramPacket receivePacket = new DatagramPacket(receiveData,
+						receiveData.length);
+				clientSocket.receive(receivePacket);
+				String modifiedSentence = new String(receivePacket.getData());
+				System.out.println("FROM SERVER:" + modifiedSentence);
+				clientSocket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return null;
+		}
+		
+	}
 
 }

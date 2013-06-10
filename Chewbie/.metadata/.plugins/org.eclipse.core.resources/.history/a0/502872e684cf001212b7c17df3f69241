@@ -1,0 +1,17 @@
+package me.xiangchen.app.RealSmartWatch;
+
+import com.commonsware.android.smartwatch.Bundle;
+import com.commonsware.android.smartwatch.Override;
+import com.sonyericsson.extras.liveware.extension.util.R;
+
+import android.app.Activity;
+import android.widget.Toast;
+
+public class SampleWatchActivity extends Activity{
+	@Override
+	  public void onCreate(Bundle savedInstanceState) {
+	    super.onCreate(savedInstanceState);
+
+	    finish();
+	  }
+}

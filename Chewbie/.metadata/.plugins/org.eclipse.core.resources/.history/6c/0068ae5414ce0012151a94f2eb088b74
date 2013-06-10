@@ -1,0 +1,158 @@
+package me.xiangchen.app.eerv2;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import android.annotation.SuppressLint;
+import android.view.MotionEvent.PointerCoords;
+
+@SuppressLint("NewApi")
+public class xacSwipe implements Cloneable{
+
+	/*
+	 * some constants
+	 */
+	final float EPS       =0.0001f;
+	final float THETA     =0.78539816339f;	// pi/4
+	final int TAPWIDTH    =20;
+
+	final int UNKNOWN     =-1;
+
+	final int NORTH       =0;
+	final int NORTHEAST   =1;
+	final int EAST        =2;
+	final int SOUTHEAST   =3;
+	final int SOUTH       =4;
+	final int SOUTHWEST   =5;
+	final int WEST        =6;
+	final int NORTHWEST   =7;
+	final static int CENTER      =8;
+	
+	Hashtable<String, xacTouch> touchPoints;
+	long timeStamp;
+	int gesture;
+	
+	public xacSwipe() {
+		touchPoints = new Hashtable<String, xacTouch>();
+	}
+	
+	public void addTouchPoint(PointerCoords start, String key) {
+		xacTouch touch = new xacTouch();
+		touch.setStart(start);
+		touchPoints.put(key, touch);
+	}
+	
+	public void endTouchPoint(PointerCoords end, String key) {
+		xacTouch touch = touchPoints.get(key);
+		touch.setEnd(end);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@SuppressLint("UseValueOf")
+	public int getGesture() {
+		gesture = UNKNOWN;
+//		Hashtable<String, Integer> strokes = new Hashtable<String, Integer>();
+		ArrayList<Integer> strokes = new ArrayList<Integer>();
+		
+		Iterator<Entry<String, xacTouch>>  it;
+		Map.Entry entry;
+
+		it = touchPoints.entrySet().iterator();
+		while(it.hasNext()) {
+			entry = it.next();
+			xacTouch touch = (xacTouch) entry.getValue();
+			PointerCoords offset = touch.getOffset();
+			//System.out.println(strKey + ": " + tchPnt.x + ", " + tchPnt.y);
+			
+			int stroke = UNKNOWN;
+			float x = offset.x;
+			float y = -offset.y;
+			
+			if(Math.max(Math.abs(x), Math.abs(y)) < TAPWIDTH) {
+	            stroke = CENTER;
+	        }
+	        else if(y / Math.tan(THETA * 5 / 2) < x && x < y / Math.tan(THETA * 3 / 2)) {
+	            stroke = NORTH;
+	        }
+	        else if(y < Math.tan(THETA * 3 / 2) * x && y > Math.tan(THETA * 1 / 2) * x) {
+	            stroke = NORTHEAST;
+	        }
+	        else if(y < Math.tan(THETA * 1 / 2) * x && y > Math.tan(-THETA * 1 / 2) * x) {
+	            stroke = EAST;
+	        }
+	        else if(y < Math.tan(THETA * -1 / 2) * x && y > Math.tan(THETA * -3 / 2) * x) {
+	            stroke = SOUTHEAST;
+	        }
+	        else if(y / Math.tan(THETA * -5 / 2) < x && x < y / Math.tan(THETA * -3 / 2)) {
+	            stroke = SOUTH;
+	        }
+	        else if(y < Math.tan(THETA * -7 / 2) * x && y > Math.tan(THETA * -5 / 2) * x) {
+	            stroke = SOUTHWEST;
+	        }
+	        else if(y < Math.tan(THETA * -9 / 2) * x && y > Math.tan(THETA * -7 / 2) * x) {
+	            stroke = WEST;
+	        }
+	        else if(y < Math.tan(THETA * -11 / 2) * x && y > Math.tan(THETA * -9 / 2) * x) {
+	            stroke = NORTHWEST;
+	        }
+			
+//			strokes.put(strKey, new Integer(stroke));
+			strokes.add(new Integer(stroke));
+		}
+		
+		if(touchPoints.size() == 1) {
+			gesture = strokes.get(0);
+		}
+		
+		printStroke(gesture);
+		return gesture;
+	}
+	
+	private void printStroke(int stroke) {
+	    String strStroke = "unknown";
+	    switch (stroke) {
+	        case CENTER:
+	            strStroke = "center";
+	            break;
+	        case NORTH:
+	            strStroke = "north";
+	            break;
+	        case NORTHEAST:
+	            strStroke = "northeast";
+	            break;
+	        case EAST:
+	            strStroke = "east";
+	            break;
+	        case SOUTHEAST:
+	            strStroke = "southeast";
+	            break;
+	        case SOUTH:
+	            strStroke = "south";
+	            break;
+	        case SOUTHWEST:
+	            strStroke = "southwest";
+	            break;
+	        case WEST:
+	            strStroke = "west";
+	            break;
+	        case NORTHWEST:
+	            strStroke = "northwest";
+	            break;
+	        default:
+	            break;
+	    }
+	    
+	   System.out.println(strStroke);
+	}
+	
+	public void cleanTouchPoin() {
+		touchPoints.clear();
+	}
+	
+	protected xacSwipe clone() throws CloneNotSupportedException {
+        return (xacSwipe) super.clone();
+    }
+}

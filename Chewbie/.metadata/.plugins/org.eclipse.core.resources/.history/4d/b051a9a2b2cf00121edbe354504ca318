@@ -1,0 +1,117 @@
+package me.xiangchen.app.realsmartwatch;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+
+import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
+
+public class SampleExtension extends ControlExtension {
+
+	static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.RGB_565;
+	
+	int width;
+	int height;
+	LinearLayout layout;
+	ImageView imgView;
+	
+	public SampleExtension(Context context, String hostAppPackageName) {
+		super(context, hostAppPackageName);
+		// TODO Auto-generated constructor stub
+		
+		layout = new LinearLayout(context);
+		imgView = new ImageView(context);
+		imgView.setImageResource(R.drawable.doraemon);
+		layout.addView(imgView, new LinearLayout.LayoutParams(
+				LayoutParams.FILL_PARENT,
+				LayoutParams.WRAP_CONTENT));
+		width = getSupportedControlWidth(context);
+		height = getSupportedControlHeight(context);
+	}
+	
+	@Override
+	public void onStart() {
+		
+	}
+	
+	@Override
+	public void onResume() {
+		
+//		layout.setBackgroundColor(Color.GREEN);
+//		layout.setLayoutParams(new LinearLayout.LayoutParams(width, height));
+//		Bitmap bitmap = Bitmap.createBitmap(width, height, BITMAP_CONFIG);
+//		bitmap.setDensity(DisplayMetrics.DENSITY_DEFAULT);
+//		Canvas canvas = new Canvas(bitmap);
+//		Drawable drawable = imgView.getBackground();
+//		
+//		if(drawable != null) {
+//			drawable.draw(canvas);
+//		}
+//		else {
+//			canvas.drawColor(Color.WHITE);
+//		}
+		
+		Bitmap bitmap = getViewBitmap(imgView);
+		
+		showBitmap(bitmap);
+	}
+	
+	@Override
+    public void onStop() {
+        
+    }
+	
+	@Override
+    public void onDestroy() {
+	
+	}
+	
+    public static int getSupportedControlWidth(Context context) {
+        return context.getResources().getDimensionPixelSize(R.dimen.smart_watch_control_width);
+    }
+
+
+    public static int getSupportedControlHeight(Context context) {
+        return context.getResources().getDimensionPixelSize(R.dimen.smart_watch_control_height);
+    }
+    
+    private Bitmap getViewBitmap(View v) {
+        v.clearFocus();
+        v.setPressed(false);
+
+        boolean willNotCache = v.willNotCacheDrawing();
+        v.setWillNotCacheDrawing(false);
+
+        // Reset the drawing cache background color to fully transparent
+        // for the duration of this operation
+        int color = v.getDrawingCacheBackgroundColor();
+        v.setDrawingCacheBackgroundColor(0);
+
+        if (color != 0) {
+            v.destroyDrawingCache();
+        }
+        v.buildDrawingCache();
+        Bitmap cacheBitmap = v.getDrawingCache();
+        if (cacheBitmap == null) {
+            Log.e(TAG, "failed getViewBitmap(" + v + ")", new RuntimeException());
+            return null;
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
+
+        // Restore the view
+        v.destroyDrawingCache();
+        v.setWillNotCacheDrawing(willNotCache);
+        v.setDrawingCacheBackgroundColor(color);
+
+        return bitmap;
+    }
+
+}

@@ -1,0 +1,7 @@
+package me.xiangchen.app.eerv2;
+
+
+
+public class EERv2 extends SmallApplication {
+
+}

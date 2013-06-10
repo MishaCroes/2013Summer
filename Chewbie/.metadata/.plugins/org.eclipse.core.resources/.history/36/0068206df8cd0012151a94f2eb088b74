@@ -1,0 +1,38 @@
+package me.xiangchen.app.eerv2;
+
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.LinearLayout;
+
+import com.sony.smallapp.SmallAppWindow;
+import com.sony.smallapp.SmallApplication;
+
+public class EERv2 extends SmallApplication {
+	final int width = 200;
+	final int height = 300;
+	LinearLayout layout;
+	
+	@Override
+    public void onCreate() {
+        super.onCreate();
+        
+        layout = new LinearLayout(this);
+        setContentView(layout);
+        
+        SmallAppWindow.Attributes attr = getWindow().getAttributes();
+        attr.width = width;
+        attr.height = height;
+        
+        getWindow().setAttributes(attr);
+        
+        layout.setOnTouchListener(new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				System.out.println(event.getActionMasked());
+				return true;
+			}
+		});
+	}
+}
