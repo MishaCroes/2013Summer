@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1519D63F1769261300258DDF /* VBNM.png in Resources */ = {isa = PBXBuildFile; fileRef = 1519D63E1769261300258DDF /* VBNM.png */; };
-		1519D66E1769278200258DDF /* QWER.png in Resources */ = {isa = PBXBuildFile; fileRef = 1519D66D1769278200258DDF /* QWER.png */; };
 		1519D670176A145C00258DDF /* hand-watch.png in Resources */ = {isa = PBXBuildFile; fileRef = 1519D66F176A145C00258DDF /* hand-watch.png */; };
 		1519D673176A190C00258DDF /* xacWatchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1519D672176A190C00258DDF /* xacWatchView.m */; };
+		15E99988176A72A3001D43F0 /* QWE.png in Resources */ = {isa = PBXBuildFile; fileRef = 15E99987176A72A3001D43F0 /* QWE.png */; };
+		15E9998A176A735A001D43F0 /* RTYU.png in Resources */ = {isa = PBXBuildFile; fileRef = 15E99989176A735A001D43F0 /* RTYU.png */; };
+		15E9998C176A7701001D43F0 /* VBN.png in Resources */ = {isa = PBXBuildFile; fileRef = 15E9998B176A7701001D43F0 /* VBN.png */; };
+		15E9998E176A7A62001D43F0 /* Mcp.png in Resources */ = {isa = PBXBuildFile; fileRef = 15E9998D176A7A62001D43F0 /* Mcp.png */; };
 		15ED06631769107A000C826C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15ED06621769107A000C826C /* UIKit.framework */; };
 		15ED06651769107A000C826C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15ED06641769107A000C826C /* Foundation.framework */; };
 		15ED06671769107A000C826C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15ED06661769107A000C826C /* CoreGraphics.framework */; };
@@ -32,17 +34,18 @@
 		15ED06A617691302000C826C /* JKL.png in Resources */ = {isa = PBXBuildFile; fileRef = 15ED069417691302000C826C /* JKL.png */; };
 		15ED06AC17691302000C826C /* keyboard.png in Resources */ = {isa = PBXBuildFile; fileRef = 15ED069A17691302000C826C /* keyboard.png */; };
 		15ED06AF17691302000C826C /* NM.png in Resources */ = {isa = PBXBuildFile; fileRef = 15ED069D17691302000C826C /* NM.png */; };
-		15ED06B217691302000C826C /* TYU.png in Resources */ = {isa = PBXBuildFile; fileRef = 15ED06A017691302000C826C /* TYU.png */; };
 		15ED06B317691302000C826C /* VB.png in Resources */ = {isa = PBXBuildFile; fileRef = 15ED06A117691302000C826C /* VB.png */; };
 		15ED06B417691302000C826C /* ZXC.png in Resources */ = {isa = PBXBuildFile; fileRef = 15ED06A217691302000C826C /* ZXC.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1519D63E1769261300258DDF /* VBNM.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VBNM.png; sourceTree = "<group>"; };
-		1519D66D1769278200258DDF /* QWER.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = QWER.png; sourceTree = "<group>"; };
 		1519D66F176A145C00258DDF /* hand-watch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hand-watch.png"; sourceTree = "<group>"; };
 		1519D671176A190C00258DDF /* xacWatchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacWatchView.h; sourceTree = "<group>"; };
 		1519D672176A190C00258DDF /* xacWatchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacWatchView.m; sourceTree = "<group>"; };
+		15E99987176A72A3001D43F0 /* QWE.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = QWE.png; sourceTree = "<group>"; };
+		15E99989176A735A001D43F0 /* RTYU.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = RTYU.png; sourceTree = "<group>"; };
+		15E9998B176A7701001D43F0 /* VBN.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VBN.png; sourceTree = "<group>"; };
+		15E9998D176A7A62001D43F0 /* Mcp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Mcp.png; sourceTree = "<group>"; };
 		15ED065F1769107A000C826C /* EER 2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "EER 2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		15ED06621769107A000C826C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		15ED06641769107A000C826C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -72,7 +75,6 @@
 		15ED069417691302000C826C /* JKL.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = JKL.png; sourceTree = "<group>"; };
 		15ED069A17691302000C826C /* keyboard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = keyboard.png; sourceTree = "<group>"; };
 		15ED069D17691302000C826C /* NM.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NM.png; sourceTree = "<group>"; };
-		15ED06A017691302000C826C /* TYU.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TYU.png; sourceTree = "<group>"; };
 		15ED06A117691302000C826C /* VB.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VB.png; sourceTree = "<group>"; };
 		15ED06A217691302000C826C /* ZXC.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ZXC.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -158,16 +160,17 @@
 		15ED069017691302000C826C /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				15E9998D176A7A62001D43F0 /* Mcp.png */,
+				15E9998B176A7701001D43F0 /* VBN.png */,
+				15E99989176A735A001D43F0 /* RTYU.png */,
+				15E99987176A72A3001D43F0 /* QWE.png */,
 				1519D66F176A145C00258DDF /* hand-watch.png */,
-				1519D66D1769278200258DDF /* QWER.png */,
-				1519D63E1769261300258DDF /* VBNM.png */,
 				15ED069117691302000C826C /* ASD.png */,
 				15ED069217691302000C826C /* FGH.png */,
 				15ED069317691302000C826C /* IOP.png */,
 				15ED069417691302000C826C /* JKL.png */,
 				15ED069A17691302000C826C /* keyboard.png */,
 				15ED069D17691302000C826C /* NM.png */,
-				15ED06A017691302000C826C /* TYU.png */,
 				15ED06A117691302000C826C /* VB.png */,
 				15ED06A217691302000C826C /* ZXC.png */,
 			);
@@ -239,12 +242,13 @@
 				15ED06A617691302000C826C /* JKL.png in Resources */,
 				15ED06AC17691302000C826C /* keyboard.png in Resources */,
 				15ED06AF17691302000C826C /* NM.png in Resources */,
-				15ED06B217691302000C826C /* TYU.png in Resources */,
 				15ED06B317691302000C826C /* VB.png in Resources */,
 				15ED06B417691302000C826C /* ZXC.png in Resources */,
-				1519D63F1769261300258DDF /* VBNM.png in Resources */,
-				1519D66E1769278200258DDF /* QWER.png in Resources */,
 				1519D670176A145C00258DDF /* hand-watch.png in Resources */,
+				15E99988176A72A3001D43F0 /* QWE.png in Resources */,
+				15E9998A176A735A001D43F0 /* RTYU.png in Resources */,
+				15E9998C176A7701001D43F0 /* VBN.png in Resources */,
+				15E9998E176A7A62001D43F0 /* Mcp.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
