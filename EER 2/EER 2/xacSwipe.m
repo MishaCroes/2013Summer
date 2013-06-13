@@ -1,8 +1,8 @@
 //
 //  xacSwipe.m
-//  EER
+//  EER 2
 //
-//  Created by Xiang 'Anthony' Chen on 5/30/13.
+//  Created by Xiang 'Anthony' Chen on 6/12/13.
 //  Copyright (c) 2013 hotnAny. All rights reserved.
 //
 
@@ -39,37 +39,39 @@
     
     for(id key in _touchPoints) {
         xacTouch *touch = [_touchPoints objectForKey:key];
+        
         int stroke = UNKNOWN;
-        
-        float x = touch.end.x - touch.start.x;
-        float y = -(touch.end.y - touch.start.y);
-        
-        if(MAX(fabs(x), fabs(y)) < TAPWIDTH) {
-            stroke = CENTER;
-        }
-        else if(y / tanf(THETA * 5 / 2) < x && x < y / tanf(THETA * 3 / 2)) {
-            stroke = NORTH;
-        }
-        else if(y < tan(THETA * 3 / 2) * x && y > tan(THETA * 1 / 2) * x) {
-            stroke = NORTHEAST;
-        }
-        else if(y < tan(THETA * 1 / 2) * x && y > tan(-THETA * 1 / 2) * x) {
-            stroke = EAST;
-        }
-        else if(y < tan(THETA * -1 / 2) * x && y > tan(THETA * -3 / 2) * x) {
-            stroke = SOUTHEAST;
-        }
-        else if(y / tanf(THETA * -5 / 2) < x && x < y / tanf(THETA * -3 / 2)) {
-            stroke = SOUTH;
-        }
-        else if(y < tan(THETA * -7 / 2) * x && y > tan(THETA * -5 / 2) * x) {
-            stroke = SOUTHWEST;
-        }
-        else if(y < tan(THETA * -9 / 2) * x && y > tan(THETA * -7 / 2) * x) {
-            stroke = WEST;
-        }
-        else if(y < tan(THETA * -11 / 2) * x && y > tan(THETA * -9 / 2) * x) {
-            stroke = NORTHWEST;
+        if(touch) {
+            float x = touch.end.x - touch.start.x;
+            float y = -(touch.end.y - touch.start.y);
+            
+            if(MAX(fabs(x), fabs(y)) < TAPWIDTH) {
+                stroke = CENTER;
+            }
+            else if(y / tanf(THETA * 5 / 2) < x && x < y / tanf(THETA * 3 / 2)) {
+                stroke = NORTH;
+            }
+            else if(y < tan(THETA * 3 / 2) * x && y > tan(THETA * 1 / 2) * x) {
+                stroke = NORTHEAST;
+            }
+            else if(y < tan(THETA * 1 / 2) * x && y > tan(-THETA * 1 / 2) * x) {
+                stroke = EAST;
+            }
+            else if(y < tan(THETA * -1 / 2) * x && y > tan(THETA * -3 / 2) * x) {
+                stroke = SOUTHEAST;
+            }
+            else if(y / tanf(THETA * -5 / 2) < x && x < y / tanf(THETA * -3 / 2)) {
+                stroke = SOUTH;
+            }
+            else if(y < tan(THETA * -7 / 2) * x && y > tan(THETA * -5 / 2) * x) {
+                stroke = SOUTHWEST;
+            }
+            else if(y < tan(THETA * -9 / 2) * x && y > tan(THETA * -7 / 2) * x) {
+                stroke = WEST;
+            }
+            else if(y < tan(THETA * -11 / 2) * x && y > tan(THETA * -9 / 2) * x) {
+                stroke = NORTHWEST;
+            }
         }
         
         [strokes addObject:[NSNumber numberWithInt:stroke]];

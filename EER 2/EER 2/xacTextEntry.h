@@ -1,8 +1,8 @@
 //
 //  xacTextEntry.h
-//  EER
+//  EER 2
 //
-//  Created by Xiang 'Anthony' Chen on 5/30/13.
+//  Created by Xiang 'Anthony' Chen on 6/12/13.
 //  Copyright (c) 2013 hotnAny. All rights reserved.
 //
 
@@ -11,6 +11,8 @@
 
 #define BTWNTIMEOUT 2000
 #define TEXTLINELENGTH 8
+#define CURSORREFRESHRATE 3
+#define TIMEOUTUPDATERATE 10
 
 @interface xacTextEntry : NSObject
 

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1519D63F1769261300258DDF /* VBNM.png in Resources */ = {isa = PBXBuildFile; fileRef = 1519D63E1769261300258DDF /* VBNM.png */; };
 		1519D66E1769278200258DDF /* QWER.png in Resources */ = {isa = PBXBuildFile; fileRef = 1519D66D1769278200258DDF /* QWER.png */; };
+		1519D670176A145C00258DDF /* hand-watch.png in Resources */ = {isa = PBXBuildFile; fileRef = 1519D66F176A145C00258DDF /* hand-watch.png */; };
+		1519D673176A190C00258DDF /* xacWatchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1519D672176A190C00258DDF /* xacWatchView.m */; };
 		15ED06631769107A000C826C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15ED06621769107A000C826C /* UIKit.framework */; };
 		15ED06651769107A000C826C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15ED06641769107A000C826C /* Foundation.framework */; };
 		15ED06671769107A000C826C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15ED06661769107A000C826C /* CoreGraphics.framework */; };
@@ -38,6 +40,9 @@
 /* Begin PBXFileReference section */
 		1519D63E1769261300258DDF /* VBNM.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VBNM.png; sourceTree = "<group>"; };
 		1519D66D1769278200258DDF /* QWER.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = QWER.png; sourceTree = "<group>"; };
+		1519D66F176A145C00258DDF /* hand-watch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hand-watch.png"; sourceTree = "<group>"; };
+		1519D671176A190C00258DDF /* xacWatchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacWatchView.h; sourceTree = "<group>"; };
+		1519D672176A190C00258DDF /* xacWatchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacWatchView.m; sourceTree = "<group>"; };
 		15ED065F1769107A000C826C /* EER 2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "EER 2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		15ED06621769107A000C826C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		15ED06641769107A000C826C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -129,6 +134,8 @@
 				15ED067A1769107A000C826C /* MainStoryboard.storyboard */,
 				15ED067D1769107A000C826C /* xacViewController.h */,
 				15ED067E1769107A000C826C /* xacViewController.m */,
+				1519D671176A190C00258DDF /* xacWatchView.h */,
+				1519D672176A190C00258DDF /* xacWatchView.m */,
 				15ED06691769107A000C826C /* Supporting Files */,
 			);
 			path = "EER 2";
@@ -151,6 +158,7 @@
 		15ED069017691302000C826C /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				1519D66F176A145C00258DDF /* hand-watch.png */,
 				1519D66D1769278200258DDF /* QWER.png */,
 				1519D63E1769261300258DDF /* VBNM.png */,
 				15ED069117691302000C826C /* ASD.png */,
@@ -236,6 +244,7 @@
 				15ED06B417691302000C826C /* ZXC.png in Resources */,
 				1519D63F1769261300258DDF /* VBNM.png in Resources */,
 				1519D66E1769278200258DDF /* QWER.png in Resources */,
+				1519D670176A145C00258DDF /* hand-watch.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,6 +261,7 @@
 				15ED068B17691180000C826C /* xacSwipe.m in Sources */,
 				15ED068C17691180000C826C /* xacTextEntry.m in Sources */,
 				15ED068D17691180000C826C /* xacTouch.m in Sources */,
+				1519D673176A190C00258DDF /* xacWatchView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

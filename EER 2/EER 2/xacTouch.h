@@ -1,8 +1,8 @@
 //
 //  xacTouch.h
-//  EER
+//  EER 2
 //
-//  Created by Xiang 'Anthony' Chen on 5/30/13.
+//  Created by Xiang 'Anthony' Chen on 6/12/13.
 //  Copyright (c) 2013 hotnAny. All rights reserved.
 //
 

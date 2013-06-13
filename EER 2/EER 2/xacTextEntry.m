@@ -1,8 +1,8 @@
 //
 //  xacTextEntry.m
-//  EER
+//  EER 2
 //
-//  Created by Xiang 'Anthony' Chen on 5/30/13.
+//  Created by Xiang 'Anthony' Chen on 6/12/13.
 //  Copyright (c) 2013 hotnAny. All rights reserved.
 //
 
@@ -14,16 +14,25 @@ UIImageView *imgView;
 UITextView *textView;
 NSMutableArray *charArray;
 int ptrChar = 0;
+NSString *cursor;
+
 
 - (id) init {
     self = [super init];
     if(self) {
-        [NSTimer scheduledTimerWithTimeInterval:0.1
+        
+        // routine to monitor time out of two-stroke input
+        [NSTimer scheduledTimerWithTimeInterval:1.0f / TIMEOUTUPDATERATE
                                          target:self
                                        selector:@selector(updateTimeOut)
                                        userInfo:nil
                                         repeats:YES];
-        
+        // routine to update the visual of the cursor
+        [NSTimer scheduledTimerWithTimeInterval:1.0f / CURSORREFRESHRATE
+                                         target:self
+                                       selector:@selector(updateCursor)
+                                       userInfo:nil
+                                        repeats:YES];
         
         _keyMap = [[NSMutableDictionary alloc] init];
         [self readKeyMap];
@@ -72,6 +81,7 @@ int ptrChar = 0;
 
 - (void) doTextEntry {
     
+    // space
     if(_firstSwipe.gesture == EAST && _secondSwipe.gesture == EAST) {
         NSString *key = @" ";
         if(ptrChar <= TEXTLINELENGTH - 1) {
@@ -81,12 +91,14 @@ int ptrChar = 0;
             [charArray addObject:key];
         }
     }
+    // back space
     else if(_firstSwipe.gesture == WEST && _secondSwipe.gesture == WEST) {
         if(charArray.count > 0) {
             [charArray removeLastObject];
             ptrChar--;
         }
     }
+    // the others
     else {
         
         NSString *strFirstSwipe = [_gestureMap objectForKey:[NSNumber numberWithInt:_firstSwipe.gesture]];
@@ -101,12 +113,11 @@ int ptrChar = 0;
                 [charArray removeObjectAtIndex:0];
                 [charArray addObject:key];
             }
-            //        ptrChar = (ptrChar + 1) % TEXTLINELENGTH;
         }
         NSLog(@"%@: %@", strID, key);
         
     }
-    [self updateTextView];
+    
 }
 
 - (void) updateTextView {
@@ -115,6 +126,9 @@ int ptrChar = 0;
     for(NSString *str in charArray) {
         sentence = [sentence stringByAppendingString:str];
     }
+    
+    sentence = [sentence stringByAppendingString:cursor];
+    
     [textView setText:sentence];
 }
 
@@ -146,7 +160,11 @@ int ptrChar = 0;
             _firstSwipe = nil;
         }
     }
+}
 
+- (void) updateCursor {
+    cursor = [cursor isEqualToString:@"_"] ? @" " : @"_";
+    [self updateTextView];
 }
 
 - (void) printState {
@@ -168,6 +186,7 @@ int ptrChar = 0;
     NSLog(@"%@", strState);
 }
 
+// associate constants to the directions they represent
 - (void) initGestureMap {
     [_gestureMap setObject:@"center" forKey:[NSNumber numberWithInt:CENTER]];
     [_gestureMap setObject:@"north" forKey:[NSNumber numberWithInt:NORTH]];
@@ -227,7 +246,7 @@ int ptrChar = 0;
     float H = view.frame.size.height;
     textView = [[UITextView alloc] initWithFrame:CGRectMake(0, H * 0.15, W, H * 0.6)];
     [textView setFont:[UIFont fontWithName:@"ArialMT" size:150 / TEXTLINELENGTH]];
-    textView.textAlignment = NSTextAlignmentCenter;
+    textView.textAlignment = NSTextAlignmentLeft;
     [textView setBackgroundColor:[UIColor clearColor]];
     [textView setUserInteractionEnabled:NO];
     [view addSubview:textView];
@@ -251,7 +270,7 @@ int ptrChar = 0;
             imgView.image = [UIImage imageNamed:@"VBNM.png"];
             break;
         case SOUTH:
-//            imgView.image = [UIImage imageNamed:@"VB.png"];
+            // south is preserved for going back to the full keyboard
             if(imgView != nil) {
                 [self updateVisual:UNKNOWN];
             }
