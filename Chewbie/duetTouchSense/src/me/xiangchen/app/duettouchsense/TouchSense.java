@@ -4,25 +4,22 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import me.xiangchen.app.duettouchsense.util.SystemUiHider;
 import me.xiangchen.ml.TouchSenseClassifier;
 import me.xiangchen.ml.xacFeatureMaker;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- * 
- * @see SystemUiHider
- */
 public class TouchSense extends Activity {
 	
 	final static String[] touchLabels = {"Pad", "Phalanx", "Knuckle"};
@@ -33,6 +30,7 @@ public class TouchSense extends Activity {
 	LinearLayout layout;
 	Button btnHandParts;
 	TextView txtHandParts;
+	int alphaText = 255;
 	
 	Timer timer;
 	
@@ -58,7 +56,7 @@ public class TouchSense extends Activity {
 					// recognition phase
 					Object[] features = xacFeatureMaker.getFlattenedData(10);
 					if (features != null) {
-						txtHandParts.setAlpha(1.0f);
+						alphaText = 255;
 						try {
 							int idxClass = (int) TouchSenseClassifier
 									.classify(features);
@@ -85,9 +83,12 @@ public class TouchSense extends Activity {
 		btnHandParts = new Button(this);
 		btnHandParts.setId(0);
 		btnHandParts.layout(0, 0, widthButton, heightButton);
-		btnHandParts.setBackgroundColor(Color.WHITE);
+		
+		btnHandParts.setBackgroundColor(Color.BLACK);
+		btnHandParts.setTextColor(Color.GRAY);
+		
 		btnHandParts.setText(touchLabels[idxHandParts]);
-		btnHandParts.setTextColor(Color.BLACK);
+		
 		btnHandParts.setTextSize(36);
 		btnHandParts.setOnClickListener(new View.OnClickListener() {
 			
@@ -106,25 +107,21 @@ public class TouchSense extends Activity {
 		txtHandParts = new TextView(this);
 		txtHandParts.setId(1);
 		txtHandParts.setTextSize(36);
-		txtHandParts.setBackgroundColor(Color.BLACK);
-		txtHandParts.setTextColor(Color.WHITE);
+		txtHandParts.setBackgroundColor(Color.WHITE);
+		txtHandParts.setTextColor(Color.BLACK);
 		txtHandParts.setText("Unknow");
 		txtHandParts.layout(widthButton, 0, widthTxtView, heightTxtView);
 		txtHandParts.setGravity(Gravity.CENTER);
 		
 		
 		LinearLayout.LayoutParams paramsButton = new LinearLayout.LayoutParams(
-//				RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 				widthButton, 
 				heightButton);
-//		paramsButton.addRule(RelativeLayout.LEFT_OF, 1);
 		layout.addView(btnHandParts, paramsButton);
 		
 		LinearLayout.LayoutParams paramsText = new LinearLayout.LayoutParams(
-//				RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT, widthButton, 0);
 				widthTxtView, 
 				heightTxtView);
-//		paramsText.addRule(RelativeLayout.RIGHT_OF, 0);
 		layout.addView(txtHandParts, paramsText);
 		
 		setContentView(layout);
@@ -139,11 +136,52 @@ public class TouchSense extends Activity {
 					  public void run() {
 					    // Your database code here
 						if(isRecognition) {
-							txtHandParts.setAlpha(txtHandParts.getAlpha() - 0.01f);
+							alphaText *= 0.95f;
+							txtHandParts.setTextColor(Color.argb(alphaText, 0, 0, 0));
 						}
 					  }
 					});
 			  }
 			}, new Date(),20);
+		
+		setAutoOrientationEnabled(getContentResolver(), false);
+	}
+	
+	private void toggleMode() {
+		isRecognition = !isRecognition;
+
+		alphaText = 255;
+		
+		if(isRecognition) {
+			Toast.makeText(this, "Recognition mode", Toast.LENGTH_SHORT).show();
+			btnHandParts.setBackgroundColor(Color.BLACK);
+			btnHandParts.setTextColor(Color.BLACK);
+			txtHandParts.setText("Unknown");
+			txtHandParts.setBackgroundColor(Color.WHITE);
+			txtHandParts.setTextColor(Color.BLACK);
+		}
+		else {
+			Toast.makeText(this, "Training mode", Toast.LENGTH_SHORT).show();
+			txtHandParts.setBackgroundColor(Color.BLACK);
+			txtHandParts.setTextColor(Color.BLACK);
+			btnHandParts.setBackgroundColor(Color.WHITE);
+			btnHandParts.setTextColor(Color.BLACK);
+		}
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_VOLUME_DOWN:
+			toggleMode();
+			break;
+		}
+		
+		return true;
+	}
+	
+	public static void setAutoOrientationEnabled(ContentResolver resolver, boolean enabled)
+	{
+	  Settings.System.putInt(resolver, Settings.System.ACCELEROMETER_ROTATION, enabled ? 1 : 0);
 	}
 }

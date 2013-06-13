@@ -3,7 +3,12 @@ package me.xiangchen.app.duettouchsense;
 import me.xiangchen.lib.xacAccelerometer;
 import me.xiangchen.ml.xacFeatureMaker;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.Log;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.sonyericsson.extras.liveware.aef.control.Control;
 import com.sonyericsson.extras.liveware.aef.sensor.Sensor;
@@ -26,10 +31,28 @@ public class TouchSenseExtension extends ControlExtension {
 	
 	xacAccelerometer accel;
 	
+	Context context;
+	
+	RelativeLayout layout;
+	Canvas canvas;
+	Bitmap bitmap;
+	TextView textView;
+	
 	public TouchSenseExtension(Context context, String hostAppPackageName) {
 		super(context, hostAppPackageName);
+		
+		this.context = context;
+		
 		width = getSupportedControlWidth(context);
 		height = getSupportedControlHeight(context);
+		
+		layout = new RelativeLayout(context);
+		textView = new TextView(context);
+		textView.setText("Touch\nSense");
+		textView.setTextSize(10);
+		textView.setTextColor(Color.WHITE);
+		textView.layout(0, 0, width, height);
+		layout.addView(textView);
 		
 		accel = new xacAccelerometer();
 		
@@ -44,9 +67,6 @@ public class TouchSenseExtension extends ControlExtension {
 	        	float[] values = sensorEvent.getSensorValues();
 	        	accel.update(values[0], values[1], values[2]);
 	        	xacFeatureMaker.addFeatureEntry(values, 0);
-//	            streamSensorData(values);
-//	            updateFPS();
-//	            updateDisplay(values);
 	        }
 	    };
 	}
