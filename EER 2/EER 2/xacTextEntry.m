@@ -81,9 +81,17 @@ NSString *cursor;
 
 - (void) doTextEntry {
     
-    // space
-    if(_firstSwipe.gesture == EAST && _secondSwipe.gesture == EAST) {
-        NSString *key = @" ";
+    // back to keyboard
+    if(_secondSwipe.gesture == NORTH) {
+        if(imgView != nil) {
+            [self updateVisual:UNKNOWN];
+        }
+        _state = NONE;
+        _firstSwipe = nil;
+    }
+    // ,
+    else if(_firstSwipe.gesture == SOUTHEAST && _secondSwipe.gesture == CENTER) {
+        NSString *key = @",";
         if(ptrChar <= TEXTLINELENGTH - 1) {
             charArray[ptrChar++] = key;
         } else {
@@ -92,7 +100,7 @@ NSString *cursor;
         }
     }
     // back space
-    else if(_firstSwipe.gesture == WEST && _secondSwipe.gesture == WEST) {
+    else if(_firstSwipe.gesture == SOUTHWEST && _secondSwipe.gesture == SOUTH) {
         if(charArray.count > 0) {
             [charArray removeLastObject];
             ptrChar--;
@@ -100,7 +108,6 @@ NSString *cursor;
     }
     // the others
     else {
-        
         NSString *strFirstSwipe = [_gestureMap objectForKey:[NSNumber numberWithInt:_firstSwipe.gesture]];
         NSString *strSecondSwipe = [_gestureMap objectForKey:[NSNumber numberWithInt:_secondSwipe.gesture]];
         NSString *strID = [NSString stringWithFormat:@"_%d_%@_%@", _numTouch, strFirstSwipe, strSecondSwipe];
@@ -258,7 +265,7 @@ NSString *cursor;
             imgView.image = [UIImage imageNamed:@"FGH.png"];
             break;
         case NORTH:
-            imgView.image = [UIImage imageNamed:@"TYU.png"];
+            imgView.image = [UIImage imageNamed:@"RTYU.png"];
             break;
         case NORTHEAST:
             imgView.image = [UIImage imageNamed:@"IOP.png"];
@@ -267,15 +274,10 @@ NSString *cursor;
             imgView.image = [UIImage imageNamed:@"JKL.png"];
             break;
         case SOUTHEAST:
-            imgView.image = [UIImage imageNamed:@"VBNM.png"];
+            imgView.image = [UIImage imageNamed:@"Mcp.png"];
             break;
         case SOUTH:
-            // south is preserved for going back to the full keyboard
-            if(imgView != nil) {
-                [self updateVisual:UNKNOWN];
-            }
-            _state = NONE;
-            _firstSwipe = nil;
+            imgView.image = [UIImage imageNamed:@"VBN.png"];
             break;
         case SOUTHWEST:
             imgView.image = [UIImage imageNamed:@"ZXC.png"];
@@ -284,7 +286,7 @@ NSString *cursor;
             imgView.image = [UIImage imageNamed:@"ASD.png"];
             break;
         case NORTHWEST:
-            imgView.image = [UIImage imageNamed:@"QWER.png"];
+            imgView.image = [UIImage imageNamed:@"QWE.png"];
             break;
         default:
             imgView.image = [UIImage imageNamed:@"keyboard.png"];
