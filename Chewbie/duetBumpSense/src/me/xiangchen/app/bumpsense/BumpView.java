@@ -20,17 +20,21 @@ public class BumpView extends View {
 	
 	boolean[] isActives;
 	
+	int alpha;
+	
 	public BumpView(Context context) {
 		super(context);
 		this.setBackgroundColor(Color.BLACK);
+		alpha = 255;
 	}
 
 	public void initVisual() {
 		
+		float scale = 0.9f;
 		int left = this.getLeft();
 		int top = this.getTop();
 		int right = this.getRight();
-		int bottom = this.getBottom();
+		int bottom = (int) (this.getBottom() * scale);
 		
 		triNorth = new float[]{left, top, right, top, right/2, bottom * 4/9};
 		triWest = new float[]{left, top, right * 4/9, bottom/2, left, bottom};
@@ -50,10 +54,17 @@ public class BumpView extends View {
 		super.onDraw(canvas);
 		
 		setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-		xacShape.drawTriangle(canvas, triNorth, isActives[BumpManager.NORTH] ? Color.RED : Color.WHITE);
-		xacShape.drawTriangle(canvas, triWest, isActives[BumpManager.WEST] ? Color.RED : Color.WHITE);
-		xacShape.drawTriangle(canvas, triSouth, isActives[BumpManager.SOUTH] ? Color.RED : Color.WHITE);
-		xacShape.drawTriangle(canvas, triEast, isActives[BumpManager.EAST] ? Color.RED : Color.WHITE);
+		int red = Color.RED;//.argb(alpha, 255, 0, 0);
+		int white = Color.WHITE;//argb(255, 255, 255, 255);
+//		xacShape.drawTriangle(canvas, triNorth, white);
+//		xacShape.drawTriangle(canvas, triWest, white);
+//		xacShape.drawTriangle(canvas, triSouth, white);
+//		xacShape.drawTriangle(canvas, triEast, white);
+		
+		xacShape.drawTriangle(canvas, triNorth, isActives[BumpManager.NORTH] ? red : white);
+		xacShape.drawTriangle(canvas, triWest, isActives[BumpManager.WEST] ? red : white);
+		xacShape.drawTriangle(canvas, triSouth, isActives[BumpManager.SOUTH] ? red : white);
+		xacShape.drawTriangle(canvas, triEast, isActives[BumpManager.EAST] ? red : white);
 		
 //		Log.d(LOGTAG, "drawing...");
 	}
@@ -65,8 +76,17 @@ public class BumpView extends View {
 		
 		if (0 <= idxActive && idxActive < isActives.length) {
 			isActives[idxActive] = true;
-			invalidate();
+			
 		}
+		invalidate();
+	}
+	
+	public int sgetAlpha(int a) {
+		return alpha;
+	}
+	
+	public void setAlpha(int a) {
+		alpha = a;
 	}
 	
 	public int getTouchedArea(PointerCoords coord) {

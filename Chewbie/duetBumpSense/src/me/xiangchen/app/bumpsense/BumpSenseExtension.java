@@ -22,6 +22,7 @@ import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorMan
 public class BumpSenseExtension extends ControlExtension {
 
 	final static String LOGTAG = "BumpSense";
+	final public static int WATCHACCELFPS = 10;
 	
 	int width;
 	int height;
@@ -78,6 +79,7 @@ public class BumpSenseExtension extends ControlExtension {
 	        	float[] values = sensorEvent.getSensorValues();
 //	        	xacFeatureMaker.accelWatch.update(values[0], values[1], values[2]);
 	        	xacFeatureMaker.updateWatchAccel(values);
+	        	xacFeatureMaker.addWatchFeatureEntry();
 	        }
 	    };
 	}

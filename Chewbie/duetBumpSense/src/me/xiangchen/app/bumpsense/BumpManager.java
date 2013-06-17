@@ -35,7 +35,8 @@ public class BumpManager {
 			return;
 		}
 		
-		if (bumpSense.appMode == AppMode.TRAINBUMPDIRECTION) {
+		if (bumpSense.appMode == AppMode.TRAINBUMPDIRECTION || 
+				bumpSense.appMode == AppMode.RECOGNITION) {
 			int labelWatch = UNKNOWN;
 			labelWatch = bumpSense.label == UNKNOWN ? UNKNOWN
 					: bumpSense.label == NORTH ? SOUTH
@@ -49,7 +50,7 @@ public class BumpManager {
 			
 		}
 		else {
-			bumpSenseExtension.red = bumpSense.red;	
+//			bumpSenseExtension.red = bumpSense.red;	
 //			bumpSenseExtension.setActive(UNKNOWN);
 		}
 		

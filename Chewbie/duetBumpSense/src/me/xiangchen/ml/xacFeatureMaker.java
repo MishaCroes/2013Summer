@@ -1,5 +1,7 @@
 package me.xiangchen.ml;
 
+import me.xiangchen.app.bumpsense.BumpSense;
+import me.xiangchen.app.bumpsense.BumpSenseExtension;
 import me.xiangchen.lib.xacAccelerometer;
 import me.xiangchen.network.xacUDPTask;
 import android.util.Log;
@@ -10,8 +12,10 @@ public class xacFeatureMaker {
 	static final int NUMSOURCES = 2;
 	
 	static String[] featureNames = null;
-	static double[][] featureTable = null;//new int[MAXNUMROW][(int) (AccelVis.NUMDATAPOINTS * AccelVis.FEATURERATIO) + 1];
-	static int pntrEntry = 0;
+	static double[][] featureTablePhone = null;
+	static double[][] featureTableWatch = null;
+	static int pntrEntryPhone = 0;
+	static int pntrEntryWatch = 0;
 	static int numFeatures = 0;
 	static String tag = "FeatureMaker";
 	static int label = -1;
@@ -25,9 +29,11 @@ public class xacFeatureMaker {
 	 */
 	public static void createFeatureTable()
 	{
-		numFeatures = NUMSOURCES * xacAccelerometer.NUMACCELAXES;
-		featureTable = new double[MAXNUMROW][numFeatures + 1];
-		pntrEntry = 0;
+		numFeatures = xacAccelerometer.NUMACCELAXES;
+		featureTablePhone = new double[MAXNUMROW][numFeatures + 1];
+		featureTableWatch = new double[MAXNUMROW][numFeatures + 1];
+		pntrEntryPhone = 0;
+		pntrEntryWatch = 0;
 		
 		accelWatch = new xacAccelerometer();
 		accelPhone = new xacAccelerometer();
@@ -39,23 +45,42 @@ public class xacFeatureMaker {
 	 * @param features
 	 * @param val
 	 */
-	public static void addFeatureEntry()
+	public static void addPhoneFeatureEntry()
 	{
-		if(pntrEntry >= MAXNUMROW) {
-			pntrEntry = 0;
+		if(pntrEntryPhone >= MAXNUMROW) {
+			pntrEntryPhone = 0;
 		}
 		
 		int idxFeat = 0;
-		for (int i = 0; i < NUMSOURCES; i++) {
-			featureTable[pntrEntry][idxFeat++] = accels[i].getX();
-			featureTable[pntrEntry][idxFeat++] = accels[i].getY();
-			featureTable[pntrEntry][idxFeat++] = accels[i].getZ();
-		}
+//		for (int i = 0; i < NUMSOURCES; i++) {
+		featureTablePhone[pntrEntryPhone][idxFeat++] = accelPhone.getX();
+		featureTablePhone[pntrEntryPhone][idxFeat++] = accelPhone.getY();
+		featureTablePhone[pntrEntryPhone][idxFeat++] = accelPhone.getZ();
+//		}
 
 //		featureTable[pntrEntry][numFeatures] = label;
 				
 //		Log.d(tag, "The " + (pntrEntry+1) + "th entry added");
-		pntrEntry++;
+		pntrEntryPhone++;
+	}
+	
+	public static void addWatchFeatureEntry()
+	{
+		if(pntrEntryWatch >= MAXNUMROW) {
+			pntrEntryWatch = 0;
+		}
+		
+		int idxFeat = 0;
+//		for (int i = 0; i < NUMSOURCES; i++) {
+		featureTableWatch[pntrEntryWatch][idxFeat++] = accelWatch.getX();
+		featureTableWatch[pntrEntryWatch][idxFeat++] = accelWatch.getY();
+		featureTableWatch[pntrEntryWatch][idxFeat++] = accelWatch.getZ();
+//		}
+
+//		featureTable[pntrEntry][numFeatures] = label;
+				
+//		Log.d(tag, "The " + (pntrEntry+1) + "th entry added");
+		pntrEntryWatch++;
 	}
 	
 	public static void setLabel(int lb) {
@@ -73,31 +98,58 @@ public class xacFeatureMaker {
 	}
 	
 	public static void sendOffData(int numToSend, String[] classLabels) {
-		int lockedPntrEntry = pntrEntry;
-		if(numToSend > lockedPntrEntry) 
+		int lockedPntrEntryPhone = pntrEntryPhone;
+		int lockedPntrEntryWatch = pntrEntryWatch;
+		int numToSendPhone = numToSend;
+		int numToSendWatch = numToSendPhone * BumpSenseExtension.WATCHACCELFPS / BumpSense.PHONEACCELFPS;
+		
+		if(label < 0 || numToSendPhone > lockedPntrEntryPhone || numToSendWatch > lockedPntrEntryWatch) 
 			return;
 		
 		String strFeatureRow = "";
-		for(int i=lockedPntrEntry-numToSend; i<lockedPntrEntry; i++) {
+		
+		// 1. the phone's
+		for(int i=lockedPntrEntryPhone-numToSendPhone; i<lockedPntrEntryPhone; i++) {
 			for(int j=0; j<numFeatures; j++) {
-				strFeatureRow += featureTable[i][j] + ",";
+				strFeatureRow += String.format("%.2f", featureTablePhone[i][j]) + ",";
 			}
 		}
+		
+		// 2. the watch's
+		for(int i=lockedPntrEntryWatch-numToSendWatch; i<lockedPntrEntryWatch; i++) {
+			for(int j=0; j<numFeatures; j++) {
+				strFeatureRow += String.format("%.2f", featureTableWatch[i][j]) + ",";
+			}
+		}
+		
 		strFeatureRow += classLabels[label] + '\0';
+		
 		new xacUDPTask().execute(strFeatureRow);
 	}
 	
 	public static Object[] getFlattenedData(int numToSend) {
-		int lockedPntrEntry = pntrEntry;
-		if(numToSend > lockedPntrEntry) 
+		int lockedPntrEntryPhone = pntrEntryPhone;
+		int lockedPntrEntryWatch = pntrEntryWatch;
+		int numToSendPhone = numToSend;
+		int numToSendWatch = numToSendPhone * BumpSenseExtension.WATCHACCELFPS / BumpSense.PHONEACCELFPS;
+		
+		if(numToSendPhone > lockedPntrEntryPhone || numToSendWatch > lockedPntrEntryWatch) 
 			return null;
 		
-		Object[] flattened = new Object[numToSend * numFeatures];
+		Object[] flattened = new Object[(numToSendPhone + numToSendWatch) * numFeatures];
 		int idxFeature = 0;
 		
-		for(int i=lockedPntrEntry-numToSend; i<lockedPntrEntry; i++) {
+		// 1. the phone's
+		for(int i=lockedPntrEntryPhone-numToSendPhone; i<lockedPntrEntryPhone; i++) {
 			for(int j=0; j<numFeatures; j++) {
-				flattened[idxFeature++] = featureTable[i][j];
+				flattened[idxFeature++] = featureTablePhone[i][j];
+			}
+		}
+		
+		// 2. the watch's
+		for(int i=lockedPntrEntryWatch-numToSendWatch; i<lockedPntrEntryWatch; i++) {
+			for(int j=0; j<numFeatures; j++) {
+				flattened[idxFeature++] = featureTableWatch[i][j];
 			}
 		}
 		
@@ -105,20 +157,22 @@ public class xacFeatureMaker {
 	}
 	
 	public static void clearData() {
-		featureTable = new double[MAXNUMROW][numFeatures + 1];
-		pntrEntry = 0;
+		featureTablePhone = new double[MAXNUMROW][numFeatures + 1];
+		featureTableWatch = new double[MAXNUMROW][numFeatures + 1];
+		pntrEntryPhone = 0;
+		pntrEntryWatch = 0;
 	}
 	
-	/**
-	 * delete the last added feature row
-	 */
-	public static void deleteLastEntry() {
-		if(pntrEntry <= 0)
-			return;
-		pntrEntry--;
-		Log.d(tag, "The " + (pntrEntry+1) + "th entry deleted");
-	}
-	
+//	/**
+//	 * delete the last added feature row
+//	 */
+//	public static void deleteLastEntry() {
+//		if(pntrEntry <= 0)
+//			return;
+//		pntrEntry--;
+//		Log.d(tag, "The " + (pntrEntry+1) + "th entry deleted");
+//	}
+//	
 //	/**
 //	 * save the feature table as a .csv file
 //	 */

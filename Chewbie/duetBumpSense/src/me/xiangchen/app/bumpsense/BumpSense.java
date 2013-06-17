@@ -1,10 +1,12 @@
 package me.xiangchen.app.bumpsense;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import me.xiangchen.ml.BumpSenseClassifier;
+import me.xiangchen.ml.BumpSenseDirectionClassifier;
 import me.xiangchen.ml.xacFeatureMaker;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -18,6 +20,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -35,9 +38,11 @@ public class BumpSense extends Activity implements SensorEventListener {
 		RECOGNITION
 	}
 	final static String[] bumpTriggerlabels = { "Bump", "NoBump"};
-	final static String[] bumpDirectionlabelDirections = { "North", "West", "South", "East"};
+	final static String[] bumpDirectionlabels = { "North", "West", "South", "East"};
 	final String LOGTAG = "BumpSense";
 	final int MAXTOUCHPOINTS = 1;
+	final int BUMPTIMEOUT = 500; //ms
+	final public static int PHONEACCELFPS = 100; //Hz
 	
 	RelativeLayout layout;
 	BumpView bumpView;
@@ -56,6 +61,11 @@ public class BumpSense extends Activity implements SensorEventListener {
 	
 	Timer timer;
 	int red = 0;
+	
+	long bumpTime = 0;
+	
+	int fps = 0;
+	long lastSecond = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -129,12 +139,15 @@ public class BumpSense extends Activity implements SensorEventListener {
 					public void run() {
 						// Your database code here
 						if (appMode == AppMode.RECOGNITION) {
-							red *= 0.9f;
-//							if(red <= 0) {
-//								label = BumpManager.NOBUMP;
-//							}
-							bumpView.setBackgroundColor(Color.argb(255, red, 0,
-									0));
+//							red *= 0.9f;
+////							if(red <= 0) {
+////								label = BumpManager.NOBUMP;
+////							}
+//							bumpView.setBackgroundColor(Color.argb(255, red, 0,
+//									0));
+							
+//							bumpView.setBackgroundColor(Color.BLACK);
+//							bumpView.setAlpha(bumpView.getAlpha() * 0.9f);
 							bumpView.invalidate();
 							BumpManager.syncDevices();
 						}
@@ -208,9 +221,12 @@ public class BumpSense extends Activity implements SensorEventListener {
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		// TODO Auto-generated method stub
+
+		Calendar lCDateTime = Calendar.getInstance();
+		long curTime = lCDateTime.getTimeInMillis();
+		
 		xacFeatureMaker.updatePhoneAccel(event.values);
-		xacFeatureMaker.addFeatureEntry();
+		xacFeatureMaker.addPhoneFeatureEntry();
 		
 //		BumpManager.updatePhoneAccel(event.values);
 		
@@ -220,39 +236,57 @@ public class BumpSense extends Activity implements SensorEventListener {
 		
 		double sum = Math.sqrt(x*x + y*y + z*z);
 		
-		
+		int numRowsToSend = PHONEACCELFPS * BUMPTIMEOUT / 1000;
 		
 		if(counter > 0) {
 			double runningAvrg = sumAccel / counter;
 //			Log.d(LOGTAG, sum + " : " + runningAvrg);
 			float thrsOnset = 0.20f;
-			if((lastSum - runningAvrg) / runningAvrg > thrsOnset
-					&& (sum - runningAvrg) / runningAvrg < thrsOnset) {
-				
+//			if((lastSum - runningAvrg) / runningAvrg > thrsOnset
+//					&& (sum - runningAvrg) / runningAvrg < thrsOnset) {
+			if(bumpTime < 0 && (sum - runningAvrg) / runningAvrg > thrsOnset) {
+				bumpTime = curTime;
+			}
+			
+			int bumpTimeOut = BUMPTIMEOUT * (appMode == AppMode.RECOGNITION ? 1 : 1);
+			if(bumpTime >= 0 && curTime - bumpTime >= bumpTimeOut) {
+				bumpTime = -1;
 				switch (appMode) {
 				case TRAINBUMPTRIGGER:
 					xacFeatureMaker.setLabel(label);
-					xacFeatureMaker.sendOffData(5, bumpTriggerlabels);
+					xacFeatureMaker.sendOffData(numRowsToSend, bumpTriggerlabels);
 					break;
 				case TRAINBUMPDIRECTION:
-					
-					break;
-				case RECOGNITION:
-					Object[] features = xacFeatureMaker.getFlattenedData(5);
-					if (features != null) {
-						try {
-							int idxClass = (int) BumpSenseClassifier.classify(features);
-							red = idxClass * 255;
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+					int idxClass = 1 - doClassification(numRowsToSend);
+					if(idxClass == BumpManager.BUMP) {
+						xacFeatureMaker.setLabel(label);
+						xacFeatureMaker.sendOffData(numRowsToSend, bumpDirectionlabels);
 					}
 					break;
-				}	
+				case RECOGNITION:
+					int idxBump = 1 - doClassification(numRowsToSend);
+					Log.d(LOGTAG, "something happened!");
+					
+					if(idxBump == BumpManager.BUMP) {
+						label = doBumpDirClassification(numRowsToSend);
+						Log.d(LOGTAG, "Bumped: " + label);
+//						bumpView.updateVisual(label);
+//						bumpView.setAlpha(1.0f);
+					} else {
+						label = BumpManager.UNKNOWN;
+						Log.d(LOGTAG, "Not a bump");	
+					}
+					bumpView.updateVisual(label);
+//					BumpManager.syncDevices();
+//					red = (1 - idxBump) * 255;
+				}
 			}
 		}
 		
+//		if(appMode == AppMode.RECOGNITION) {
+//			bumpView.setAlpha((int) (bumpView.getAlpha() * 0.99f));
+//			
+//		}
 //		if(appMode == AppMode.RECOGNITION) {
 //			red *= 0.9f;
 //			bumpView.setBackgroundColor(Color.argb(255, red, 0,
@@ -268,5 +302,52 @@ public class BumpSense extends Activity implements SensorEventListener {
 		counter++;
 		
 		lastSum = sum;
+		
+		if(curTime - lastSecond >= 1000) {
+//			Log.d(LOGTAG, fps+"");
+			fps = 0;
+			lastSecond = curTime;
+		}
+		fps++;
+	}
+	
+	private int doClassification(int n) {
+		int idxClass = 0;
+		Object[] features = xacFeatureMaker.getFlattenedData(n);
+		if (features != null) {
+			try {
+				idxClass = (int) BumpSenseClassifier.classify(features);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return idxClass;
+	}
+	
+	private int doBumpDirClassification(int n) {
+		int idxClass = -1;
+		Object[] features = xacFeatureMaker.getFlattenedData(n);
+		if (features != null) {
+			try {
+				idxClass = (int) BumpSenseDirectionClassifier.classify(features);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		int idxDir = -1;
+		switch(idxClass) {
+		case 0: idxDir = BumpManager.WEST; break;
+		case 1: idxDir = BumpManager.SOUTH; break;
+		case 2: idxDir = BumpManager.NORTH; break;
+		case 3: idxDir = BumpManager.EAST; break;
+		default: idxDir = BumpManager.UNKNOWN; break;
+		}
+		
+		return idxDir;
 	}
 }
