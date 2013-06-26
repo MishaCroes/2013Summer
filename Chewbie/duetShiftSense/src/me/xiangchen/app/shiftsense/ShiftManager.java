@@ -19,13 +19,18 @@ public class ShiftManager {
 		watch = w;
 	}
 
-	public static void shift(View view, float x, float y) {
+	public static void shift(View view, float x, float y, int cropWidth,
+			int cropHeight) {
 		if (watch != null) {
 			Bitmap bitmap = getScreenShot(view);
-			Bitmap croppedBitmap = Bitmap.createBitmap(bitmap,
-					(int) (x - watch.width * HORISHIFT),
-					(int) (y - watch.height * VERTSHIFT), watch.width,
-					watch.height);
+			int cx = (int) (x - cropWidth * HORISHIFT);
+			int cy = (int) (y - cropHeight * VERTSHIFT);
+			cx = Math.max(cx, 0);
+			cx = Math.min(cx, bitmap.getWidth());
+			cy = Math.max(cy, 0);
+			cy = Math.min(cy, bitmap.getHeight());
+			Bitmap croppedBitmap = Bitmap.createBitmap(bitmap, cx, cy,
+					cropWidth, cropHeight);
 
 			watch.updateDisplay(croppedBitmap);
 		}
@@ -37,5 +42,9 @@ public class ShiftManager {
 		view.setDrawingCacheEnabled(false);
 
 		return bitmap;
+	}
+
+	public static void syncTouch(float xRatio, float yRatio) {
+		phone.syncTouch(xRatio, yRatio);
 	}
 }

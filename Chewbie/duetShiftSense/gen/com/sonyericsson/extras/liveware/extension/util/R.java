@@ -40,19 +40,19 @@ public final class R {
 		public static final int widget_frame = 0x7f02001f;
 	}
 	public static final class id {
-		public static final int smart_watch_notification_widget_background = 0x7f050007;
-		public static final int smart_watch_notification_widget_text_background = 0x7f050008;
-		public static final int smart_watch_notification_widget_text_name = 0x7f05000b;
-		public static final int smart_watch_notification_widget_text_time = 0x7f050009;
-		public static final int smart_watch_notification_widget_text_title = 0x7f05000a;
-		public static final int smart_watch_widget_custom_image = 0x7f05000c;
-		public static final int smart_watch_widget_custom_text_view = 0x7f05000d;
-		public static final int smart_watch_widget_event_counter_badge = 0x7f05000f;
-		public static final int smart_watch_widget_event_counter_text = 0x7f050010;
-		public static final int smart_watch_widget_icon = 0x7f05000e;
+		public static final int smart_watch_notification_widget_background = 0x7f050009;
+		public static final int smart_watch_notification_widget_text_background = 0x7f05000a;
+		public static final int smart_watch_notification_widget_text_name = 0x7f05000d;
+		public static final int smart_watch_notification_widget_text_time = 0x7f05000b;
+		public static final int smart_watch_notification_widget_text_title = 0x7f05000c;
+		public static final int smart_watch_widget_custom_image = 0x7f05000e;
+		public static final int smart_watch_widget_custom_text_view = 0x7f05000f;
+		public static final int smart_watch_widget_event_counter_badge = 0x7f050011;
+		public static final int smart_watch_widget_event_counter_text = 0x7f050012;
+		public static final int smart_watch_widget_icon = 0x7f050010;
 	}
 	public static final class layout {
-		public static final int smart_watch_notification_widget = 0x7f030001;
-		public static final int smart_watch_widget = 0x7f030002;
+		public static final int smart_watch_notification_widget = 0x7f030006;
+		public static final int smart_watch_widget = 0x7f030007;
 	}
 }

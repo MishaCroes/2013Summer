@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.sonyericsson.extras.liveware.aef.control.Control;
 import com.sonyericsson.extras.liveware.extension.util.R;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
+import com.sonyericsson.extras.liveware.extension.util.control.ControlTouchEvent;
 
 public class ShiftSenseExtension extends ControlExtension {
 	
@@ -70,6 +71,22 @@ public class ShiftSenseExtension extends ControlExtension {
     }
     
     public void updateDisplay(Bitmap bitmap) {    	
-		showBitmap(bitmap);
+		showBitmap(Bitmap.createScaledBitmap(bitmap, width, height, false));
+    }
+    
+    @Override
+    public void onTouch(final ControlTouchEvent event) {
+    	int action = event.getAction();
+		
+    	switch(action) {
+		case Control.Intents.TOUCH_ACTION_PRESS:
+			
+			break;
+		case Control.Intents.TOUCH_ACTION_RELEASE:
+			float xRatio = (event.getX() - width/2) * 1.0f / width;
+			float yRatio = (event.getY() - height/2) * 1.0f / height;
+			ShiftManager.syncTouch(xRatio, yRatio);
+			break;
+		}
     }
 }

@@ -9,6 +9,9 @@ import android.webkit.WebView;
 
 public class xacWebView extends WebView {
 
+	int shiftWidth = 256;
+	int shiftHeight = 256;
+	
 	public xacWebView(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
@@ -26,7 +29,7 @@ public class xacWebView extends WebView {
 		float y = tchPnt.y;
 
 		if (numTouches == 1) {
-			ShiftManager.shift(this, x, y);
+			ShiftManager.shift(this, x, y, shiftWidth, shiftHeight);
 		}
 		return true;
 		
