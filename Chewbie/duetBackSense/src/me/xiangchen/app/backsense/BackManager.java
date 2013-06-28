@@ -38,4 +38,8 @@ public class BackManager {
 	public static void pan(int dir) {
 		phone.pan(dir);
 	}
+	
+	public static void zoom(int dir) {
+		phone.zoom(dir);
+	}
 }

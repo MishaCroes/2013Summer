@@ -104,30 +104,30 @@ public class xacFeatureMaker {
 		accelPhone.update(values[0], values[1], values[2]);
 	}
 	
-	public static boolean sendOffData(int numToSend, String[] classLabels) {
-		int lockedPntrEntryPhone = pntrEntryPhone;
-		int lockedPntrEntryWatch = pntrEntryWatch;
-		int numToSendWatch = numToSend;
-		int numToSendPhone = numToSendWatch * BackSense.PHONEACCELFPS / BackSenseExtension.WATCHACCELFPS;
-		
-		if(label < 0 || numToSendPhone > lockedPntrEntryPhone || numToSendWatch > lockedPntrEntryWatch) 
-			return false;
-		
+	public static boolean sendOffData(String[] classLabels) {
+//		int lockedPntrEntryPhone = pntrEntryPhone;
+//		int lockedPntrEntryWatch = pntrEntryWatch;
+//		int numToSendWatch = numToSend;
+//		int numToSendPhone = numToSendWatch * BackSense.PHONEACCELFPS / BackSenseExtension.WATCHACCELFPS;
+//		
+//		if(label < 0 || numToSendPhone > lockedPntrEntryPhone || numToSendWatch > lockedPntrEntryWatch) 
+//			return false;
+//		
 		String strFeatureRow = "";
-		
-		// 1. the phone's
-		for(int i=lockedPntrEntryPhone-numToSendPhone; i<lockedPntrEntryPhone; i++) {
-			for(int j=0; j<numFeatures; j++) {
-				strFeatureRow += String.format("%.2f", featureTablePhone[i][j]) + ",";
-			}
-		}
-		
-		// 2. the watch's
-		for(int i=lockedPntrEntryWatch-numToSendWatch; i<lockedPntrEntryWatch; i++) {
-			for(int j=0; j<numFeatures; j++) {
-				strFeatureRow += String.format("%.2f", featureTableWatch[i][j]) + ",";
-			}
-		}
+//		
+//		// 1. the phone's
+//		for(int i=lockedPntrEntryPhone-numToSendPhone; i<lockedPntrEntryPhone; i++) {
+//			for(int j=0; j<numFeatures; j++) {
+//				strFeatureRow += String.format("%.2f", featureTablePhone[i][j]) + ",";
+//			}
+//		}
+//		
+//		// 2. the watch's
+//		for(int i=lockedPntrEntryWatch-numToSendWatch; i<lockedPntrEntryWatch; i++) {
+//			for(int j=0; j<numFeatures; j++) {
+//				strFeatureRow += String.format("%.2f", featureTableWatch[i][j]) + ",";
+//			}
+//		}
 		
 		// 3. the watch's touch point
 		strFeatureRow += String.format("%d,%d,", xWatchTouch, yWatchTouch); 

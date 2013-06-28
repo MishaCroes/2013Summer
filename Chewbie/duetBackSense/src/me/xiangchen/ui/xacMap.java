@@ -164,6 +164,13 @@ public class xacMap {
 		updateMap();
 	}
 	
+	public void doZoom(int dLevel) {
+		zoomLevel += dLevel;
+		zoomLevel = Math.max(MINZOOMLEVEL, zoomLevel);
+		zoomLevel = Math.min(zoomLevel, MAXZOOMLEVEL);
+		updateMap();
+	}
+	
 	public void updateMap() {
 		updateMap(this.map, latCenter, lngCenter, (int)zoomLevel);
 	}

@@ -1,5 +1,6 @@
 package me.xiangchen.app.backsense;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,16 +26,20 @@ import com.google.android.gms.maps.SupportMapFragment;
 public class BackSense extends FragmentActivity implements SensorEventListener {
 
 	public final static int PHONEACCELFPS = 17;
-	public final static float WATCHPANUNIT = 0.0001f;
+	public final static float WATCHPANUNIT = 0.0005f;
+	public final static int ACCELPANTIME = 1000; //ms
 	RelativeLayout layout;
 	xacMap map;
-
-	SensorManager sensorManager;
-	Sensor sensorAccel;
 
 	Timer timer;
 	
 	int panDir = -1;
+	int zoomDir = -1;
+	
+	long timePanBegan;
+	long timePanEnded;
+	
+	float accelRate = 0.0f;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +60,6 @@ public class BackSense extends FragmentActivity implements SensorEventListener {
 
 		xacFeatureMaker.createFeatureTable();
 
-		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		sensorAccel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		sensorManager.registerListener(this, sensorAccel,
-				SensorManager.SENSOR_DELAY_UI);
-
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -71,18 +71,28 @@ public class BackSense extends FragmentActivity implements SensorEventListener {
 						float dx = 0;
 						float dy = 0;
 						
+						Calendar lCDateTime = Calendar.getInstance();
+						long curTime = lCDateTime.getTimeInMillis();
+						
+						
+						if(panDir != BackSenseExtension.NONE) {
+							accelRate = Math.min(1.0f, (curTime - timePanBegan) * 1.0f / ACCELPANTIME);
+						} else {
+							accelRate = 1.0f - Math.min(1.0f, (curTime - timePanEnded) * 1.0f / ACCELPANTIME);
+						}
+						
 						switch(panDir) {
 						case BackSenseExtension.LEFT:
-							dx = -WATCHPANUNIT;
+							dx = -WATCHPANUNIT * accelRate;
 							break;
 						case BackSenseExtension.RIGHT:
-							dx = WATCHPANUNIT;
+							dx = WATCHPANUNIT * accelRate;
 							break;
 						case BackSenseExtension.UP:
-							dy = WATCHPANUNIT;
+							dy = WATCHPANUNIT * accelRate;
 							break;
 						case BackSenseExtension.DOWN:
-							dy = -WATCHPANUNIT;
+							dy = -WATCHPANUNIT * accelRate;
 							break;
 						}
 						
@@ -139,27 +149,27 @@ public class BackSense extends FragmentActivity implements SensorEventListener {
 	}
 	
 	public void pan(int dir) {
-//		float dx = 0;
-//		float dy = 0;
-//		
-//		switch(dir) {
-//		case BackSenseExtension.LEFT:
-//			dx = -WATCHPANUNIT;
-//			break;
-//		case BackSenseExtension.RIGHT:
-//			dx = WATCHPANUNIT;
-//			break;
-//		case BackSenseExtension.UP:
-//			dy = WATCHPANUNIT;
-//			break;
-//		case BackSenseExtension.DOWN:
-//			dy = -WATCHPANUNIT;
-//			break;
-//		}
-//		
-//		map.doPan(dx, dy);
-		
 		panDir = dir;
+		Calendar lCDateTime = Calendar.getInstance();
+		long curTime = lCDateTime.getTimeInMillis();
+		
+		if(dir != BackSenseExtension.NONE) {
+			timePanBegan = curTime;
+		} else {
+			timePanEnded = curTime;
+		}
 	}
 
+	public void zoom(int dir) {
+		zoomDir = dir;
+		int dLevel = 0;
+		switch(dir) {
+		case BackSenseExtension.ZOOMIN:
+			dLevel = 1;
+			break;
+		case BackSenseExtension.ZOOMOUT:
+			dLevel = -1;
+		}
+		map.doZoom(dLevel);
+	}
 }

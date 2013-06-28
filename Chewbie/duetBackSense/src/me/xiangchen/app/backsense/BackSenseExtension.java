@@ -11,26 +11,28 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sonyericsson.extras.liveware.aef.control.Control;
-import com.sonyericsson.extras.liveware.aef.sensor.Sensor;
 import com.sonyericsson.extras.liveware.extension.util.R;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlTouchEvent;
 import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensor;
-import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorEvent;
 import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorEventListener;
-import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorException;
-import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorManager;
 
 public class BackSenseExtension extends ControlExtension {
 
 	public final static int WATCHACCELFPS = 10;
 	public final static String LOGTAG = "BackSense";
+	
+	public final static int NONE = -1;
+	
 	public final static int LEFT = 0;
 	public final static int DOWN = 1;
 	public final static int RIGHT = 2;
 	public final static int UP = 3;
 	public final static int NUMDIRECTIONS = 4;
 	public final static String[] classLabels = {"Left", "Down", "Right", "Up"};
+	
+	public final static int ZOOMIN = 0;
+	public final static int ZOOMOUT = -1;
 	
 	int label = -1;
 	
@@ -64,50 +66,12 @@ public class BackSenseExtension extends ControlExtension {
 		textView.setTextColor(Color.WHITE);
 		textView.layout(0, 0, width, height);
 		layout.addView(textView);
-
-//		AccessorySensorManager manager = new AccessorySensorManager(context,
-//				hostAppPackageName);
-//		sensor = manager.getSensor(Sensor.SENSOR_TYPE_ACCELEROMETER);
-//
-//		listener = new AccessorySensorEventListener() {
-//
-//			public void onSensorEvent(AccessorySensorEvent sensorEvent) {
-//				float[] values = sensorEvent.getSensorValues();
-//				int numRowToSend = 500 / (1000 / WATCHACCELFPS);
-//				if(isInTouch) {
-//					xacFeatureMaker.updateWatchAccel(values);
-//					xacFeatureMaker.addWatchFeatureEntry();
-//					xacFeatureMaker.updateWatchTouch(xTouch, yTouch);
-//					if(BackManager.isRecognition()) {
-//						int dir = doClassification(numRowToSend);
-//						BackManager.pan(dir);
-//					} else {
-//						if(xacFeatureMaker.sendOffData(numRowToSend, classLabels)) {
-//							xacFeatureMaker.clearData();
-//						}
-//					}
-//					
-//					Log.d(LOGTAG, String.format("%d, %d, %.2f, %.2f, %.2f", xTouch,
-//							yTouch, values[0], values[1], values[2]));
-//				}
-//			}
-//		};
 	}
 
 	@Override
 	public void onResume() {
 
 		setScreenState(Control.Intents.SCREEN_STATE_ON);
-
-		// Start listening for sensor updates.
-//		if (sensor != null) {
-//			try {
-//				sensor.registerFixedRateListener(listener,
-//						Sensor.SensorRates.SENSOR_DELAY_FASTEST);
-//			} catch (AccessorySensorException e) {
-//				Log.d(LOGTAG, "Failed to register listener");
-//			}
-//		}
 
 		bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bitmap);
@@ -142,21 +106,44 @@ public class BackSenseExtension extends ControlExtension {
 			xTouch = event.getX();
 			yTouch = event.getY();
 //			isInTouch = true;
-			
+			xacFeatureMaker.updateWatchTouch(xTouch, yTouch);
 			if(BackManager.isRecognition()) {
 				int dir = doClassification();
 				BackManager.pan(dir);
 			} else {
-//				if(xacFeatureMaker.sendOffData(numRowToSend, classLabels)) {
+				if(xacFeatureMaker.sendOffData(classLabels)) {
 //					xacFeatureMaker.clearData();
-//				}
+				}
 			}
 			break;
 		case Control.Intents.TOUCH_ACTION_RELEASE:
-			BackManager.pan(-1);
+			BackManager.pan(NONE);
 			isInTouch = false;
 			break;
 		}
+	}
+	
+	@Override
+	public void onSwipe(int direction) {
+		switch (direction) {
+		case Control.Intents.SWIPE_DIRECTION_UP:
+			BackManager.zoom(ZOOMIN);
+			Log.d(LOGTAG, "swipe up");
+			break;
+		case Control.Intents.SWIPE_DIRECTION_DOWN:
+			Log.d(LOGTAG, "swipe down");
+			BackManager.zoom(ZOOMOUT);
+			break;
+		case Control.Intents.SWIPE_DIRECTION_LEFT:
+			BackManager.zoom(ZOOMIN);
+			Log.d(LOGTAG, "swipe left");
+			break;
+		case Control.Intents.SWIPE_DIRECTION_RIGHT:
+			BackManager.zoom(ZOOMOUT);
+			Log.d(LOGTAG, "swipe right");
+			break;
+		}
+
 	}
 
 	public void toggleLabel() {
