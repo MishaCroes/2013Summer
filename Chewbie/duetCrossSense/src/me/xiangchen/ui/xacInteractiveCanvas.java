@@ -16,38 +16,50 @@ public class xacInteractiveCanvas extends View {
 	final public static int fgColorBlue = 0xFFCDDCF7;
 	final public static int fgColorGreen = 0xFF9FA79F;
 	final public static int fgColorCream = 0xFFEDDD4;
-	
+
 	private ArrayList<xacShape> shapes;
-	
+
+	Context context;
+
+	boolean veilOn = false;
+	int colorVeil;
+
 	public xacInteractiveCanvas(Context context) {
 		super(context);
 		shapes = new ArrayList<xacShape>();
 		this.setBackgroundColor(bgColorLight);
+		this.context = context;
 	}
-	
-	public void addShape(int type, float width, float height) {
+
+	public xacShape addShape(int type, float width, float height) {
 		float xShape = getX() + getWidth() / 2;
 		float yShape = getY() + getHeight() / 2;
-		addShape(type, width, height, xShape, yShape);
+		return addShape(type, width, height, xShape, yShape);
 	}
-	
-	public void addShape(int type, float w, float h, float cx, float cy) {
+
+	public xacShape addShape(int type, float w, float h, float cx, float cy) {
+		return addShape(type, w, h, cx, cy, fgColorBlue);
+	}
+
+	public xacShape addShape(int type, float w, float h, float cx, float cy,
+			int color) {
 		xacShape shape = new xacShape(type);
-		shape.setColor(fgColorBlue);
+		shape.setColor(color);
 		shape.setPosition(cx, cy);
 		shape.setSize(w, h);
 		shapes.add(shape);
+		return shape;
 	}
-	
+
 	public ArrayList<xacShape> getTouchedShapes(float x, float y) {
 		ArrayList<xacShape> tShapes = new ArrayList<xacShape>();
-		
-		for(xacShape shape : shapes) {
-			if(shape.hitTest(x, y)) {
+
+		for (xacShape shape : shapes) {
+			if (shape.hitTest(x, y)) {
 				tShapes.add(shape);
 			}
 		}
-		
+
 		return tShapes;
 	}
 
@@ -70,9 +82,55 @@ public class xacInteractiveCanvas extends View {
 	@SuppressLint("DrawAllocation")
 	@Override
 	protected void onDraw(Canvas canvas) {
-		
-		for(xacShape shape : shapes) {
-			shape.draw(canvas);
+
+		if (!veilOn) {
+			for (xacShape shape : shapes) {
+				shape.draw(canvas);
+			}
+		} else {
+			canvas.drawColor(colorVeil);
 		}
+	}
+
+	public void fade(float rate) {
+		xacShape toRemove = null;
+		for (xacShape shape : shapes) {
+			shape.fadeAlpha(rate);
+			if (toRemove == null && shape.getAlpha() < 32) {
+				toRemove = shape;
+			}
+		}
+		shapes.remove(toRemove);
+	}
+
+	public void highLight() {
+		int size = shapes.size();
+		if (size > 0) {
+			xacShape newest = shapes.get(size - 1);
+			newest.toggleStroke();
+		}
+		if (size > 1) {
+			xacShape secondNewest = shapes.get(size - 2);
+			secondNewest.toggleStroke();
+		}
+	}
+
+	public void putOnVeil(int color) {
+		colorVeil = color;
+		veilOn = true;
+//		this.invalidate();
+	}
+
+	public void putOnVeil() {
+		veilOn = true;
+	}
+	
+	public void takeOffVeil() {
+		veilOn = false;
+//		this.invalidate();
+	}
+	
+	public boolean getVeilOn() {
+		return veilOn;
 	}
 }

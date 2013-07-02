@@ -1,6 +1,7 @@
 package me.xiangchen.ui;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
@@ -13,19 +14,24 @@ public class xacShape {
 	private float yCenter;
 	private float width;
 	private float height;
-	private Paint paint;
+	private Paint fillPaint;
+	private Paint strokePaint;
 	private int type;
 	private int alpha = DEFAULTALPHA;
 	
 	public xacShape(int type) {
-		paint = new Paint();
-		paint.setAlpha(alpha);
-		paint.setDither(true);
-		paint.setAntiAlias(true);
-		paint.setStyle(Paint.Style.FILL);
-		paint.setStrokeJoin(Paint.Join.ROUND);
-		paint.setStrokeCap(Paint.Cap.ROUND);
-		paint.setStrokeWidth(3);
+		fillPaint = new Paint();
+		fillPaint.setAlpha(alpha);
+		fillPaint.setDither(true);
+		fillPaint.setAntiAlias(true);
+		fillPaint.setStyle(Paint.Style.FILL);
+		
+		strokePaint = new Paint();
+		strokePaint.setColor(Color.TRANSPARENT);
+		strokePaint.setStyle(Paint.Style.STROKE);
+		strokePaint.setStrokeJoin(Paint.Join.ROUND);
+		strokePaint.setStrokeCap(Paint.Cap.ROUND);
+		strokePaint.setStrokeWidth(5);
 		
 		this.type = type;
 	}
@@ -62,16 +68,25 @@ public class xacShape {
 	}
 
 	public void setColor(int color) {
-		paint.setColor(color);
+		fillPaint.setColor(color);
 	}
 	
 	public void toggleAlpha() {
 		alpha = 255 - alpha;
-		paint.setAlpha(alpha);
+		fillPaint.setAlpha((int) alpha);
+	}
+	
+	public void fadeAlpha(float rate) {
+		alpha *= rate;
+		fillPaint.setAlpha((int) alpha);
+	}
+	
+	public float getAlpha() {
+		return alpha;
 	}
 	
 	public Paint getPaint() {
-		return paint;
+		return fillPaint;
 	}
 	
 	public int getType() {
@@ -83,7 +98,8 @@ public class xacShape {
 		rectF.set(xCenter-width/2, yCenter-height/2, xCenter+width/2, yCenter+height/2);
 		switch(type) {
 		case OVAL:
-			canvas.drawOval(rectF, paint);
+			canvas.drawOval(rectF, fillPaint);
+			canvas.drawOval(rectF, strokePaint);
 			break;
 		}
 	}
@@ -100,5 +116,13 @@ public class xacShape {
 	public boolean isOut(RectF rectF) {
 		return (xCenter+width < rectF.left || xCenter-width > rectF.right ||
 				yCenter+height < rectF.top || yCenter-height > rectF.bottom);
+	}
+	
+	public void setStrokeWidth(int w) {
+		strokePaint.setStrokeWidth(w);
+	}
+	
+	public void toggleStroke() {
+		strokePaint.setColor(strokePaint.getColor() == Color.WHITE ? Color.TRANSPARENT : Color.WHITE);
 	}
 }

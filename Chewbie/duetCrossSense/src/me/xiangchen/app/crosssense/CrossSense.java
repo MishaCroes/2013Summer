@@ -1,93 +1,172 @@
 package me.xiangchen.app.crosssense;
 
-import java.util.ArrayList;
-
-import me.xiangchen.ui.xacInteractiveCanvas;
-import me.xiangchen.ui.xacShape;
+import me.xiangchen.app.crosssense.oneball.CrossSenseOneBall;
+import me.xiangchen.app.crosssense.tweetballs.CrossSenseTweetBalls;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.graphics.Point;
-import android.graphics.RectF;
+import android.app.ActionBar;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MotionEvent;
-import android.view.MotionEvent.PointerCoords;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 @SuppressLint("NewApi")
-public class CrossSense extends Activity {
+public class CrossSense extends FragmentActivity implements
+		ActionBar.TabListener {
 
-	LinearLayout layout;
-	xacInteractiveCanvas canvas;
+	public final static String LOGTAG = "ShiftSense";
+	public final static int APPWIDTH = 1080;
+	public final static int APPHEIGHT = 1920;
+	AppSectionsPagerAdapter mAppSectionsPagerAdapter;
+
+	ViewPager mViewPager;
+
+	// static Fragment shiftFragment;
+	static Fragment activeFragment = null;
+	static CrossSenseOneBall oneBall = null;
+	static CrossSenseTweetBalls tweetBalls = null;
 	
-	private ArrayList<xacShape> shapes = null;
-	
-	PointerCoords prevCoord;
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	int selectedIndex = 0;
+
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		CrossAppManager.setPhone(this);
+		setContentView(R.layout.activity_main);
+
+		oneBall = new CrossSenseOneBall();
+		tweetBalls = new CrossSenseTweetBalls(this, APPWIDTH, APPHEIGHT);
 		
-		Point size = new Point();
-		getWindowManager().getDefaultDisplay().getSize(size);
-		//Remove title bar
-		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		//Remove notification bar
-		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		
-		layout = new LinearLayout(this);
-		canvas = new xacInteractiveCanvas(this);
-		canvas.layout(0, 0, size.x, size.y);
-		CrossManager.setCanvasPhone(canvas);
-		float dimPhone = 256;
-		canvas.addShape(xacShape.OVAL, dimPhone, dimPhone);
-		
-		canvas.setOnTouchListener(new View.OnTouchListener() {
-			
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				int action = event.getAction();
-				PointerCoords curCoord = new PointerCoords();
-				event.getPointerCoords(0, curCoord);
-				switch(action) {
-				case MotionEvent.ACTION_DOWN:
-					shapes = canvas.getTouchedShapes(curCoord.x, curCoord.y);
-					break;
-				case MotionEvent.ACTION_MOVE:
-					for(xacShape shape : shapes) {
-						shape.offset(curCoord.x - prevCoord.x, curCoord.y - prevCoord.y);
-						RectF rectF = new RectF();
-						rectF.set(canvas.getLeft(), canvas.getTop(), canvas.getRight(), canvas.getBottom());
-						if(!shape.isIn(rectF) && !shape.isOut(rectF)) {
-							CrossManager.syncTheWatch();
-						}
+		mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(
+				getSupportFragmentManager());
+
+		final ActionBar actionBar = getActionBar();
+
+		actionBar.setHomeButtonEnabled(false);
+
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+		mViewPager = (ViewPager) findViewById(R.id.pager);
+		mViewPager.setAdapter(mAppSectionsPagerAdapter);
+		mViewPager
+				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+					@Override
+					public void onPageSelected(int position) {
+						selectedIndex = position;
+						actionBar.setSelectedNavigationItem(position);
+						CrossAppManager.updateExtension();
 					}
-					
-					break;
-				case MotionEvent.ACTION_UP:
-					break;
-				}
-				
-				canvas.invalidate();
-				
-				prevCoord = curCoord;
-				
-				return true;
-			}
-		});
-		
-		layout.addView(canvas);
-		setContentView(layout);
+				});
+
+		// For each of the sections in the app, add a tab to the action bar.
+		for (int i = 0; i < mAppSectionsPagerAdapter.getCount(); i++) {
+			actionBar.addTab(actionBar.newTab()
+					.setText(mAppSectionsPagerAdapter.getPageTitle(i))
+					.setTabListener(this));
+		}
+
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.cross_sense, menu);
-		return true;
+	public void onTabUnselected(ActionBar.Tab tab,
+			FragmentTransaction fragmentTransaction) {
 	}
+
+	@Override
+	public void onTabSelected(ActionBar.Tab tab,
+			FragmentTransaction fragmentTransaction) {
+		// When the given tab is selected, switch to the corresponding page in
+		// the ViewPager.
+		mViewPager.setCurrentItem(tab.getPosition());
+	}
+
+	@Override
+	public void onTabReselected(ActionBar.Tab tab,
+			FragmentTransaction fragmentTransaction) {
+	}
+
+	/**
+	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+	 * one of the primary sections of the app.
+	 */
+	public static class AppSectionsPagerAdapter extends FragmentPagerAdapter {
+
+		public AppSectionsPagerAdapter(FragmentManager fm) {
+			super(fm);
+		}
+
+		@Override
+		public Fragment getItem(int i) {
+			switch (i) {
+			case 0:
+				activeFragment = oneBall;
+				break;
+//				return oneBall;
+			case 1:
+				activeFragment = tweetBalls;
+				break;
+//				return tweetBalls;
+			default:
+				activeFragment = new DummySectionFragment();
+				Bundle args = new Bundle();
+				args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, i + 1);
+				activeFragment.setArguments(args);
+//				return fragment;
+			}
+//			CrossAppManager.updateExtension();
+			return activeFragment;
+		}
+
+		@Override
+		public int getCount() {
+			return 3;
+		}
+
+		@Override
+		public CharSequence getPageTitle(int position) {
+			switch (position) {
+			case 0:
+				return "OneBall";
+			case 1:
+				return "TweetBall";
+			default:
+				return "Demo" + (position + 1);
+			}
+
+		}
+	}
+
+	/**
+	 * A dummy fragment representing a section of the app, but that simply
+	 * displays dummy text.
+	 */
+	public static class DummySectionFragment extends Fragment {
+
+		public static final String ARG_SECTION_NUMBER = "section_number";
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_section_dummy,
+					container, false);
+			Bundle args = getArguments();
+			((TextView) rootView.findViewById(android.R.id.text1))
+					.setText(getString(R.string.dummy_section_text,
+							args.getInt(ARG_SECTION_NUMBER)));
+			return rootView;
+		}
+	}
+
+//	public void syncTouch(float xRatio, float yRatio) {
+//		if (targetSelection == null)
+//			return;
+//		targetSelection.doSelection(xRatio, yRatio);
+//	}
 
 }
