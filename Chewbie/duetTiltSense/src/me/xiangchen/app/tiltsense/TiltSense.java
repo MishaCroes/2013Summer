@@ -47,7 +47,6 @@ public class TiltSense extends FragmentActivity {
 	final static int MAXWATCHZOOMFOOTSTEP = 32;
 	final static float WATCHZOOMRATE = 0.1f;
 	
-
 	private GoogleMap map;
 	RelativeLayout layout;
 	SupportMapFragment fragment;
@@ -219,14 +218,16 @@ public class TiltSense extends FragmentActivity {
 			TiltManager.stopTiltInput();
 			if (maxScrollSpeed > flickThreshold) {
 				Log.d(LOGTAG, "flick!");
-
 			}
 			break;
 		}
 	}
 
-	public void doWatchZoom(int sign) {
-		watchZoomLevel += sign * WATCHZOOMRATE;
+	public void doWatchZoom(float dZoom) {
+		float maxDZoom = 0.5f;
+		dZoom = Math.max(-maxDZoom, dZoom);
+		dZoom = Math.min(maxDZoom, dZoom);
+		watchZoomLevel += dZoom;
 		zoomLevel = (int)watchZoomLevel;
 		panMap(map, latCenter, lngCenter, zoomLevel);
 	}
