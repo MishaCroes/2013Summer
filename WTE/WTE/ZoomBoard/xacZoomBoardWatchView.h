@@ -9,7 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "xacDummyLayer.h"
 #import "WTEConstants.h"
+#import "xacTestText.h"
 
 @interface xacZoomBoardWatchView : UIView
+
+@property xacTestText* testText;
+
+- (void) startSession;
+- (void) getWord :(int)sign;
 
 @end

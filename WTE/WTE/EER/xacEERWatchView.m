@@ -10,10 +10,6 @@
 
 @implementation xacEERWatchView
 
-//float oriX;
-//float oriY;
-//float inflation = 1.5f;
-
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -23,7 +19,8 @@
         _swipe = [[xacSwipe alloc] init];
         _textEntry = [[xacTextEntry alloc] init];
         [_textEntry initVisualView:self];
-        [_textEntry initTextView:self];
+        [_textEntry initTextField:self];
+        
     }
     return self;
 }
@@ -40,6 +37,8 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     if([touches count] > MAXTOUCHPOINTS)
         return;
+    
+    [_textEntry checkTimer];
     
     for(UITouch *touch in [touches allObjects]) {
         
@@ -67,18 +66,9 @@
     [_swipe cleanTouchPoint];
 }
 
-//- (BOOL)checkTouchBoundaries :(CGPoint) tchPnt {
-//    BOOL isOutSide = FALSE;
-//    
-//    float ctrX = oriX + WATCHWIDTH / 2;
-//    float ctrY = oriY + WATCHHEIGHT / 2;
-//    
-//    if(fabs(tchPnt.x - ctrX) > WATCHWIDTH / 2 * inflation ||
-//       fabs(tchPnt.y - ctrY) > WATCHHEIGHT / 2 * inflation) {
-//        isOutSide = TRUE;
-//    }
-//    return isOutSide;
-//}
+- (void) getWord :(int)sign {
+    [_textEntry getWord:sign];
+}
 
 - (long) getCurrentTimeInMS
 {
@@ -87,6 +77,14 @@
     int decimalDigits = (int)(fmod(time, 1) * 1000); // this will get the 3 missing digits
     long timeStamp = (digits * 1000) + decimalDigits;
     return timeStamp;
+}
+
+//- (void) startSession {
+//    [_textEntry startSession];
+//}
+
+- (void) loadSharedString {
+//    [_textEntry loadSharedString];
 }
 
 @end

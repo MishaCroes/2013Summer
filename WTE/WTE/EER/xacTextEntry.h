@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "xacSwipe.h"
 #import "WTEConstants.h"
+#import "xacTestText.h"
 
 #define BTWNTIMEOUT 2000
-#define TEXTLINELENGTH 8
 #define CURSORREFRESHRATE 3
 #define TIMEOUTUPDATERATE 10
 
@@ -29,9 +29,16 @@ enum EntryState {
 @property enum EntryState state;
 @property NSMutableDictionary *keyMap;
 @property NSMutableDictionary *gestureMap;
+@property xacTestText* testText;
+@property NSString* strInput;
+@property NSString* subStrInput;
 
 - (void) update :(xacSwipe*) swipe;
 - (void) initVisualView :(UIView*) view;
-- (void) initTextView :(UIView*) view;
+- (void) initTextField :(UIView*) view;
+- (void) startSession;
+- (void) checkTimer;
+//- (void) loadSharedString;
+- (void) getWord :(int)sign;
 
 @end

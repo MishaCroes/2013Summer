@@ -55,43 +55,7 @@
 }
 */
 UIView *parent;
-//bool isZoomed = false;
-//- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-////    [self setUserInteractionEnabled:NO];
-//    
-////    if(!isZoomed) {
-////    
-////        }
-////    } else {
-////        parent = [self superview];
-////        [self removeFromSuperview];
-////    }
-//    
-//    if(isZoomed) {
-//        [_zoomBoard setUserInteractionEnabled:YES];
-//        [self setUserInteractionEnabled:NO];
-//    }
-//}
-//
-//- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-//    
-//}
-//
-//- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-//    
-//    if(!isZoomed) {
-//    for(UITouch *touch in [touches allObjects]) {
-//        
-//        CGPoint tchPnt = [touch locationInView:self];
-//        float zoomFactor = 3;
-//        float x1 = zoomFactor * (_zoomBoard.center.x - (self.frame.origin.x + tchPnt.x)) + self.frame.origin.x + tchPnt.x;
-//        float y1 = zoomFactor * (_zoomBoard.center.y - (self.frame.origin.y + tchPnt.y)) + self.frame.origin.y + tchPnt.y;
-//        [_zoomBoard zoomIn:x1 :y1: zoomFactor];
-//    }
-//        isZoomed = true;
-//    
-//    }
-//}
+
 
 - (void) doBackSpace {
     NSLog(@"doBackSpace");

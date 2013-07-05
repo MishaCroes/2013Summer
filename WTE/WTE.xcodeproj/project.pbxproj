@@ -59,6 +59,8 @@
 		15895B1B177C80E0003E824F /* xacZoomBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 15895B18177C80E0003E824F /* xacZoomBoard.m */; };
 		15895B1E177C814E003E824F /* xacDummyLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 15895B1D177C814E003E824F /* xacDummyLayer.m */; };
 		15895B20177C83B4003E824F /* hand-watch.png in Resources */ = {isa = PBXBuildFile; fileRef = 15895B1F177C83B4003E824F /* hand-watch.png */; };
+		15DE372C1785D9F2006A4C25 /* xacTestText.m in Sources */ = {isa = PBXBuildFile; fileRef = 15DE372B1785D9F2006A4C25 /* xacTestText.m */; };
+		15DE372E17863137006A4C25 /* phrases2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 15DE372D17863137006A4C25 /* phrases2.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -128,6 +130,9 @@
 		15895B1D177C814E003E824F /* xacDummyLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = xacDummyLayer.m; path = ZoomBoard/xacDummyLayer.m; sourceTree = "<group>"; };
 		15895B1F177C83B4003E824F /* hand-watch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hand-watch.png"; sourceTree = "<group>"; };
 		15895B21177C84C4003E824F /* WTEConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WTEConstants.h; sourceTree = "<group>"; };
+		15DE372A1785D9F2006A4C25 /* xacTestText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xacTestText.h; sourceTree = "<group>"; };
+		15DE372B1785D9F2006A4C25 /* xacTestText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xacTestText.m; sourceTree = "<group>"; };
+		15DE372D17863137006A4C25 /* phrases2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = phrases2.txt; path = WTE/phrases2.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,9 +152,10 @@
 		15895A90177C7BF3003E824F = {
 			isa = PBXGroup;
 			children = (
+				15DE372D17863137006A4C25 /* phrases2.txt */,
 				15895B21177C84C4003E824F /* WTEConstants.h */,
 				15895B11177C806B003E824F /* key-mapping.csv */,
-				15895AD8177C7EB8003E824F /* figures */,
+				15895AD8177C7EB8003E824F /* Images */,
 				15895AA2177C7BF3003E824F /* WTE */,
 				15895A9B177C7BF3003E824F /* Frameworks */,
 				15895A9A177C7BF3003E824F /* Products */,
@@ -177,6 +183,7 @@
 		15895AA2177C7BF3003E824F /* WTE */ = {
 			isa = PBXGroup;
 			children = (
+				15DE37291785D956006A4C25 /* Test */,
 				15895ACB177C7D73003E824F /* ZoomBoard */,
 				15895ACA177C7D6D003E824F /* EER */,
 				15895AAB177C7BF3003E824F /* xacAppDelegate.h */,
@@ -237,7 +244,7 @@
 			name = ZoomBoard;
 			sourceTree = "<group>";
 		};
-		15895AD8177C7EB8003E824F /* figures */ = {
+		15895AD8177C7EB8003E824F /* Images */ = {
 			isa = PBXGroup;
 			children = (
 				15895B1F177C83B4003E824F /* hand-watch.png */,
@@ -269,8 +276,17 @@
 				15895AF3177C7EB8003E824F /* VBNM.png */,
 				15895AF4177C7EB8003E824F /* ZXC.png */,
 			);
-			name = figures;
+			name = Images;
 			path = WTE/figures;
+			sourceTree = "<group>";
+		};
+		15DE37291785D956006A4C25 /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				15DE372A1785D9F2006A4C25 /* xacTestText.h */,
+				15DE372B1785D9F2006A4C25 /* xacTestText.m */,
+			);
+			name = Test;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -363,6 +379,7 @@
 				15895B10177C7EB8003E824F /* ZXC.png in Resources */,
 				15895B12177C806B003E824F /* key-mapping.csv in Resources */,
 				15895B20177C83B4003E824F /* hand-watch.png in Resources */,
+				15DE372E17863137006A4C25 /* phrases2.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,6 +401,7 @@
 				15895B1A177C80E0003E824F /* xacZoomBoardWatchView.m in Sources */,
 				15895B1B177C80E0003E824F /* xacZoomBoard.m in Sources */,
 				15895B1E177C814E003E824F /* xacDummyLayer.m in Sources */,
+				15DE372C1785D9F2006A4C25 /* xacTestText.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -508,6 +526,7 @@
 				15895AC9177C7BF3003E824F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

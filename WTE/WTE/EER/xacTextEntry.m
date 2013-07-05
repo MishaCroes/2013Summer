@@ -11,11 +11,12 @@
 @implementation xacTextEntry
 
 UIImageView *imgView;
-UITextView *textView;
+UITextField *textField;
 NSMutableArray *charArray;
 int ptrCharEER = 0;
-NSString *cursorEER;
-
+NSString* cursorEER = @"";
+int idxSubString;
+bool isThereNewInput = false;
 
 - (id) init {
     self = [super init];
@@ -39,11 +40,18 @@ NSString *cursorEER;
         _gestureMap = [[NSMutableDictionary alloc] init];
         [self initGestureMap];
         
-        textView = nil;
-        charArray = [[NSMutableArray alloc] initWithCapacity:TEXTLINELENGTH];
+        textField = nil;
+        charArray = [[NSMutableArray alloc] initWithCapacity:TEXTLENGTH];
         imgView = nil;
+        
     }
     return self;
+}
+
+- (void) checkTimer {
+    if(ptrCharEER == 0) {
+        [_testText resetTimer];
+    }
 }
 
 - (void) update :(xacSwipe*) swipe {
@@ -81,6 +89,8 @@ NSString *cursorEER;
 
 - (void) doTextEntry {
     
+    isThereNewInput = true;
+    
     // back to keyboard
     if(_secondSwipe.gesture == NORTH) {
         if(imgView != nil) {
@@ -92,17 +102,21 @@ NSString *cursorEER;
     // ,
     else if(_firstSwipe.gesture == SOUTHEAST && _secondSwipe.gesture == CENTER) {
         NSString *key = @",";
-        if(ptrCharEER <= TEXTLINELENGTH - 1) {
-            charArray[ptrCharEER++] = key;
-        } else {
-            [charArray removeObjectAtIndex:0];
-            [charArray addObject:key];
+
+        charArray[ptrCharEER++] = key;
+
+        if(ptrCharEER >= TEXTLENGTH / 2) {
+            idxSubString++;
         }
     }
     // back space
     else if(_firstSwipe.gesture == SOUTHWEST && _secondSwipe.gesture == SOUTHWEST) {
         if(charArray.count > 0) {
             [charArray removeLastObject];
+            
+            if(ptrCharEER >= TEXTLENGTH / 2) {
+                idxSubString--;
+            }
             ptrCharEER--;
         }
     }
@@ -114,12 +128,13 @@ NSString *cursorEER;
         
         NSString *key = [_keyMap objectForKey: strID];
         if(key) {
-            if(ptrCharEER <= TEXTLINELENGTH - 1) {
+
                 charArray[ptrCharEER++] = key;
-            } else {
-                [charArray removeObjectAtIndex:0];
-                [charArray addObject:key];
+
+            if(ptrCharEER >= TEXTLENGTH / 2) {
+                idxSubString++;
             }
+            
         }
         NSLog(@"%@: %@", strID, key);
         
@@ -127,16 +142,32 @@ NSString *cursorEER;
     
 }
 
-- (void) updateTextView {
+- (void) updateTextField {
+    if(isThereNewInput) {
         
-    NSString *sentence = @"";
-    for(NSString *str in charArray) {
-        sentence = [sentence stringByAppendingString:str];
+        _strInput = @"";
+        for(NSString *str in charArray) {
+            _strInput = [_strInput stringByAppendingString:str];
+        }
+        
+        int lenAvailableSubstr = MAX(0, MIN((int)(_strInput.length - idxSubString), TEXTLENGTH));
+        _subStrInput = [_strInput substringWithRange:(NSRange){idxSubString, lenAvailableSubstr}];
+    
+        if([_testText update:_strInput :idxSubString]) {
+            [self cleanUp];
+        }
+        isThereNewInput = false;
     }
     
-    sentence = [sentence stringByAppendingString:cursorEER];
-    
-    [textView setText:sentence];
+    [textField setText:[_subStrInput stringByAppendingString:cursorEER]];
+}
+
+- (void) cleanUp {
+    [charArray removeAllObjects];
+    ptrCharEER = 0;
+    idxSubString = 0;
+    _subStrInput = @"";
+    [textField setText:[_subStrInput stringByAppendingString:cursorEER]];
 }
 
 - (long) getCurrentTimeInMS
@@ -171,7 +202,7 @@ NSString *cursorEER;
 
 - (void) updatecursorEER {
     cursorEER = [cursorEER isEqualToString:@"_"] ? @" " : @"_";
-    [self updateTextView];
+    [self updateTextField];
 }
 
 - (void) printState {
@@ -248,15 +279,19 @@ NSString *cursorEER;
     [view addSubview:imgView];
 }
 
-- (void) initTextView :(UIView*) view {
+- (void) initTextField :(UIView*) view {
     float W = view.frame.size.width;
     float H = view.frame.size.height;
-        textView = [[UITextView alloc] initWithFrame:CGRectMake(W * TEXTVIEWORIX, H * TEXTVIEWORIY, W * TEXTVIEWWIDTHRATIO, H * TEXTVIEWHEIGHTRATIO)];
-    [textView setFont:[UIFont fontWithName:@"ArialMT" size:150 / TEXTLINELENGTH]];
-    textView.textAlignment = NSTextAlignmentLeft;
-    [textView setBackgroundColor:[UIColor clearColor]];
-    [textView setUserInteractionEnabled:NO];
-    [view addSubview:textView];
+    
+    textField = [[UITextField alloc] initWithFrame:CGRectMake(W * TEXTFIELDORIX, H * TEXTFIELDORIY, W * TEXTFIELDWIDTHRATIO, H * TEXTFIELDHEIGHTRATIO)];
+    textField.textAlignment = NSTextAlignmentLeft;
+    [textField setBackgroundColor:[UIColor clearColor]];
+    [textField setUserInteractionEnabled:NO];
+    [view addSubview:textField];
+    
+    _testText = [[xacTestText alloc] initWithFrame:CGRectMake(W * TEXTFIELDORIX, H * TEXTFIELDORIY / 5, W * TEXTFIELDWIDTHRATIO, H * TEXTFIELDHEIGHTRATIO)];
+    [view addSubview:_testText];
+    [_testText loadWords];
 }
 
 - (void) updateVisual :(int)swipe {
@@ -295,4 +330,18 @@ NSString *cursorEER;
 
 }
 
+//- (void) startSession {
+//    [self cleanUp];
+//    [_testText update:nil :0];
+//}
+
+- (void) getWord :(int)sign {
+    [self cleanUp];
+    [_testText loadWord:sign];
+}
+
+- (void) loadSharedString {
+    [self cleanUp];
+    [_testText loadSharedString];
+}
 @end

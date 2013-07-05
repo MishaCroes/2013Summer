@@ -14,7 +14,7 @@
 
 xacZoomBoard *zoomBoard;
 xacDummyLayer *swipeView;
-UITextView *textViewZoomBoard;
+UITextField *textFieldZoomBoard;
 
 NSMutableArray *charArrayZoomBoard;
 int ptrCharZoomBoard = 0;
@@ -23,6 +23,12 @@ NSString *cursorZoomBoard;
 float heightRatio = 0.40f;
 float leftZoomBoard;
 float topZoomBoard;
+
+bool isThereNewInputZB = false;
+NSString* strInput;
+NSString* subStrInput;
+int idxSubString;
+
 
 //bool isZoomed = false;
 
@@ -39,21 +45,27 @@ float topZoomBoard;
         
         [self addSubview:zoomBoard];
         
-        float lefttextViewZoomBoard = frame.size.width * TEXTVIEWORIX;
-        float toptextViewZoomBoard = frame.size.height * TEXTVIEWORIY;
-        textViewZoomBoard = [[UITextView alloc] initWithFrame:CGRectMake(lefttextViewZoomBoard, toptextViewZoomBoard, frame.size.width * TEXTVIEWWIDTHRATIO, frame.size.height * TEXTVIEWHEIGHTRATIO)];
-        [textViewZoomBoard setFont:[UIFont fontWithName:@"ArialMT" size:150 / TEXTLINELENGTH]];
-        [textViewZoomBoard setBackgroundColor:[UIColor whiteColor]];
-        [textViewZoomBoard setTextAlignment:NSTextAlignmentLeft];
-        [textViewZoomBoard setUserInteractionEnabled:NO];
+        float lefttextFieldZoomBoard = frame.size.width * TEXTFIELDORIX;
+        float toptextFieldZoomBoard = frame.size.height * TEXTFIELDORIY;
+        
+        _testText = [[xacTestText alloc] initWithFrame:CGRectMake(lefttextFieldZoomBoard, toptextFieldZoomBoard/ 5, frame.size.width * TEXTFIELDWIDTHRATIO, frame.size.height * TEXTFIELDHEIGHTRATIO)];
+        [self addSubview:_testText];
+        [_testText setBackgroundColor:[UIColor whiteColor]];
+        [_testText loadWords];
+        
+        
+        textFieldZoomBoard = [[UITextField alloc] initWithFrame:CGRectMake(lefttextFieldZoomBoard, toptextFieldZoomBoard, frame.size.width * TEXTFIELDWIDTHRATIO, frame.size.height * TEXTFIELDHEIGHTRATIO)];
+//        [textFieldZoomBoard setFont:[UIFont fontWithName:@"ArialMT" size:150 / TEXTLENGTH]];
+        [textFieldZoomBoard setBackgroundColor:[UIColor whiteColor]];
+        [textFieldZoomBoard setTextAlignment:NSTextAlignmentLeft];
+        [textFieldZoomBoard setUserInteractionEnabled:NO];
+        [self addSubview:textFieldZoomBoard];
 
         swipeView = [[xacDummyLayer alloc] initWithFrame:zoomBoard.frame];
         [swipeView setBackgroundColor:[UIColor colorWithRed:1.0f green:0.0f blue:0.0f alpha:0.5f]];
         swipeView.zoomBoard = zoomBoard;
         [swipeView setTag:1027];
 //        [self addSubview:swipeView];
-        
-        [self addSubview:textViewZoomBoard];
         
         UISwipeGestureRecognizer *leftSwipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(doBackSpace)];
         [leftSwipeRecognizer setDirection:(UISwipeGestureRecognizerDirectionLeft)];
@@ -75,7 +87,7 @@ float topZoomBoard;
         [self addGestureRecognizer:upSwipeRecognizer];
         
         
-        charArrayZoomBoard = [[NSMutableArray alloc] initWithCapacity:TEXTLINELENGTH];
+        charArrayZoomBoard = [[NSMutableArray alloc] initWithCapacity:TEXTLENGTH];
         
         // routine to update the visual of the cursorZoomBoard
         [NSTimer scheduledTimerWithTimeInterval:1.0f / CURSORREFRESHRATE
@@ -124,57 +136,105 @@ bool isZoomed = false;
         isZoomed = TRUE;
         zoomBoard.typedChar = @"";
     } else {
+        if(ptrCharZoomBoard == 0) {
+            [_testText resetTimer];
+        }
         [zoomBoard zoomOut:zoomFactor];
         isZoomed = FALSE;
         NSLog(@"%@", zoomBoard.typedChar);
         [self addTypedKey:zoomBoard.typedChar];
-        [self updatetextViewZoomBoard];
+        [self updateTextFieldZoomBoard];
     }
 
 }
 
 - (void) addTypedKey :(NSString*) key{
-//    NSString *key = [[btn titletextViewZoomBoard] text];
-    if(ptrCharZoomBoard <= TEXTLINELENGTH - 1) {
+//    NSString *key = [[btn titletextFieldZoomBoard] text];
+//    if(ptrCharZoomBoard <= TEXTLENGTH - 1) {
         charArrayZoomBoard[ptrCharZoomBoard++] = key;
-    } else {
-        [charArrayZoomBoard removeObjectAtIndex:0];
-        [charArrayZoomBoard addObject:key];
-    }
+//    } else {
+//        [charArrayZoomBoard removeObjectAtIndex:0];
+//        [charArrayZoomBoard addObject:key];
+    
+        if(ptrCharZoomBoard >= TEXTLENGTH / 2) {
+            idxSubString++;
+        }
+//    }
+    isThereNewInputZB = true;
 }
 
 - (void) updatecursorZoomBoard {
     cursorZoomBoard = [cursorZoomBoard isEqualToString:@"_"] ? @" " : @"_";
 //    NSLog(@"cursorZoomBoard is: %@", cursorZoomBoard);
-    [self updatetextViewZoomBoard];
+    [self updateTextFieldZoomBoard];
 }
 
-- (void) updatetextViewZoomBoard {
+
+- (void) startSession {
+    [self cleanUp];
+    [_testText update:nil :0];
+}
+
+- (void) getWord :(int)sign {
+    [self cleanUp];
+    [_testText loadWord:sign];
+}
+
+- (void) cleanUp {
+    [charArrayZoomBoard removeAllObjects];
+    ptrCharZoomBoard = 0;
+    idxSubString = 0;
+    subStrInput = @"";
+    [textFieldZoomBoard setText:[subStrInput stringByAppendingString:cursorZoomBoard]];
+}
+
+- (void) updateTextFieldZoomBoard {
     
-    NSString *sentence = @"";
-    for(NSString *str in charArrayZoomBoard) {
-        sentence = [sentence stringByAppendingString:str];
+//    NSString *sentence = @"";
+//    for(NSString *str in charArrayZoomBoard) {
+//        sentence = [sentence stringByAppendingString:str];
+//    }
+//    
+//    sentence = [sentence stringByAppendingString:cursorZoomBoard];
+////    NSLog(@"%@", sentence);
+//    
+//    [textFieldZoomBoard setText:sentence];
+    
+    if(isThereNewInputZB) {
+        
+        strInput = @"";
+        for(NSString *str in charArrayZoomBoard) {
+            strInput = [strInput stringByAppendingString:str];
+        }
+        
+        int lenAvailableSubstr = MAX(0, MIN((int)(strInput.length - idxSubString), TEXTLENGTH));
+        subStrInput = [strInput substringWithRange:(NSRange){idxSubString, lenAvailableSubstr}];
+        
+        if([_testText update:strInput :idxSubString]) {
+            [self cleanUp];
+        }
+        isThereNewInputZB = false;
     }
     
-    sentence = [sentence stringByAppendingString:cursorZoomBoard];
-//    NSLog(@"%@", sentence);
-    
-    [textViewZoomBoard setText:sentence];
+    [textFieldZoomBoard setText:[subStrInput stringByAppendingString:cursorZoomBoard]];
 }
 
 - (void) doBackSpace {
     NSLog(@"doBackSpace");
     if(charArrayZoomBoard.count > 0) {
         [charArrayZoomBoard removeLastObject];
+        if(ptrCharZoomBoard >= TEXTLENGTH / 2) {
+            idxSubString--;
+        }
         ptrCharZoomBoard--;
     }
-
+    isThereNewInputZB = true;
 }
 
 - (void) doSpace {
     NSLog(@"doSpace");
     [self addTypedKey:@" "];
-    [self updatetextViewZoomBoard];
+    [self updateTextFieldZoomBoard];
 }
 
 - (void) doZoomOut {
@@ -186,6 +246,5 @@ bool isZoomed = false;
 - (void) doKeyboardSwitch {
     NSLog(@"doKeyboardSwitch");
 }
-
 
 @end
