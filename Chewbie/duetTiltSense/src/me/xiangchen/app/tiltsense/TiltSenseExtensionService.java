@@ -25,7 +25,6 @@ public class TiltSenseExtensionService extends ExtensionService {
     protected boolean keepRunningWhenConnected() {
         return false;
     }
-    
 
 	@Override
 	public ControlExtension createControlExtension(String hostAppPackageName) {

@@ -75,15 +75,21 @@ public class TiltSenseExtension extends ControlExtension {
 
 	        public void onSensorEvent(AccessorySensorEvent sensorEvent) {
 	        	float[] values = sensorEvent.getSensorValues();
-//	        	accel.update(values[0], values[1], values[2]);
+//	        	Log.d(LOGTAG, values[0] + ", " + values[1] + ", " + values[2]);
+	        	float ya = values[1];
+	        	float za = values[2];
+	        	float eps = 0.0001f;
+	        	Log.d(LOGTAG, ""+(za+eps)/(ya+eps));
+	        	
 	        	int numRowsToSend = WATCHACCELFPS;
+	        	
 	        	if(isTiltInputOn) {
-//	        		Log.d(LOGTAG, values[0] + ", " + values[1] + ", " + values[2]);
+	        		
 	        		xacFeatureMaker.updateWatchAccel(values);
 		        	xacFeatureMaker.addWatchFeatureEntry();
 	        		if(isRecognition) {
 	        			label = doClassification(numRowsToSend);
-	        			TiltManager.updateWatchGesture(label);
+	        			TiltManager.updateWatchGesture(label, (za+eps)/(ya+eps));
 	        		} else {
 			        	if(xacFeatureMaker.sendOffData(numRowsToSend, classLabels)) {
 			        		Log.d(LOGTAG, "data sent");
@@ -139,6 +145,10 @@ public class TiltSenseExtension extends ControlExtension {
 		
 		showBitmap(bitmap);
     }
+	
+	public void buzz() {
+		startVibrator(100, 0, 1);
+	}
 	
 	@Override
     public void onPause() {

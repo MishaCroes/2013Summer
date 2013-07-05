@@ -2,13 +2,12 @@ package me.xiangchen.app.crosssense;
 
 import java.util.ArrayList;
 
+import me.xiangchen.app.crosssense.oneball.CrossSenseOneBallExt;
+import me.xiangchen.app.crosssense.tweetballs.CrossSenseTweetBallsExt;
 import me.xiangchen.ui.xacInteractiveCanvas;
 import me.xiangchen.ui.xacShape;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Point;
-import android.graphics.RectF;
 import android.widget.LinearLayout;
 
 import com.sonyericsson.extras.liveware.aef.control.Control;
@@ -18,79 +17,85 @@ import com.sonyericsson.extras.liveware.extension.util.control.ControlTouchEvent
 
 public class CrossSenseExtension extends ControlExtension {
 
+	public final static int ONEBALL = 0;
+	public final static int TWEETBALLS = 1;
+	int crossExt = ONEBALL;
+	
 	int width;
 	int height;
 	
 	LinearLayout layout;	
 	xacInteractiveCanvas canvas;
 	
-	private ArrayList<xacShape> shapes = null;
+	ArrayList<xacShape> shapes = null;
 	Point prevCoord;
+	
+	CrossSenseOneBallExt oneBallExt = null;
+	CrossSenseTweetBallsExt tweetBallExt = null;
 	
 	public CrossSenseExtension(Context context, String hostAppPackageName) {
 		super(context, hostAppPackageName);
+		CrossAppManager.setWatch(this);
 		
 		width = getSupportedControlWidth(context);
 		height = getSupportedControlHeight(context);
 		
-		layout = new LinearLayout(context);
-		canvas = new xacInteractiveCanvas(context);
-		canvas.layout(0, 0, width, height);
-		CrossManager.setWatch(this);
-		CrossManager.setCanvasWatch(canvas);
-		
-		layout.addView(canvas);
+		oneBallExt = new CrossSenseOneBallExt(this, context, width, height);
+		tweetBallExt = new CrossSenseTweetBallsExt(this, context, width, height);
 	}
 	
 	@Override
     public void onResume() {
-		CrossManager.syncTheWatch();
 		setScreenState(Control.Intents.SCREEN_STATE_ON);
+		CrossAppManager.updateExtension();
 		
-//		updateVisuals();
+		switch(crossExt) {
+		case ONEBALL:
+			oneBallExt.doResume();
+			break;
+		case TWEETBALLS:
+			tweetBallExt.doResume();
+			break;
+		}
+		
 	}
 	
 	@Override
     public void onTouch(final ControlTouchEvent event) {
-		int action = event.getAction();
-		Point curCoord = new Point();
-		curCoord.set(event.getX(), event.getY());
-		
-		switch(action) {
-		case Control.Intents.TOUCH_ACTION_PRESS:
-			shapes = canvas.getTouchedShapes(curCoord.x, curCoord.y);
-			for(xacShape shape : shapes) {
-				shape.toggleAlpha();
-			}
+		switch(crossExt) {
+		case ONEBALL:
+			oneBallExt.doTouch(event);
 			break;
-		case Control.Intents.TOUCH_ACTION_RELEASE:
-			for(xacShape shape : shapes) {
-				shape.offset(curCoord.x - prevCoord.x, curCoord.y - prevCoord.y);
-				shape.toggleAlpha();
-				RectF rectF = new RectF();
-				rectF.set(canvas.getLeft(), canvas.getTop(), canvas.getRight(), canvas.getBottom());
-				if(!shape.isIn(rectF) && !shape.isOut(rectF)) {
-					CrossManager.syncToPhone();
-				}
-			}
+		case TWEETBALLS:
+			tweetBallExt.doTouch(event);
 			break;
 		}
 		
 		updateVisuals();
-		
-		prevCoord = curCoord;
-		
 	}
 	
+	@Override
+	public void onSwipe(int direction) {
+		switch(crossExt) {
+		case ONEBALL:
+			
+			break;
+		case TWEETBALLS:
+			tweetBallExt.doSwipe(direction);
+			break;
+		}
+	}
 	
 	public void updateVisuals() {
-		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-		Canvas renderCanvas = new Canvas(bitmap);
-		renderCanvas.drawColor(xacInteractiveCanvas.bgColorLight);
+		switch(crossExt) {
+		case ONEBALL:
+			showBitmap(oneBallExt.getUpdatedBitmap());
+			break;
+		case TWEETBALLS:
+			showBitmap(tweetBallExt.getUpdatedBitmap());
+			break;
+		}
 		
-		layout.draw(renderCanvas);
-
-		showBitmap(bitmap);
 	}
 	
 	public static int getSupportedControlWidth(Context context) {

@@ -35,7 +35,8 @@ public class ShareSenseExtension extends ControlExtension {
 	public final static int PRIVATE = 0;
 	public final static int PUBLIC = 1;
 	public final static String[] classmodes = { "Private", "Public" };
-//	public final static String[] displayedInfo = { "You have 5 missed calls from Tiffany", ""}
+	// public final static String[] displayedInfo = {
+	// "You have 5 missed calls from Tiffany", ""}
 	int mode;
 
 	int width;
@@ -53,12 +54,12 @@ public class ShareSenseExtension extends ControlExtension {
 
 	boolean isRecognition = true;
 	boolean isSharing = false;
-	
+
 	double runningSumAccel = 0;
 	double counter = 0;
-	float accelMotion = 1.0f;
+	float accelMotion = 0.5f;
 	long timeMotion;
-	
+
 	xacWatchGesture doubleTap;
 
 	public ShareSenseExtension(Context context, String hostAppPackageName) {
@@ -80,7 +81,7 @@ public class ShareSenseExtension extends ControlExtension {
 		layout.addView(textView);
 
 		doubleTap = new xacWatchGesture(xacWatchGesture.DOUBLETAP);
-		
+
 		AccessorySensorManager manager = new AccessorySensorManager(context,
 				hostAppPackageName);
 		sensor = manager.getSensor(Sensor.SENSOR_TYPE_ACCELEROMETER);
@@ -93,35 +94,37 @@ public class ShareSenseExtension extends ControlExtension {
 				xacFeatureMaker.addWatchFeatureEntry();
 				int numRowsToSend = WATCHACCELFPS;
 				if (isRecognition) {
-					
-					runningSumAccel *= 0.95;
-					counter *= 0.95;
-					
-					float sumAccel = (float) (Math.sqrt(values[0] * values[0] +
-							values[1] * values[1] +
-							values[2] * values[2]) - 9.8f);
-					runningSumAccel += sumAccel;
-					counter++;
-					
-					Calendar lCDateTime = Calendar.getInstance();
-					long curTime = lCDateTime.getTimeInMillis();
-					
-					float spike = (float) (sumAccel - (runningSumAccel + 1) / (counter + 1));
-//					Log.d(LOGTAG, "" + spike);
-					
-					if(Math.abs(spike) > accelMotion) {
-						timeMotion = curTime;
-					}
-					
-					if(timeMotion != 0 && curTime - timeMotion >= numRowsToSend * 1000 / WATCHACCELFPS) {
+
+//					runningSumAccel *= 0.95;
+//					counter *= 0.95;
+//
+//					float sumAccel = (float) (Math.sqrt(values[0] * values[0]
+//							+ values[1] * values[1] + values[2] * values[2]) - 9.8f);
+//					runningSumAccel += sumAccel;
+//					counter++;
+//
+//					Calendar lCDateTime = Calendar.getInstance();
+//					long curTime = lCDateTime.getTimeInMillis();
+//
+//					float spike = (float) (sumAccel - (runningSumAccel + 1)
+//							/ (counter + 1));
+//					// Log.d(LOGTAG, "" + spike);
+//
+//					if (Math.abs(spike) > accelMotion) {
+//						timeMotion = curTime;
+//					}
+
+//					if (timeMotion != 0
+//							&& curTime - timeMotion >= numRowsToSend * 1000
+//									/ WATCHACCELFPS) {
 						mode = doClassification(numRowsToSend);
-//						textView.setText(classmodes[mode]);
+						// textView.setText(classmodes[mode]);
 						showDisplayedInfo(mode);
 						updateDisplay();
-//						startVibrator(100, 0, 1);
+						// startVibrator(100, 0, 1);
 						timeMotion = 0;
-					}
-					
+//					}
+
 				} else {
 					if (xacFeatureMaker.sendOffData(numRowsToSend, classmodes)) {
 						Log.d(LOGTAG, "data sent");
@@ -134,7 +137,7 @@ public class ShareSenseExtension extends ControlExtension {
 	}
 
 	private void showDisplayedInfo(int mode) {
-		switch(mode) {
+		switch (mode) {
 		case PRIVATE:
 			isSharing = false;
 			textView.setTextSize(8);
@@ -143,15 +146,17 @@ public class ShareSenseExtension extends ControlExtension {
 		case PUBLIC:
 			Date dt = new Date();
 			@SuppressWarnings("deprecation")
-			int curHours = dt.getHours();// lCDateTime.getDisplayName(Calendar.HOUR, Calendar.SHORT, Locale.US);
+			int curHours = dt.getHours();// lCDateTime.getDisplayName(Calendar.HOUR,
+											// Calendar.SHORT, Locale.US);
 			@SuppressWarnings("deprecation")
-			int curMinutes = dt.getMinutes();//.getDisplayName(Calendar.MINUTE, Calendar.SHORT, Locale.US);
+			int curMinutes = dt.getMinutes();// .getDisplayName(Calendar.MINUTE,
+												// Calendar.SHORT, Locale.US);
 			textView.setTextSize(16);
-			textView.setText(curHours + ":" + curMinutes);
+			textView.setText((curHours < 10 ? "0" : "") + curHours + ":" + (curMinutes < 10 ? "0" : "") + curMinutes);
 			break;
 		}
 	}
-	
+
 	@Override
 	public void onResume() {
 
@@ -169,7 +174,6 @@ public class ShareSenseExtension extends ControlExtension {
 
 		updateDisplay();
 	}
-
 
 	@Override
 	public void onPause() {
@@ -190,9 +194,9 @@ public class ShareSenseExtension extends ControlExtension {
 
 	@Override
 	public void onTouch(final ControlTouchEvent event) {
-//		int action = event.getAction();
-		
-		if(doubleTap.update(event) == xacWatchGesture.YES) {
+		// int action = event.getAction();
+
+		if (doubleTap.update(event) == xacWatchGesture.YES) {
 			isRecognition = !isRecognition;
 			startVibrator(100, 0, 1);
 			textView.setTextSize(8);
@@ -203,14 +207,14 @@ public class ShareSenseExtension extends ControlExtension {
 			}
 			updateDisplay();
 		}
-		
-//		switch (action) {
-//		case Control.Intents.TOUCH_ACTION_RELEASE:
-//			// swtich between training and recognition modes
-//			
-//			break;
-//
-//		}
+
+		// switch (action) {
+		// case Control.Intents.TOUCH_ACTION_RELEASE:
+		// // swtich between training and recognition modes
+		//
+		// break;
+		//
+		// }
 	}
 
 	@Override
@@ -220,13 +224,13 @@ public class ShareSenseExtension extends ControlExtension {
 			mode = PUBLIC;
 			if (isRecognition) {
 				// rotate display to public
-//				updateDisplay();
+				// updateDisplay();
 				isSharing = true;
 			} else {
 				// switch to public mode training
 				xacFeatureMaker.setLabel(mode);
 				textView.setText(classmodes[mode]);
-//				updateDisplay();
+				// updateDisplay();
 			}
 			break;
 		case Control.Intents.SWIPE_DIRECTION_DOWN:
@@ -238,51 +242,49 @@ public class ShareSenseExtension extends ControlExtension {
 				// switch to private mode training
 				xacFeatureMaker.setLabel(mode);
 				textView.setText(classmodes[mode]);
-//				updateDisplay();
+				// updateDisplay();
 			}
 			break;
 		}
-		
+
 		updateDisplay();
 	}
-	
+
 	private void updateDisplay() {
 		bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bitmap);
-		if(isSharing) {
+		if (isSharing) {
 			Matrix matrix = new Matrix();
-			matrix.setRotate(180, width/2, height/2);
-//			canvas.drawColor(Color.BLACK);
+			matrix.setRotate(180, width / 2, height / 2);
+			// canvas.drawColor(Color.BLACK);
 			canvas.setMatrix(matrix);
 		}
-		
+
 		layout.draw(canvas);
-		
-		
-		
+
 		showBitmap(bitmap);
 	}
-	
+
 	private int doClassification(int n) {
 		int idxClass = 0;
 		Object[] features = xacFeatureMaker.getFlattenedData(n);
 		if (features != null) {
 			try {
-				idxClass = (int) ShareSenseClassifier.classify(features);		
+				idxClass = (int) ShareSenseClassifier.classify(features);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
-		switch(idxClass) {
+
+		switch (idxClass) {
 		case 0:
 			return PUBLIC;
 		case 1:
 			return PRIVATE;
-		
+
 		}
-		
+
 		return PUBLIC;
 	}
 
