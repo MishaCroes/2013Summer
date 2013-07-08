@@ -120,52 +120,6 @@ float centerY;
     return [super hitTest:point withEvent:event];
 }
 
-//- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-//    [swipeView setUserInteractionEnabled:NO];
-//    [self zoomOut :zoomedFactor];
-//    [self setUserInteractionEnabled:NO];
-//}
-////    self.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1, 1);
-////    [self setTransform:CGAffineTransformMakeScale(1.0f, 1.0f)];
-////    [self setTransform:CGAffineTransformMakeTranslation(0.0f, 0.0f)];
-////    if([touches count] > MAXTOUCHPOINTS)
-////        return;
-//    
-////    NSLog([NSString stringWithFormat:@"%f, %f", self.center.x, self.center.y]);
-//     {
-//        for(UITouch *touch in [touches allObjects]) {
-//            
-//            CGPoint tchPnt = [touch locationInView:[self superview]];
-//            
-//            
-////            float zoomValue = isZoomed ? 1.0f : zoomFactor;
-////            [self setTransform:CGAffineTransformMakeScale(zoomValue, zoomValue)];
-////            if(!isZoomed) {
-////                [self zoom:tchPnt.x :tchPnt.y : zoomFactor];
-////            } else {
-//////                NSLog([NSString stringWithFormat:@"%f, %f", self.frame.size.width, self.frame.size.height]);
-////                [self zoom:centerX :centerY : 1 / zoomFactor];
-////            }
-////            isZoomed = !isZoomed;
-//        }
-//    }
-////    [self zoomOut:0 :0];
-////    [self setUserInteractionEnabled:NO];
-//    
-////    [self zoomOut :zoomedFactor];
-//}
-//
-//- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-//    
-//}
-//
-//- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-//    [swipeView setUserInteractionEnabled:YES];
-//}
-
-
-
-
 
 - (void) initKeyBoard :(CGRect)frame {
     btnQ = [[UIButton alloc] init];
@@ -213,16 +167,6 @@ float centerY;
     float wMargin = frame.size.width * (1 - marginHori * 2) / lineOne.count * marginHori;
     float hKey = frame.size.height * (1 - marginVert * 4) / 3;
     
-    
-    
-    
-//    [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleLeftSwipe)];
-
-    
-    
-    
-//    [self addGestureRecognizer:swipeUpRecognizer];
-    
     for (int i=0; i<lineOne.count; i++) {
         UIButton *btn = lineOne[i];
         float left = frame.size.width * marginHori + wMargin + (wKey+wMargin) * i;
@@ -233,11 +177,8 @@ float centerY;
         [btn setBackgroundColor:[UIColor blackColor]];
         [btn setFrame: CGRectMake(left, top, wKey, hKey)];
         //            [btn setUserInteractionEnabled:NO];
-        [btn addTarget:self action:@selector(onKeyTyped:) forControlEvents:UIControlEventTouchUpInside];
-//        [btn addTarget:self action:@selector(didSwipe:) forControlEvents:UIControlEventTouchDragOutside];
-//        UISwipeGestureRecognizer *swipeUpRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(didSwipe)];
-//        [swipeUpRecognizer setDirection:(UISwipeGestureRecognizerDirectionUp | UISwipeGestureRecognizerDirectionDown | UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight)];
-//        [btn addGestureRecognizer:swipeUpRecognizer];
+//        [btn addTarget:self action:@selector(onKeyTyped:) forControlEvents:UIControlEventTouchUpInside];
+
         [self addSubview:btn];
     }
     
@@ -251,7 +192,7 @@ float centerY;
         [btn setBackgroundColor:[UIColor blackColor]];
         [btn setFrame: CGRectMake(left, top, wKey, hKey)];
         //            [btn setUserInteractionEnabled:NO];
-        [btn addTarget:self action:@selector(onKeyTyped:) forControlEvents:UIControlEventTouchUpInside];
+//        [btn addTarget:self action:@selector(onKeyTyped:) forControlEvents:UIControlEventTouchUpInside];
 //        [btn addGestureRecognizer:swipeUpRecognizer];
         [self addSubview:btn];
     }
@@ -266,19 +207,10 @@ float centerY;
         [btn setBackgroundColor:[UIColor blackColor]];
         [btn setFrame: CGRectMake(left, top, wKey, hKey)];
         //            [btn setUserInteractionEnabled:NO];
-        [btn addTarget:self action:@selector(onKeyTyped:) forControlEvents:UIControlEventTouchUpInside];
+//        [btn addTarget:self action:@selector(onKeyTyped:) forControlEvents:UIControlEventTouchUpInside];
 //        [btn addGestureRecognizer:swipeUpRecognizer];
         [self addSubview:btn];
     }
-}
-
-
-
-- (void) initSwipeGestures {
-    
-    
-    
-
 }
 
 @end

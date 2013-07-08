@@ -18,5 +18,7 @@
 @property xacSwipe *swipe;
 @property xacTextEntry *textEntry;
 
+- (void) getWord :(int)sign;
+- (void) loadSharedString;
 
 @end

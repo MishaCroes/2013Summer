@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-#define TEXTLINELENGTH 8
 #define CURSORREFRESHRATE 3
 
 @interface xacZoomBoard : UIView
@@ -16,6 +15,8 @@
 - (void) zoomIn:(float)x :(float)y :(float)zoomFactor;
 - (void) zoomOut:(float)zoomFactor;
 //- (void) touchType: (UIEvent*)event;
+- (void) startSession;
+
 @property bool readyToType;
 @property NSString *typedChar;
 
