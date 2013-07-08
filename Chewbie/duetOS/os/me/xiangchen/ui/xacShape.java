@@ -142,4 +142,9 @@ public class xacShape {
 	public void toggleStroke() {
 		strokePaint.setColor(strokePaint.getColor() == Color.WHITE ? Color.TRANSPARENT : Color.WHITE);
 	}
+	
+	public void toggleStroke(int w) {
+		strokePaint.setStrokeWidth(w);
+		strokePaint.setColor(strokePaint.getColor() == Color.WHITE ? Color.TRANSPARENT : Color.WHITE);
+	}
 }

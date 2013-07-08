@@ -64,6 +64,12 @@ public class xacInteractiveCanvas extends View {
 		return shapes;
 	}
 
+	public void scrollContentsBy(float dx, float dy) {
+		for(xacShape shape : shapes) {
+			shape.offset(dx, dy);
+		}
+	}
+	
 	@SuppressWarnings("deprecation")
 	@Override
 	// decides the size of this view

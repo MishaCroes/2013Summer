@@ -10,6 +10,7 @@ import me.xiangchen.app.duetapp.App;
 import me.xiangchen.app.duetapp.AppExtension;
 import me.xiangchen.app.duetapp.call.Call;
 import me.xiangchen.app.duetapp.email.Email;
+import me.xiangchen.app.duetapp.email.EmailExtension;
 import me.xiangchen.app.duetapp.map.Map;
 import me.xiangchen.app.duetapp.reader.Reader;
 import me.xiangchen.app.duetapp.reader.ReaderExtenstion;
@@ -82,6 +83,23 @@ public class Launcher extends Activity implements SensorEventListener {
 				SensorManager.SENSOR_DELAY_GAME);
 		
 		initApps();
+		
+//		timer = new Timer();
+//		timer.scheduleAtFixedRate(new TimerTask() {
+//			@Override
+//			public void run() {
+//				// Your database code here
+//				runOnUiThread(new Runnable() {
+//					@Override
+//					public void run() {
+//						// Your database code here
+//						if(activeApp != null) {
+//							activeApp.runOnUIThread();
+//						}
+//					}
+//				});
+//			}
+//		}, new Date(), 20);
 	}
 
 	@Override
@@ -103,6 +121,8 @@ public class Launcher extends Activity implements SensorEventListener {
 		Email email = new Email(this);
 		addIcon(email);
 		apps.add(email);
+		EmailExtension emailExtension = new EmailExtension();
+		htAppExtensions.put(email, emailExtension);
 		
 		Reader reader = new Reader(this);
 		addIcon(reader);

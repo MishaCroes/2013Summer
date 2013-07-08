@@ -49,7 +49,7 @@ public class xacSketchCanvas extends SurfaceView implements
 	public void setClientCanvas(xacBufferCanvas bufCan) {
 		clientCanvas = bufCan;
 		if (clientCanvas != null) {
-			clientCanvas.setPaint(paint);
+			clientCanvas.setPathPaint(paint);
 		}
 	}
 

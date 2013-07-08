@@ -21,6 +21,10 @@ public class App {
 		return appLayout;
 	}
 	
+	public void runOnUIThread() {
+		
+	}
+	
 	public void doTouch(MotionEvent event) {
 		
 	}

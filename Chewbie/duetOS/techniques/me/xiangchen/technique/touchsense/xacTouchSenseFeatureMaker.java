@@ -137,7 +137,7 @@ public class xacTouchSenseFeatureMaker {
 		new xacUDPTask().execute(strFeatureRow);
 	}
 
-	public static Object[] getFlattenedData(int numToSend, float[] extras) {
+	public static Object[] getFlattenedData(int numToSend, double[] extras) {
 		int lockedPntrEntryPhone = pntrEntryPhone;
 		int lockedPntrEntryWatch = pntrEntryWatch;
 		int numToSendPhone = numToSend;
@@ -168,7 +168,7 @@ public class xacTouchSenseFeatureMaker {
 
 		// 3. extra features
 		if (extras != null) {
-			for (float feat : extras) {
+			for (double feat : extras) {
 				flattened[idxFeature++] = feat;
 			}
 		}

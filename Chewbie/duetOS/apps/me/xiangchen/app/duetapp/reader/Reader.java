@@ -18,7 +18,12 @@ import me.xiangchen.ui.xacSketchCanvas;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
+import android.text.Layout;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
@@ -35,6 +40,8 @@ public class Reader extends App {
 	public final static int HIGHLIGHTER = 2;
 	public final static int TEXTSELECTION = 3;
 
+	public final static int WIDTHAPP = 1080;
+
 	final static int NUMROWSHANDEDNESS = LauncherManager.PHONEACCELFPSGAME
 			* xacHandSenseFeatureMaker.HANDTIMEOUT / 1000;
 	final static int NUMROWSHANDPARTS = LauncherManager.PHONEACCELFPSGAME
@@ -43,6 +50,7 @@ public class Reader extends App {
 			* xacFlipSenseFeatureMaker.FLIPTIMEOUT / 1000;
 
 	TextView textView;
+	String text;
 	ScrollView scrollView;
 	xacSketchCanvas canvas;
 
@@ -69,6 +77,12 @@ public class Reader extends App {
 	xacInteractiveCanvas menu;
 	float alphaMenu = 0.0f;
 
+	String selectedText = "";
+	int firstLine;
+	int firstOffset;
+	int prevLine;
+	int prevOffset;
+
 	public Reader(Context context) {
 		super(context);
 		color = xacInteractiveCanvas.fgColorBlue;
@@ -93,7 +107,8 @@ public class Reader extends App {
 		textView = new TextView(context);
 		textView.setTextSize(20);
 		textView.setBackgroundColor(Color.WHITE);
-		textView.setText(context.getString(R.string.a_tale_of_two_cities));
+		text = context.getString(R.string.a_tale_of_two_cities);
+		textView.setText(text);
 		scrollLayout.addView(textView);
 
 		// sketch canvs
@@ -102,6 +117,9 @@ public class Reader extends App {
 
 		// buffer canvas
 		bufCan = new xacBufferCanvas(context);
+		Paint rectPaint = new Paint();
+		rectPaint.setColor(0x880000FF);
+		bufCan.setRectPaint(rectPaint);
 		RelativeLayout.LayoutParams paramsBufCan = new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.MATCH_PARENT,
 				RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -115,10 +133,11 @@ public class Reader extends App {
 		menu = new xacInteractiveCanvas(context);
 		GradientDrawable gradientDrawable = new GradientDrawable(
 				GradientDrawable.Orientation.TOP_BOTTOM, new int[] {
-						0x00000000, 0x33000000, 0xAA000000, 0xEE000000, 0xEE000000 });
+						0x00000000, 0x33000000, 0xAA000000, 0xEE000000,
+						0xEE000000 });
 		gradientDrawable.setCornerRadius(0f);
 		menu.setOnTouchListener(new View.OnTouchListener() {
-			
+
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				appLayout.removeView(menu);
@@ -127,16 +146,20 @@ public class Reader extends App {
 		});
 		menu.setBackgroundDrawable(gradientDrawable);
 
-
 		// sensing initialization
 		xacHandSenseFeatureMaker.setLabel(xacHandSenseFeatureMaker.UNKNOWN);
 		xacHandSenseFeatureMaker.createFeatureTable();
 
 		xacTouchSenseFeatureMaker.setLabel(xacTouchSenseFeatureMaker.UNKNOWN);
 		xacTouchSenseFeatureMaker.createFeatureTable();
-		
+
 		xacFlipSenseFeatureMaker.setLabel(xacFlipSenseFeatureMaker.UNKNOWN);
 		xacFlipSenseFeatureMaker.createFeatureTable();
+	}
+
+	@Override
+	public void runOnUIThread() {
+		
 	}
 
 	@SuppressLint("NewApi")
@@ -157,114 +180,107 @@ public class Reader extends App {
 		canvas.setScrollOffsets(0, 0);
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
-			
+
 			timeTouchDown = curTime;
 			appLayout.removeView(menu);
-			
+			if (selectedText.length() > 0) {
+				unSelectText(textView, text);
+				selectedText = "";
+			}
+
 			// is there a flip?
 			isFlipped = calculateFlipGesture();
 			switch (isFlipped) {
 			case xacFlipSenseFeatureMaker.FLIP:
 				// show menu
 				appLayout.addView(menu);
-//				alphaMenu = 0.0f;
-//				menu.setAlpha(alphaMenu);
+				// alphaMenu = 0.0f;
+				// menu.setAlpha(alphaMenu);
 				break;
 			case xacFlipSenseFeatureMaker.NOFLIP:
 				// register hand part
-				handPart = calculateHandPart(new float[] { event.getSize(0) });
+				handPart = calculateHandPart(new double[] { event.getSize(0) });
 				switch (handPart) {
 				case xacTouchSenseFeatureMaker.PAD:
 					handedness = xacHandSenseFeatureMaker.UNKNOWN;
-					
+
 					break;
 				case xacTouchSenseFeatureMaker.SIDE:
 					break;
 				case xacTouchSenseFeatureMaker.KNUCKLE:
+					firstLine = -1;
+					prevLine = -1;
+					bufCan.clearRects();
 					break;
 				}
 				break;
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-			
-			if(isFlipped == xacFlipSenseFeatureMaker.FLIP) {
+
+			if (isFlipped == xacFlipSenseFeatureMaker.FLIP) {
 				break;
 			}
-			
+
 			switch (handPart) {
 			case xacTouchSenseFeatureMaker.PAD:
-				
-				// calculate handedness
-				if (curTime - timeTouchDown < xacHandSenseFeatureMaker.TOUCHONSETTIME) {
-					break;
-				} else if (timeTouchDown != 0) {
-					handedness = calculateHandedness();
-					timeTouchDown = 0;
-					// show menu
-					if(handedness == xacHandSenseFeatureMaker.LEFTHAND) {
-						appLayout.addView(menu);
-					}
-				}
-				
-				switch (handedness) {
-				case xacHandSenseFeatureMaker.LEFTHAND:
-					break;
-				case xacHandSenseFeatureMaker.RIGHTHAND:
-					// write
-					canvas.doTouch(event);
-					break;
-				default:
-//					 Log.d(LOGTAG, "cannot decide handedness.");
-					break;
-				}
-				
+				canvas.doTouch(event);
 				break;
 			case xacTouchSenseFeatureMaker.SIDE:
-				break;
-			case xacTouchSenseFeatureMaker.KNUCKLE:
-				// do scrolling
 				float speedRatio = 0.75f;
 				int dx = 0;
 				int dy = (int) ((yPrev - yCur) * speedRatio);
 				dScrollX += dx;
-				dScrollY += dy;
-				// Log.d(LOGTAG, "scroll by " + dy);
-				if (dScrollY >= 0) {
-					scrollView.scrollBy(dx, dy);
-					canvas.setScrollOffsets(dx, dy);
+				
+				if (dScrollY + dy < 0) {
+					dy *= 0.01f;
 				}
+				dScrollY += dy;
+				
+				scrollView.scrollBy(dx, dy);
+				canvas.setScrollOffsets(dx, dy);
+				
 				dScrollY = Math.max(0, dScrollY);
+				
+				break;
+			case xacTouchSenseFeatureMaker.KNUCKLE:
+				Layout layout = textView.getLayout();
+				if (layout != null) {
+					prevLine = layout
+							.getLineForVertical((int) (yCur + dScrollY));
+					prevOffset = layout.getOffsetForHorizontal(prevLine, xCur);
+
+					if (firstLine < 0) {
+						firstLine = prevLine;
+						firstOffset = prevOffset;
+					}
+				}
 				break;
 			}
 			break;
 		case MotionEvent.ACTION_UP:
-			
-			if(isFlipped == xacFlipSenseFeatureMaker.FLIP) {
+
+			if (isFlipped == xacFlipSenseFeatureMaker.FLIP) {
 				break;
 			}
-			
+
 			switch (handPart) {
 			case xacTouchSenseFeatureMaker.PAD:
+				canvas.doTouch(event);
 				
-				switch (handedness) {
-				case xacHandSenseFeatureMaker.LEFTHAND:
-//					Log.d(LOGTAG, dScrollY + "");
-					break;
-				case xacHandSenseFeatureMaker.RIGHTHAND:
-
-					canvas.doTouch(event);
-					break;
-				default:
-					break;
-				}
 				break;
 			case xacTouchSenseFeatureMaker.SIDE:
+				unSelectText(textView, text);
 				break;
 			case xacTouchSenseFeatureMaker.KNUCKLE:
+				int start = Math.min(firstOffset, prevOffset);
+				int end = Math.max(firstOffset, prevOffset);
+				selectedText = text.substring(start, end);
+				selectText(textView, start, end);
+
 				break;
 			}
-			
+
 			break;
 		}
 
@@ -279,9 +295,24 @@ public class Reader extends App {
 
 		xacTouchSenseFeatureMaker.updatePhoneAccel(values);
 		xacTouchSenseFeatureMaker.addPhoneFeatureEntry();
-		
+
 		xacFlipSenseFeatureMaker.updatePhoneAccel(values);
 		xacFlipSenseFeatureMaker.addPhoneFeatureEntry();
+	}
+
+	private void selectText(TextView tv, int start, int end) {
+		Spannable textSpannable = new SpannableStringBuilder(tv.getText());
+		textSpannable.setSpan(new BackgroundColorSpan(Color.TRANSPARENT), 0,
+				start - 1, 0);
+		textSpannable.setSpan(new BackgroundColorSpan(0x881ABCBD), start, end,
+				0);
+		textSpannable.setSpan(new BackgroundColorSpan(Color.TRANSPARENT),
+				end + 1, text.length() - 1, 0);
+		tv.setText(textSpannable);
+	}
+
+	private void unSelectText(TextView tv, String txt) {
+		tv.setText(txt);
 	}
 
 	private int calculateHandedness() {
@@ -311,7 +342,7 @@ public class Reader extends App {
 		return label;
 	}
 
-	private int calculateHandPart(float[] extras) {
+	private int calculateHandPart(double[] extras) {
 		int label = xacTouchSenseFeatureMaker.UNKNOWN;
 
 		Object[] features = xacTouchSenseFeatureMaker.getFlattenedData(
@@ -344,10 +375,10 @@ public class Reader extends App {
 
 	private int calculateFlipGesture() {
 		int label = xacFlipSenseFeatureMaker.NOFLIP;
-		
-		Object[] features = xacFlipSenseFeatureMaker.getFlattenedData(
-				NUMROWSFLIPGESTURE);
-		
+
+		Object[] features = xacFlipSenseFeatureMaker
+				.getFlattenedData(NUMROWSFLIPGESTURE);
+
 		int idxClass = -1;
 		try {
 			idxClass = (int) FlipSenseClassifier.classify(features);
@@ -365,26 +396,11 @@ public class Reader extends App {
 			label = xacFlipSenseFeatureMaker.NOFLIP;
 			// Log.d(LOGTAG, "side");
 			break;
-		
+
 		}
 
 		xacFlipSenseFeatureMaker.clearData();
 		return label;
 	}
 
-	private void pan(MotionEvent event) {
-
-	}
-
-	private void write(MotionEvent event) {
-
-	}
-
-	private void highlight(MotionEvent event) {
-
-	}
-
-	private void selectText(MotionEvent event) {
-
-	}
 }
