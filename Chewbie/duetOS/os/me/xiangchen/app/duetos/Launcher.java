@@ -1,6 +1,7 @@
 package me.xiangchen.app.duetos;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Timer;
@@ -14,12 +15,13 @@ import me.xiangchen.app.duetapp.email.EmailExtension;
 import me.xiangchen.app.duetapp.map.Map;
 import me.xiangchen.app.duetapp.reader.Reader;
 import me.xiangchen.app.duetapp.reader.ReaderExtenstion;
+import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.ui.xacInteractiveCanvas;
 import me.xiangchen.ui.xacShape;
+import me.xiangchen.ui.xacToast;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -30,14 +32,20 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 public class Launcher extends Activity implements SensorEventListener {
 
+	public final static int AUTOLOCKTIMEOUT = 1800; // sec
+	public final static int TIMERFPS = 30;
 	RelativeLayout layout;
 	xacInteractiveCanvas canvas;
+	xacInteractiveCanvas curtain;
+	xacToast toast;
 
 	ArrayList<App> apps;
 	Hashtable<xacShape, App> htApps;
@@ -45,17 +53,20 @@ public class Launcher extends Activity implements SensorEventListener {
 
 	ArrayList<xacShape> hitIcons;
 	App activeApp = null;
-	
+
 	SensorManager sensorManager;
 	Sensor sensorAccel;
 
 	Timer timer;
-	
+	boolean isLocked = false;
+	boolean isBeingUsed = true;
+	long lastUsageTime = 0;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		LauncherManager.setPhone(this);
-		
+
 		// remove title bar
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		// remove notification bar
@@ -69,7 +80,19 @@ public class Launcher extends Activity implements SensorEventListener {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				doTouch(event);
+				doCanvasTouch(event);
+				return true;
+			}
+		});
+
+		// curtain
+		curtain = new xacInteractiveCanvas(this);
+		curtain.setBackgroundColor(0xEE000000);
+		curtain.setOnTouchListener(new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				doCurtainTouch(event);
 				return true;
 			}
 		});
@@ -77,29 +100,59 @@ public class Launcher extends Activity implements SensorEventListener {
 		layout.addView(canvas);
 		setContentView(layout);
 
+		// toast
+		toast = new xacToast(this);
+//		toast.setImage(R.drawable.left_back_wrist);
+//		layout.addView(toast);
+
+		// sensors
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		sensorAccel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		sensorManager.registerListener(this, sensorAccel,
 				SensorManager.SENSOR_DELAY_GAME);
-		
+
 		initApps();
-		
-//		timer = new Timer();
-//		timer.scheduleAtFixedRate(new TimerTask() {
-//			@Override
-//			public void run() {
-//				// Your database code here
-//				runOnUiThread(new Runnable() {
-//					@Override
-//					public void run() {
-//						// Your database code here
-//						if(activeApp != null) {
-//							activeApp.runOnUIThread();
-//						}
-//					}
-//				});
-//			}
-//		}, new Date(), 20);
+
+		Calendar calendar = Calendar.getInstance();
+		lastUsageTime = calendar.getTimeInMillis();
+
+		timer = new Timer();
+		timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+
+				Calendar calendar = Calendar.getInstance();
+				long curTime = calendar.getTimeInMillis();
+
+				if (!isLocked
+						&& (curTime - lastUsageTime) / 1000 > AUTOLOCKTIMEOUT) {
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							lockScreen();
+						}
+					});
+					isLocked = true;
+				}
+				
+				updateToast();
+				
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						if(activeApp != null) {
+							activeApp.runOnUIThread();
+						}
+					}
+				});
+
+			}
+		}, new Date(), 1000 / TIMERFPS);
+
+		xacAuthenticSenseFeatureMaker.createFeatureTable();
+		xacAuthenticSenseFeatureMaker
+				.setLabel(xacAuthenticSenseFeatureMaker.INTHEWILD);
+
 	}
 
 	@Override
@@ -121,9 +174,9 @@ public class Launcher extends Activity implements SensorEventListener {
 		Email email = new Email(this);
 		addIcon(email);
 		apps.add(email);
-		EmailExtension emailExtension = new EmailExtension();
+		EmailExtension emailExtension = new EmailExtension(this);
 		htAppExtensions.put(email, emailExtension);
-		
+
 		Reader reader = new Reader(this);
 		addIcon(reader);
 		apps.add(reader);
@@ -152,8 +205,41 @@ public class Launcher extends Activity implements SensorEventListener {
 		htApps.put(icon, app);
 	}
 
+	private void updateToast() {
+		// update toast on the phone
+		if (!toast.isDead()) {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					toast.fadeOut();
+				}
+			});
+		}
+		
+		// update toast on the watch
+	}
+	
+	private void lockScreen() {
+		layout.addView(curtain);
+	}
+	
+	private void unLockScreen() {
+		layout.removeView(curtain);
+		isLocked = false;
+		Calendar calendar = Calendar.getInstance();
+		lastUsageTime = calendar.getTimeInMillis();
+	}
+	
+	public void doToast(xacToast t) {
+		t.kill(layout);
+		t.fadeIn(layout);
+	}
+
 	@SuppressLint("NewApi")
-	private void doTouch(MotionEvent event) {
+	private void doCanvasTouch(MotionEvent event) {
+		Calendar calendar = Calendar.getInstance();
+		lastUsageTime = calendar.getTimeInMillis();
+
 		int action = event.getAction();
 		PointerCoords curCoord = new PointerCoords();
 		event.getPointerCoords(0, curCoord);
@@ -163,28 +249,82 @@ public class Launcher extends Activity implements SensorEventListener {
 			hitIcons = canvas.getTouchedShapes(curCoord.x, curCoord.y);
 			break;
 		case MotionEvent.ACTION_MOVE:
-			// for (xacShape shape : shapes) {
-			// shape.offset(curCoord.x - prevCoord.x, curCoord.y
-			// - prevCoord.y);
-			// RectF rectF = new RectF();
-			// rectF.set(canvas.getLeft(), canvas.getTop(),
-			// canvas.getRight(), canvas.getBottom());
-			// if (!shape.isIn(rectF) && !shape.isOut(rectF)) {
-			// CrossOneBallManager.syncTheWatch();
-			// }
-			// }
 			break;
 		case MotionEvent.ACTION_UP:
 			if (hitIcons.size() > 0) {
 				xacShape hitIcon = hitIcons.get(0);
 				activeApp = htApps.get(hitIcon);
 				LauncherManager.setAppExtension(htAppExtensions.get(activeApp));
+				LauncherExtension watch = LauncherManager.getWatch();
+				if(watch != null) {
+					watch.showText(activeApp.getTitle());
+				}
 				if (activeApp != null) {
 					View appView = activeApp.getViewGroup();
 					if (appView != null) {
 						layout.addView(appView);
 					}
 				}
+			} else {
+				int watchConfig = xacAuthenticSenseFeatureMaker
+						.calculateAuthentication();
+				LauncherManager.setWatchConfig(watchConfig);
+				if (watchConfig != xacAuthenticSenseFeatureMaker.INTHEWILD) {
+					lockScreen();
+					
+					switch (watchConfig) {
+					case xacAuthenticSenseFeatureMaker.LEFTBACKWRIST:
+						toast.setImage(R.drawable.left_back_wrist);
+						break;
+					case xacAuthenticSenseFeatureMaker.LEFTINNERWRIST:
+						toast.setImage(R.drawable.left_inner_wrist);
+						break;
+					case xacAuthenticSenseFeatureMaker.RIGHTBACKWRIST:
+						toast.setImage(R.drawable.right_back_wrist);
+						break;
+					case xacAuthenticSenseFeatureMaker.RIGHTINNERWRIST:
+						toast.setImage(R.drawable.right_inner_wrist);
+						break;
+					}
+					doToast(toast);
+				}
+			}
+			break;
+		}
+	}
+
+	private void doCurtainTouch(MotionEvent event) {
+		int action = event.getAction();
+		switch (action) {
+		case MotionEvent.ACTION_DOWN:
+			break;
+		case MotionEvent.ACTION_MOVE:
+			break;
+		case MotionEvent.ACTION_UP:
+			int watchConfig = xacAuthenticSenseFeatureMaker
+					.calculateAuthentication();
+			LauncherManager.setWatchConfig(watchConfig);
+			if (watchConfig != xacAuthenticSenseFeatureMaker.INTHEWILD) {
+				layout.removeView(curtain);
+				isLocked = false;
+				Calendar calendar = Calendar.getInstance();
+				lastUsageTime = calendar.getTimeInMillis();
+
+				switch (watchConfig) {
+				case xacAuthenticSenseFeatureMaker.LEFTBACKWRIST:
+					toast.setImage(R.drawable.left_back_wrist);
+					break;
+				case xacAuthenticSenseFeatureMaker.LEFTINNERWRIST:
+					toast.setImage(R.drawable.left_inner_wrist);
+					break;
+				case xacAuthenticSenseFeatureMaker.RIGHTBACKWRIST:
+					toast.setImage(R.drawable.right_back_wrist);
+					break;
+				case xacAuthenticSenseFeatureMaker.RIGHTINNERWRIST:
+					toast.setImage(R.drawable.right_inner_wrist);
+					break;
+				}
+				doToast(toast);
 			}
 			break;
 		}
@@ -194,6 +334,13 @@ public class Launcher extends Activity implements SensorEventListener {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_VOLUME_UP:
+			if (isLocked) {
+				unLockScreen();
+				isLocked = false;
+			} else {
+				lockScreen();
+				isLocked = true;
+			}
 			break;
 		case KeyEvent.KEYCODE_VOLUME_DOWN:
 			if (activeApp != null) {
@@ -209,14 +356,16 @@ public class Launcher extends Activity implements SensorEventListener {
 	@Override
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		// handedness
-		if(activeApp != null) {
-		activeApp.doAccelerometer(event.values);
+
+		xacAuthenticSenseFeatureMaker.updatePhoneAccel(event.values);
+		xacAuthenticSenseFeatureMaker.addPhoneFeatureEntry();
+		if (activeApp != null) {
+			activeApp.doAccelerometer(event.values);
 		}
 	}
 

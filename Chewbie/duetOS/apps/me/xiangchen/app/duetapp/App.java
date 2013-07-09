@@ -9,12 +9,17 @@ public class App {
 	protected View appView;
 	protected ViewGroup appLayout;
 	protected int color;
+	protected String title = "";
 	
 	public App(Context context) {
 	}
 	
 	public int getColor() {
 		return color;
+	}
+	
+	public String getTitle() {
+		return title;
 	}
 	
 	public View getViewGroup() {

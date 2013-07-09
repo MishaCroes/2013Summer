@@ -203,13 +203,19 @@ containing a value of this type.
         public static final int common_signin_btn_text_pressed_dark=0x7f020017;
         public static final int common_signin_btn_text_pressed_light=0x7f020018;
         public static final int doraemon=0x7f020019;
-        public static final int headset_pro_cancel_icn=0x7f02001a;
-        public static final int headset_pro_focus_xs_icn=0x7f02001b;
-        public static final int headset_pro_ok_icn=0x7f02001c;
-        public static final int ic_extension=0x7f02001d;
-        public static final int ic_launcher=0x7f02001e;
-        public static final int text_bg=0x7f02001f;
-        public static final int widget_frame=0x7f020020;
+        public static final int email=0x7f02001a;
+        public static final int email_small=0x7f02001b;
+        public static final int headset_pro_cancel_icn=0x7f02001c;
+        public static final int headset_pro_focus_xs_icn=0x7f02001d;
+        public static final int headset_pro_ok_icn=0x7f02001e;
+        public static final int ic_extension=0x7f02001f;
+        public static final int ic_launcher=0x7f020020;
+        public static final int left_back_wrist=0x7f020021;
+        public static final int left_inner_wrist=0x7f020022;
+        public static final int right_back_wrist=0x7f020023;
+        public static final int right_inner_wrist=0x7f020024;
+        public static final int text_bg=0x7f020025;
+        public static final int widget_frame=0x7f020026;
     }
     public static final class id {
         public static final int action_settings=0x7f05000f;
