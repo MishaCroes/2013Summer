@@ -4,13 +4,9 @@ import java.util.Calendar;
 import java.util.Hashtable;
 
 import me.xiangchen.app.duetapp.App;
-import me.xiangchen.app.duetos.LauncherManager;
 import me.xiangchen.app.duetos.R;
-import me.xiangchen.technique.flipsense.FlipSenseClassifier;
 import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
-import me.xiangchen.technique.handsense.HandSenseClassifier;
 import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
-import me.xiangchen.technique.touchsense.TouchSenseClassifier;
 import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
 import me.xiangchen.ui.xacBufferCanvas;
 import me.xiangchen.ui.xacInteractiveCanvas;
@@ -19,12 +15,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.drawable.GradientDrawable;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.BackgroundColorSpan;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.View;
@@ -40,14 +36,13 @@ public class Reader extends App {
 	public final static int HIGHLIGHTER = 2;
 	public final static int TEXTSELECTION = 3;
 
-	public final static int WIDTHAPP = 1080;
-
-	final static int NUMROWSHANDEDNESS = LauncherManager.PHONEACCELFPSGAME
-			* xacHandSenseFeatureMaker.HANDTIMEOUT / 1000;
-	final static int NUMROWSHANDPARTS = LauncherManager.PHONEACCELFPSGAME
-			* xacTouchSenseFeatureMaker.TOUCHTIMEOUT / 1000;
-	final static int NUMROWSFLIPGESTURE = LauncherManager.PHONEACCELFPSGAME
-			* xacFlipSenseFeatureMaker.FLIPTIMEOUT / 1000;
+	public final static int APPWIDTH = 1080;
+	
+	public final static float CURSORWIDTH = 15;
+	public final static float CURSORMARGIN = 20;
+	
+	public final static int SHIFTHORI = 0;
+	public final static int SHIFTVERT = 1;
 
 	TextView textView;
 	String text;
@@ -159,7 +154,7 @@ public class Reader extends App {
 
 	@Override
 	public void runOnUIThread() {
-		
+
 	}
 
 	@SuppressLint("NewApi")
@@ -189,7 +184,7 @@ public class Reader extends App {
 			}
 
 			// is there a flip?
-			isFlipped = calculateFlipGesture();
+			isFlipped = xacFlipSenseFeatureMaker.calculateFlipGesture();
 			switch (isFlipped) {
 			case xacFlipSenseFeatureMaker.FLIP:
 				// show menu
@@ -199,7 +194,8 @@ public class Reader extends App {
 				break;
 			case xacFlipSenseFeatureMaker.NOFLIP:
 				// register hand part
-				handPart = calculateHandPart(new double[] { event.getSize(0) });
+				handPart = xacTouchSenseFeatureMaker
+						.calculateHandPart(new double[] { event.getSize(0) });
 				switch (handPart) {
 				case xacTouchSenseFeatureMaker.PAD:
 					handedness = xacHandSenseFeatureMaker.UNKNOWN;
@@ -231,29 +227,35 @@ public class Reader extends App {
 				int dx = 0;
 				int dy = (int) ((yPrev - yCur) * speedRatio);
 				dScrollX += dx;
-				
+
 				if (dScrollY + dy < 0) {
 					dy *= 0.01f;
 				}
 				dScrollY += dy;
-				
+
 				scrollView.scrollBy(dx, dy);
 				canvas.setScrollOffsets(dx, dy);
-				
+
 				dScrollY = Math.max(0, dScrollY);
-				
+
 				break;
 			case xacTouchSenseFeatureMaker.KNUCKLE:
 				Layout layout = textView.getLayout();
 				if (layout != null) {
 					prevLine = layout
-							.getLineForVertical((int) (yCur + dScrollY));
-					prevOffset = layout.getOffsetForHorizontal(prevLine, xCur);
+							.getLineForVertical((int) (yCur + dScrollY)) - SHIFTVERT;
+					prevOffset = layout.getOffsetForHorizontal(prevLine, xCur) - SHIFTHORI;
 
 					if (firstLine < 0) {
 						firstLine = prevLine;
 						firstOffset = prevOffset;
 					}
+					
+					float l = xCur - CURSORWIDTH / 2;
+					float t = prevLine * textView.getLineHeight() - CURSORMARGIN;// + dScrollY;
+					float r = xCur + CURSORWIDTH / 2;
+					float b = t + textView.getLineHeight() + CURSORMARGIN;
+					updateCursor(l, t, r, b);
 				}
 				break;
 			}
@@ -267,7 +269,7 @@ public class Reader extends App {
 			switch (handPart) {
 			case xacTouchSenseFeatureMaker.PAD:
 				canvas.doTouch(event);
-				
+
 				break;
 			case xacTouchSenseFeatureMaker.SIDE:
 				unSelectText(textView, text);
@@ -278,6 +280,7 @@ public class Reader extends App {
 				selectedText = text.substring(start, end);
 				selectText(textView, start, end);
 
+				updateCursor(0, 0, 0, 0);
 				break;
 			}
 
@@ -288,6 +291,13 @@ public class Reader extends App {
 		yPrev = yCur;
 	}
 
+	private void updateCursor(float l, float t, float r, float b) {
+		bufCan.clearRects();
+		RectF rectf = new RectF(l, t, r, b);
+		bufCan.addRect(rectf);
+		bufCan.invalidate();
+	}
+	
 	@Override
 	public void doAccelerometer(float values[]) {
 		xacHandSenseFeatureMaker.updatePhoneAccel(values);
@@ -313,94 +323,6 @@ public class Reader extends App {
 
 	private void unSelectText(TextView tv, String txt) {
 		tv.setText(txt);
-	}
-
-	private int calculateHandedness() {
-		int label = xacHandSenseFeatureMaker.UNKNOWN;
-
-		Object[] features = xacHandSenseFeatureMaker
-				.getFlattenedData(NUMROWSHANDEDNESS);
-		int idxClass = -1;
-		try {
-			idxClass = (int) HandSenseClassifier.classify(features);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			Log.d(LOGTAG, "cannot get features");
-		}
-
-		switch (idxClass) {
-		case 0:
-			label = xacHandSenseFeatureMaker.LEFTHAND;
-			Log.d(LOGTAG, "left hand");
-			break;
-		case 1:
-			label = xacHandSenseFeatureMaker.RIGHTHAND;
-			Log.d(LOGTAG, "right hand");
-			break;
-		}
-
-		return label;
-	}
-
-	private int calculateHandPart(double[] extras) {
-		int label = xacTouchSenseFeatureMaker.UNKNOWN;
-
-		Object[] features = xacTouchSenseFeatureMaker.getFlattenedData(
-				NUMROWSHANDPARTS, extras);
-		int idxClass = -1;
-		try {
-			idxClass = (int) TouchSenseClassifier.classify(features);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		switch (idxClass) {
-		case 0:
-			label = xacTouchSenseFeatureMaker.PAD;
-			// Log.d(LOGTAG, "pad");
-			break;
-		case 1:
-			label = xacTouchSenseFeatureMaker.SIDE;
-			// Log.d(LOGTAG, "side");
-			break;
-		case 2:
-			label = xacTouchSenseFeatureMaker.KNUCKLE;
-			// Log.d(LOGTAG, "knuckle");
-			break;
-		}
-
-		return label;
-	}
-
-	private int calculateFlipGesture() {
-		int label = xacFlipSenseFeatureMaker.NOFLIP;
-
-		Object[] features = xacFlipSenseFeatureMaker
-				.getFlattenedData(NUMROWSFLIPGESTURE);
-
-		int idxClass = -1;
-		try {
-			idxClass = (int) FlipSenseClassifier.classify(features);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		switch (idxClass) {
-		case 0:
-			label = xacFlipSenseFeatureMaker.FLIP;
-			// Log.d(LOGTAG, "pad");
-			break;
-		case 1:
-			label = xacFlipSenseFeatureMaker.NOFLIP;
-			// Log.d(LOGTAG, "side");
-			break;
-
-		}
-
-		xacFlipSenseFeatureMaker.clearData();
-		return label;
 	}
 
 }

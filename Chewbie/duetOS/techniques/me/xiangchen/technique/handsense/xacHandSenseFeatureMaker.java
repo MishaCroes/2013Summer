@@ -14,6 +14,8 @@ public class xacHandSenseFeatureMaker {
 	
 	public final static int HANDTIMEOUT = 700; // ms
 	public final static int TOUCHONSETTIME = 350; // ms
+	final static int NUMROWSHANDEDNESS = LauncherManager.PHONEACCELFPSGAME
+			* HANDTIMEOUT / 1000;
 	
 	static final int MAXNUMROW = 8096;
 	static final int NUMSOURCES = 2;
@@ -174,46 +176,31 @@ public class xacHandSenseFeatureMaker {
 		pntrEntryWatch = 0;
 	}
 	
-//	/**
-//	 * delete the last added feature row
-//	 */
-//	public static void deleteLastEntry() {
-//		if(pntrEntry <= 0)
-//			return;
-//		pntrEntry--;
-//		Log.d(tag, "The " + (pntrEntry+1) + "th entry deleted");
-//	}
-//	
-//	/**
-//	 * save the feature table as a .csv file
-//	 */
-//	public static void generateFeatureCSV(String[] classLabels) {
-//		Calendar cal = Calendar.getInstance();
-//		String fileName = "duetToucSense" + cal.getTime().toString() + ".csv";
-//		try {
-//			FileWriter fstream = new FileWriter(fileName);
-//			BufferedWriter out = new BufferedWriter(fstream);
-//			  
-//			// write the first row
-//			for(int i = 0; i < numFeatures; i++) {
-//				out.write(featureNames[i] + ",");
-//			}
-//			out.write(featureNames[numFeatures] + "\n");
-//			
-//			for(int j = 0; j < pntrEntry; j++) {
-//				for(int i = 0; i < numFeatures; i++) {
-//					out.write(featureTable[j][i] + ",");
-//				}
-//				out.write(classLabels[(int) featureTable[j][numFeatures]] + "\n");
-//			}
-//			
-//		  //Close the output stream
-//		  out.close();
-//		  System.out.println(fileName + " created.");
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		
-//	}
+	public static int calculateHandedness() {
+		int label = xacHandSenseFeatureMaker.UNKNOWN;
+
+		Object[] features = xacHandSenseFeatureMaker
+				.getFlattenedData(NUMROWSHANDEDNESS);
+		int idxClass = -1;
+		try {
+			idxClass = (int) HandSenseClassifier.classify(features);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			Log.d(LOGTAG, "cannot get features");
+		}
+
+		switch (idxClass) {
+		case 0:
+			label = xacHandSenseFeatureMaker.LEFTHAND;
+			Log.d(LOGTAG, "left hand");
+			break;
+		case 1:
+			label = xacHandSenseFeatureMaker.RIGHTHAND;
+			Log.d(LOGTAG, "right hand");
+			break;
+		}
+
+		return label;
+	}
 
 }

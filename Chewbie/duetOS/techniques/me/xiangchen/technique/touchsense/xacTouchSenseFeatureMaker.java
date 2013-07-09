@@ -28,6 +28,9 @@ public class xacTouchSenseFeatureMaker {
 	static xacAccelerometer accelWatch;
 	static xacAccelerometer accelPhone;
 	static xacAccelerometer[] accels;
+	
+	final static int NUMROWSHANDPARTS = LauncherManager.PHONEACCELFPSGAME
+			* TOUCHTIMEOUT / 1000;
 
 	/**
 	 * create a table of features, including the first row (the names of the
@@ -183,46 +186,34 @@ public class xacTouchSenseFeatureMaker {
 		pntrEntryWatch = 0;
 	}
 
-	// /**
-	// * delete the last added feature row
-	// */
-	// public static void deleteLastEntry() {
-	// if(pntrEntry <= 0)
-	// return;
-	// pntrEntry--;
-	// Log.d(tag, "The " + (pntrEntry+1) + "th entry deleted");
-	// }
-	//
-	// /**
-	// * save the feature table as a .csv file
-	// */
-	// public static void generateFeatureCSV(String[] classLabels) {
-	// Calendar cal = Calendar.getInstance();
-	// String fileName = "duetToucSense" + cal.getTime().toString() + ".csv";
-	// try {
-	// FileWriter fstream = new FileWriter(fileName);
-	// BufferedWriter out = new BufferedWriter(fstream);
-	//
-	// // write the first row
-	// for(int i = 0; i < numFeatures; i++) {
-	// out.write(featureNames[i] + ",");
-	// }
-	// out.write(featureNames[numFeatures] + "\n");
-	//
-	// for(int j = 0; j < pntrEntry; j++) {
-	// for(int i = 0; i < numFeatures; i++) {
-	// out.write(featureTable[j][i] + ",");
-	// }
-	// out.write(classLabels[(int) featureTable[j][numFeatures]] + "\n");
-	// }
-	//
-	// //Close the output stream
-	// out.close();
-	// System.out.println(fileName + " created.");
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// }
+	public static int calculateHandPart(double[] extras) {
+		int label = xacTouchSenseFeatureMaker.UNKNOWN;
 
+		Object[] features = xacTouchSenseFeatureMaker.getFlattenedData(
+				NUMROWSHANDPARTS, extras);
+		int idxClass = -1;
+		try {
+			idxClass = (int) TouchSenseClassifier.classify(features);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		switch (idxClass) {
+		case 0:
+			label = xacTouchSenseFeatureMaker.PAD;
+			// Log.d(LOGTAG, "pad");
+			break;
+		case 1:
+			label = xacTouchSenseFeatureMaker.SIDE;
+			// Log.d(LOGTAG, "side");
+			break;
+		case 2:
+			label = xacTouchSenseFeatureMaker.KNUCKLE;
+			// Log.d(LOGTAG, "knuckle");
+			break;
+		}
+
+		return label;
+	}
 }
