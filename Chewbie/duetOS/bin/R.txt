@@ -81,10 +81,11 @@ int drawable ic_extension 0x7f02001f
 int drawable ic_launcher 0x7f020020
 int drawable left_back_wrist 0x7f020021
 int drawable left_inner_wrist 0x7f020022
-int drawable right_back_wrist 0x7f020023
-int drawable right_inner_wrist 0x7f020024
-int drawable text_bg 0x7f020025
-int drawable widget_frame 0x7f020026
+int drawable map_toronto 0x7f020023
+int drawable right_back_wrist 0x7f020024
+int drawable right_inner_wrist 0x7f020025
+int drawable text_bg 0x7f020026
+int drawable widget_frame 0x7f020027
 int id action_settings 0x7f05000f
 int id hybrid 0x7f050004
 int id none 0x7f050000

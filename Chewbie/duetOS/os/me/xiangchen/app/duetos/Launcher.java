@@ -13,6 +13,7 @@ import me.xiangchen.app.duetapp.call.Call;
 import me.xiangchen.app.duetapp.email.Email;
 import me.xiangchen.app.duetapp.email.EmailExtension;
 import me.xiangchen.app.duetapp.map.Map;
+import me.xiangchen.app.duetapp.map.MapExtension;
 import me.xiangchen.app.duetapp.reader.Reader;
 import me.xiangchen.app.duetapp.reader.ReaderExtenstion;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
@@ -32,8 +33,6 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -186,6 +185,8 @@ public class Launcher extends Activity implements SensorEventListener {
 		Map map = new Map(this);
 		addIcon(map);
 		apps.add(map);
+		MapExtension mapExtension = new MapExtension();
+		htAppExtensions.put(map, mapExtension);
 	}
 
 	private void addIcon(App app) {
@@ -263,6 +264,7 @@ public class Launcher extends Activity implements SensorEventListener {
 					View appView = activeApp.getViewGroup();
 					if (appView != null) {
 						layout.addView(appView);
+						LauncherManager.resumeWatch();
 					}
 				}
 			} else {

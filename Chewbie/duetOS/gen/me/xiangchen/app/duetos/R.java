@@ -212,10 +212,11 @@ containing a value of this type.
         public static final int ic_launcher=0x7f020020;
         public static final int left_back_wrist=0x7f020021;
         public static final int left_inner_wrist=0x7f020022;
-        public static final int right_back_wrist=0x7f020023;
-        public static final int right_inner_wrist=0x7f020024;
-        public static final int text_bg=0x7f020025;
-        public static final int widget_frame=0x7f020026;
+        public static final int map_toronto=0x7f020023;
+        public static final int right_back_wrist=0x7f020024;
+        public static final int right_inner_wrist=0x7f020025;
+        public static final int text_bg=0x7f020026;
+        public static final int widget_frame=0x7f020027;
     }
     public static final class id {
         public static final int action_settings=0x7f05000f;

@@ -21,7 +21,21 @@ public class xacInteractiveCanvas extends View {
 	final public static int fgColorRed = 0xFFE80C7A;
 
 	private ArrayList<xacShape> shapes;
-
+	private float xOffset;
+	private float yOffset;
+	private float scalePrev = 1;
+	private float scaleCurr = 1;
+	
+	public void setOffsets (float dx, float dy) {
+		xOffset = dx;
+		yOffset = dy;
+	}
+	
+	public void setScale (float s) {
+		scalePrev = scaleCurr;
+		scaleCurr = s;
+	}
+	
 	public xacInteractiveCanvas(Context context) {
 		super(context);
 		shapes = new ArrayList<xacShape>();
@@ -87,6 +101,10 @@ public class xacInteractiveCanvas extends View {
 	protected void onDraw(Canvas canvas) {
 
 		for (xacShape shape : shapes) {
+//			shape.offset(xOffset, yOffset);
+//			float scaleRatio = scaleCurr / scalePrev;
+//			shape.scale(scaleRatio);
+			
 			shape.draw(canvas);
 		}
 	}

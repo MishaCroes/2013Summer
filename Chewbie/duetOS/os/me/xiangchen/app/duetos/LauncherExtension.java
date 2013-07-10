@@ -182,4 +182,12 @@ public class LauncherExtension extends ControlExtension {
 	public void buzz(int duration) {
 		startVibrator(duration, 0, 1);
 	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
 }

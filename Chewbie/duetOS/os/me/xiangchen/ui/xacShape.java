@@ -22,6 +22,7 @@ public class xacShape {
 	int type;
 	int alpha = DEFAULTALPHA;
 	String text = "";
+	int colorStroke = 0xFFFFFFFF;
 	
 	public xacShape(int type) {
 		fillPaint = new Paint();
@@ -56,7 +57,7 @@ public class xacShape {
 		xCenter += dx;
 		yCenter += dy;
 	}
-
+	
 	public float getX() {
 		return xCenter;
 	}
@@ -77,9 +78,18 @@ public class xacShape {
 	public float getH() {
 		return height;
 	}
+	
+	public void scale(float s) {
+		width *= s;
+		height *= s;
+	}
 
 	public void setColor(int color) {
 		fillPaint.setColor(color);
+	}
+	
+	public void setStrokeColor(int color) {
+		colorStroke = color;
 	}
 	
 	public void toggleAlpha() {
@@ -140,11 +150,11 @@ public class xacShape {
 	}
 	
 	public void toggleStroke() {
-		strokePaint.setColor(strokePaint.getColor() == Color.WHITE ? Color.TRANSPARENT : Color.WHITE);
+		strokePaint.setColor(strokePaint.getColor() == colorStroke ? Color.TRANSPARENT : colorStroke);
 	}
 	
 	public void toggleStroke(int w) {
 		strokePaint.setStrokeWidth(w);
-		strokePaint.setColor(strokePaint.getColor() == Color.WHITE ? Color.TRANSPARENT : Color.WHITE);
+		strokePaint.setColor(strokePaint.getColor() == colorStroke ? Color.TRANSPARENT : colorStroke);
 	}
 }

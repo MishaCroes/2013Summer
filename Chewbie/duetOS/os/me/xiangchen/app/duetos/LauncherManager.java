@@ -64,4 +64,10 @@ public class LauncherManager {
 			phone.doToast(toast);
 		}
 	}
+	
+	public static void resumeWatch() {
+		if(watch != null) {
+			watch.resume();
+		}
+	}
 }
