@@ -6,10 +6,10 @@ import android.graphics.Bitmap;
 
 public class AppManager {
 
-	protected static void updateWatchVisual(Bitmap bitmap) {
+	protected static void updateWatchVisual(Bitmap bitmap, boolean toStick) {
 		LauncherExtension watch = LauncherManager.getWatch();
 		if(watch != null) {
-			watch.updateVisual(bitmap);
+			watch.updateVisual(bitmap, toStick);
 		}
 	}
 }

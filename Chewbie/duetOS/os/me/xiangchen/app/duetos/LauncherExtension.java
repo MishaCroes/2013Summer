@@ -1,6 +1,10 @@
 package me.xiangchen.app.duetos;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import me.xiangchen.app.duetapp.AppExtension;
+import me.xiangchen.app.duetapp.email.EmailManager;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -101,12 +105,27 @@ public class LauncherExtension extends ControlExtension {
 		if (appExt != null) {
 			appExt.doResume();
 		} else {
-			updateVisual();
+			showTime();
 		}
 	}
 
 	public void showText(String text) {
+		textView.setTextSize(10);
 		textView.setText(text);
+		updateVisual();
+	}
+
+	public void showTime() {
+		Date dt = new Date();
+		@SuppressWarnings("deprecation")
+		int curHours = dt.getHours();// lCDateTime.getDisplayName(Calendar.HOUR,
+										// Calendar.SHORT, Locale.US);
+		@SuppressWarnings("deprecation")
+		int curMinutes = dt.getMinutes();// .getDisplayName(Calendar.MINUTE,
+											// Calendar.SHORT, Locale.US);
+		textView.setTextSize(16);
+		textView.setText((curHours < 10 ? "0" : "") + curHours + ":"
+				+ (curMinutes < 10 ? "0" : "") + curMinutes);
 		updateVisual();
 	}
 
@@ -118,12 +137,27 @@ public class LauncherExtension extends ControlExtension {
 		showBitmap(bitmap);
 	}
 
-	public void updateVisual(Bitmap bitmap) {
-		if (bitmap != null) {
-			showBitmap(bitmap);
+	public void updateVisual(Bitmap bmp, boolean toStick) {
+		if (!toStick) {
+			if (bmp == null) {
+				showTime();
+			} else {
+				showBitmap(bmp);
+			}
 		} else {
-			updateVisual();
+			if (bmp != null) {
+				bitmap = bmp;
+			}
+			if (bitmap != null) {
+				showBitmap(bitmap);
+			} else {
+				updateVisual();
+			}
 		}
+	}
+
+	public void blackOut() {
+		showTime();
 	}
 
 	@Override
@@ -156,6 +190,19 @@ public class LauncherExtension extends ControlExtension {
 
 	@Override
 	public void onSwipe(int direction) {
+
+		Calendar calendar = Calendar.getInstance();
+		long curTime = calendar.getTimeInMillis();
+		switch (direction) {
+		case Control.Intents.SWIPE_DIRECTION_RIGHT:
+			LauncherManager
+					.updateWatchGesture(EmailManager.SWIPECLOSE, curTime);
+			break;
+		case Control.Intents.SWIPE_DIRECTION_LEFT:
+			LauncherManager.updateWatchGesture(EmailManager.SWIPEOPEN, curTime);
+			break;
+		}
+
 		if (appExt == null) {
 			appExt = LauncherManager.getAppExtension();
 		}
@@ -178,15 +225,15 @@ public class LauncherExtension extends ControlExtension {
 		return context.getResources().getDimensionPixelSize(
 				R.dimen.smart_watch_control_height);
 	}
-	
+
 	public void buzz(int duration) {
 		startVibrator(duration, 0, 1);
 	}
-	
+
 	public int getWidth() {
 		return width;
 	}
-	
+
 	public int getHeight() {
 		return height;
 	}

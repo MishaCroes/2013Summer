@@ -26,6 +26,9 @@ public class xacInteractiveCanvas extends View {
 	private float scalePrev = 1;
 	private float scaleCurr = 1;
 	
+//	public float idxInScreen0 = 0;
+//	public float idxInScreen1 = 0;
+	
 	public void setOffsets (float dx, float dy) {
 		xOffset = dx;
 		yOffset = dy;
@@ -77,6 +80,10 @@ public class xacInteractiveCanvas extends View {
 	public ArrayList<xacShape> getShapes() {
 		return shapes;
 	}
+	
+	public void remove(xacShape shape) {
+		shapes.remove(shape);
+	}
 
 	public void scrollContentsBy(float dx, float dy) {
 		for(xacShape shape : shapes) {
@@ -101,11 +108,29 @@ public class xacInteractiveCanvas extends View {
 	protected void onDraw(Canvas canvas) {
 
 		for (xacShape shape : shapes) {
-//			shape.offset(xOffset, yOffset);
+			
+			shape.offset(xOffset, yOffset);
 //			float scaleRatio = scaleCurr / scalePrev;
 //			shape.scale(scaleRatio);
-			
-			shape.draw(canvas);
+			if(shape.getY() + shape.getH() > 0 && shape.getY() < this.getMeasuredHeight()) {
+				shape.draw(canvas);
+			}
 		}
+		
+//		if(idxInScreen0 < idxInScreen1) {
+//			int numShapes = shapes.size();
+//			for(int i=(int) idxInScreen0; i<=idxInScreen1; i++) {
+//				xacShape shape = shapes.get(numShapes - 1 - i);
+//				shape.draw(canvas);
+//			}
+//		} else {
+//			for (xacShape shape : shapes) {
+//				
+//				shape.offset(xOffset, yOffset);
+////				
+//					shape.draw(canvas);
+////				}
+//			}
+//		}
 	}
 }

@@ -29,7 +29,7 @@ public class EmailExtension extends AppExtension {
 	
 	@Override
 	public void doResume() {
-//		LauncherManager.getWatch().showText("Email");
+		showText("Email");
 	}
 	
 	@Override
@@ -76,19 +76,23 @@ public class EmailExtension extends AppExtension {
 	}
 	
 	public void showNotification(int flag) {
+		if(LauncherManager.getWatchMuteness() == true) {
+			toast.setImage(R.drawable.mute_small);
+		}
+		else {
+			toast.setImage(R.drawable.email_small);
+		}
+		
 		if(flag > 0) {
 			toast.fadeIn(null);
+			Bitmap bitmap = toast.getBitmap();
+			updateWatchVisual(bitmap, false);
+			buzz(100);
 			
-			Bitmap bitmap = toast.getBitmap(0);
-			LauncherExtension watch = LauncherManager.getWatch();
-			if(watch != null) {
-				watch.buzz(100);
-				watch.updateVisual(bitmap);
-			}
 		} else {
 			toast.fadeOut();
 			if(toast.getAlpha() <= xacToast.LOWALPHA * 2) {
-				LauncherManager.getWatch().updateVisual(null);
+				updateWatchVisual(null, false);
 			}
 		}
 	}

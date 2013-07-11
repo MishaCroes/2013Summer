@@ -31,6 +31,7 @@ public class Map extends App {
 	public final static float SCALERATE = 1.0f;
 	public final static float TRANSLATERATE = 0.5f;
 	public final static float INITMAPSCALE = 1.0f;
+	public final static float TAPTHRS = 50;
 
 	xacInteractiveCanvas canvas;
 
@@ -48,8 +49,13 @@ public class Map extends App {
 
 	float zoomCenterX = 0;
 	float zoomCenterY = 0;
-	
-	LinearLayout mapView;
+
+	RelativeLayout mapLayout;
+
+	float xPrev;
+	float yPrev;
+	float distX;
+	float distY;
 
 	public Map(Context context) {
 		super(context);
@@ -58,11 +64,13 @@ public class Map extends App {
 		MapManager.setPhone(this);
 
 		appLayout = new RelativeLayout(context);
-		mapView = new LinearLayout(context);
+		mapLayout = new RelativeLayout(context);
+		LinearLayout mapView = new LinearLayout(context);
+		RelativeLayout.LayoutParams paramsMap = new RelativeLayout.LayoutParams(HEIGHT, HEIGHT);
 		mapView.setBackgroundResource(R.drawable.map_toronto);
-		mapView.setScaleX(zoomFactor);
-		mapView.setScaleY(zoomFactor);
-
+		
+		mapView.setId(1026);
+		
 		canvas = new xacInteractiveCanvas(context);
 		canvas.setBackgroundColor(0x00000000);
 		for (int i = 0; i < NUMTARGETS; i++) {
@@ -74,8 +82,18 @@ public class Map extends App {
 					DIMTARGET, cx, cy, color);
 			marker.setStrokeColor(0xFF000000);
 		}
-
-		mapView.setOnTouchListener(new View.OnTouchListener() {
+		RelativeLayout.LayoutParams paramsCanvas = new RelativeLayout.LayoutParams(HEIGHT, HEIGHT);
+		canvas.setId(1025);
+		
+//		paramsMap.addRule(RelativeLayout.BELOW, canvas.getId());
+		mapLayout.addView(mapView, paramsMap);
+//		paramsCanvas.addRule(RelativeLayout.ABOVE, mapView.getId());
+		mapLayout.addView(canvas, paramsCanvas);
+		
+		mapLayout.setScaleX(zoomFactor);
+		mapLayout.setScaleY(zoomFactor);
+		
+		mapLayout.setOnTouchListener(new View.OnTouchListener() {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -83,9 +101,8 @@ public class Map extends App {
 				return true;
 			}
 		});
-		mapView.addView(canvas);
 
-		appLayout.addView(mapView);
+		appLayout.addView(mapLayout);
 		appLayout.setBackgroundColor(0xFF000000);
 
 	}
@@ -93,13 +110,17 @@ public class Map extends App {
 	public void doSelection(float xRatio, float yRatio) {
 		float dx = SHIFTWIDTH * xRatio;
 		float dy = SHIFTHEIGHT * yRatio;
-		ArrayList<xacShape> shapes = canvas.getTouchedShapes(xTouchDown + dx,
-				yTouchDown + dy);
+		selectTarget(xTouchDown + dx, yTouchDown + dy);
+
+	}
+
+	private void selectTarget(float x, float y) {
+		ArrayList<xacShape> shapes = canvas.getTouchedShapes(x, y);
 		for (xacShape shape : shapes) {
 			shape.toggleStroke();
 		}
 		canvas.invalidate();
-		MapManager.shift(mapView, xTouchDown, yTouchDown, SHIFTWIDTH,
+		MapManager.shift(mapLayout, xTouchDown, yTouchDown, SHIFTWIDTH,
 				SHIFTHEIGHT);
 	}
 
@@ -133,6 +154,13 @@ public class Map extends App {
 			}
 			zoomCenterX = -1;
 			zoomCenterY = -1;
+
+			xPrev = x0;
+			yPrev = y0;
+
+			distX = 0;
+			distY = 0;
+
 			break;
 		case MotionEvent.ACTION_MOVE:
 			if (numTouches == 1) {
@@ -140,44 +168,56 @@ public class Map extends App {
 				float dy = (y0 - yTouchDown) * TRANSLATERATE;
 				xOffset += dx;
 				yOffset += dy;
-				mapView.setTranslationX(xOffset);
-				mapView.setTranslationY(yOffset);
+				mapLayout.setTranslationX(xOffset);
+				mapLayout.setTranslationY(yOffset);
+
+				distX += Math.abs(x0 - xPrev);
+				distY += Math.abs(y0 - yPrev);
 			}
-			
+
 			if (event.getPointerCount() > 1 && pinchDist > 0) {
-				
+
 				float adjustRate = 0.9f;
-				zoomCenterX = zoomCenterX * adjustRate + ((x0 + x1) / 2) * (1 - adjustRate);
-				zoomCenterY = zoomCenterY * adjustRate + (y0 + y1) / 2 * (1 - adjustRate);
-				
+				zoomCenterX = zoomCenterX * adjustRate + ((x0 + x1) / 2)
+						* (1 - adjustRate);
+				zoomCenterY = zoomCenterY * adjustRate + (y0 + y1) / 2
+						* (1 - adjustRate);
+
 				float pinchRatio = ((dist - pinchDist) + EPS)
 						/ (pinchDist + EPS);
 				zoomFactor += pinchRatio * SCALERATE;
 				zoomFactor = Math.max(1.0f, zoomFactor);
 
-				mapView.setScaleX(zoomFactor);
-				mapView.setScaleY(zoomFactor);
-				
+				mapLayout.setScaleX(zoomFactor);
+				mapLayout.setScaleY(zoomFactor);
+
 			}
+
 			pinchDist = dist;
 			break;
 		case MotionEvent.ACTION_UP:
-			if (numTouches == 1) {
-				MapManager.shift(mapView, xTouchDown, yTouchDown, SHIFTWIDTH, SHIFTHEIGHT);
+			if (numTouches == 1 && Math.max(distX, distY) < TAPTHRS) {
+				selectTarget(x0, y0);
+				MapManager.shift(mapLayout, xTouchDown, yTouchDown, SHIFTWIDTH,
+						SHIFTHEIGHT);
 			}
 			canvas.setOffsets(0, 0);
 			numTouches = 0;
 			break;
 		}
+
+		xPrev = x0;
+		yPrev = y0;
 	}
-	
+
 	public void doTranslation(float dx, float dy) {
 		xTouchDown -= dx;
 		yTouchDown -= dy;
 		xOffset += dx;
 		yOffset += dy;
-		mapView.setTranslationX(xOffset);
-		mapView.setTranslationY(yOffset);
-		MapManager.shift(mapView, xTouchDown, yTouchDown, SHIFTWIDTH, SHIFTHEIGHT);
+		mapLayout.setTranslationX(xOffset);
+		mapLayout.setTranslationY(yOffset);
+		MapManager.shift(mapLayout, xTouchDown, yTouchDown, SHIFTWIDTH,
+				SHIFTHEIGHT);
 	}
 }

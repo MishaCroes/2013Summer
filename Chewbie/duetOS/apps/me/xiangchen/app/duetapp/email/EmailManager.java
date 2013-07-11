@@ -46,12 +46,12 @@ public class EmailManager extends AppManager {
 	
 	public static int tweetContent; 
 	
-	public static ArrayList<xacShape> selectedTweets;
+//	public static ArrayList<xacShape> selectedTweets;
 
 	public static void initGestureManager() {
 		watchGesture = new SyncGesture();
 		phoneGesture = new SyncGesture();
-		selectedTweets = new ArrayList<xacShape>();
+//		selectedTweets = new ArrayList<xacShape>();
 	}
 	
 	public static void setWatch(EmailExtension w) {

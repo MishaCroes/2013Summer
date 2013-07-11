@@ -42,7 +42,7 @@ public class Reader extends App {
 	public final static float CURSORMARGIN = 20;
 	
 	public final static int SHIFTHORI = 0;
-	public final static int SHIFTVERT = 1;
+	public final static int SHIFTVERT = 0;
 
 	TextView textView;
 	String text;
@@ -75,6 +75,7 @@ public class Reader extends App {
 	String selectedText = "";
 	int firstLine;
 	int firstOffset;
+	float firstX;
 	int prevLine;
 	int prevOffset;
 
@@ -249,13 +250,22 @@ public class Reader extends App {
 					if (firstLine < 0) {
 						firstLine = prevLine;
 						firstOffset = prevOffset;
+						firstX = xCur;
 					}
 					
-					float l = xCur - CURSORWIDTH / 2;
-					float t = prevLine * textView.getLineHeight() - CURSORMARGIN;// + dScrollY;
-					float r = xCur + CURSORWIDTH / 2;
-					float b = t + textView.getLineHeight() + CURSORMARGIN;
-					updateCursor(l, t, r, b);
+//					float l = xCur - CURSORWIDTH / 2;
+//					float t = prevLine * textView.getLineHeight() - CURSORMARGIN;// + dScrollY;
+//					float r = xCur + CURSORWIDTH / 2;
+//					float b = t + textView.getLineHeight() + CURSORMARGIN;
+//					updateCursor(l, t, r, b);
+					
+					float lineHeight = textView.getLineHeight();
+					float x0 = firstX;
+					float y0 = firstLine * lineHeight;
+					float x1 = xCur;
+					float y1 = prevLine * lineHeight;
+					updateSelectionFrame(x0, y0, x1, y1, lineHeight);
+					
 				}
 				break;
 			}
@@ -295,6 +305,31 @@ public class Reader extends App {
 		bufCan.clearRects();
 		RectF rectf = new RectF(l, t, r, b);
 		bufCan.addRect(rectf);
+		bufCan.invalidate();
+	}
+	
+	private void updateSelectionFrame(float x0, float y0, float x1, float y1, float lineHeight) {
+		bufCan.clearRects();
+		if(y0 == y1) {
+			// draw a frame with the current line
+			float xmin = Math.min(x0, x1);
+			float xmax = Math.max(x0, x1);
+			bufCan.addRect(new RectF(xmin, y0, xmax, y0 + lineHeight));
+		} else {
+			float ymin = Math.min(y0, y1);
+			float ymax = Math.max(y0, y1);
+			float xmin = ymin == y0 ? x0 : x1;
+			float xmax = ymax == y0 ? x0 : x1;
+			
+			// draw a frame on the first line
+			bufCan.addRect(new RectF(xmin, ymin, APPWIDTH, ymin + lineHeight));
+			// draw some frames in between
+			for(float y = ymin + lineHeight; y < ymax; y += lineHeight) {
+				bufCan.addRect(new RectF(0, y, APPWIDTH, y + lineHeight));
+			}
+			// draw a frame on the last line
+			bufCan.addRect(new RectF(0, ymax, xmax, ymax + lineHeight));
+		}
 		bufCan.invalidate();
 	}
 	

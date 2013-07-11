@@ -97,9 +97,8 @@ public class xacToast extends ViewGroup {
 		imageSource = src;
 	}
 	
-	public Bitmap getBitmap(float alpha) {
+	public Bitmap getBitmap() {
 		BitmapDrawable bitmapDrawable = ((BitmapDrawable) imageView.getDrawable());
-		bitmapDrawable.setAlpha((int) (255 * alpha));
 		Bitmap bitmap = bitmapDrawable.getBitmap();
 		return bitmap;
 	}

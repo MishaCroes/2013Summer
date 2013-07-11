@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 
 public class xacShape {
 
@@ -133,6 +134,10 @@ public class xacShape {
 	
 	public void setTextColor(int color) {
 		textPaint.setColor(color);
+	}
+	
+	public void setTypeface(Typeface tf) {
+		textPaint.setTypeface(tf);
 	}
 	
 	public boolean hitTest(float x, float y) {

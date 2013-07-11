@@ -18,9 +18,11 @@ import me.xiangchen.ui.xacShape;
 import me.xiangchen.ui.xacToast;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,22 +31,23 @@ public class Email extends App {
 
 	public final static String LOGTAG = "DuetOS";
 	public final static int WIDTHAPP = 1080;
+	public final static int HEIGHTAPP = 1920;
 	public final static int WIDTHEMAIL = 1024;
 	public final static int DIMMARGIN = (WIDTHAPP - WIDTHEMAIL) / 2;
 	public final static int HEIGHTEMAIL = 320;
-	public final static int NUMSTARTINGEMAILS = 0;
+	public final static int NUMSTARTINGEMAILS = 10;
 	public final static int TAPOFFSETTHRES = 50;
 
 	final static int NUMROWSHANDPARTS = LauncherManager.PHONEACCELFPSGAME
 			* xacTouchSenseFeatureMaker.TOUCHTIMEOUT / 1000;
 	private static final float APPWIDTH = 1080;
-	
+
 	public final static int EMAILFREQUENCY = 3;
 
 	int cntEmail = 0;
 
 	xacInteractiveCanvas canvas;
-	LinearLayout openedEmail;
+	LinearLayout openedEmailLayout;
 	LinearLayout.LayoutParams paramsOpened;
 	TextView textViewEmail;
 
@@ -66,12 +69,22 @@ public class Email extends App {
 	ArrayList<xacShape> allEmails;
 
 	int handPart;
-	
+
 	int numTouch;
-	
+
 	Random random;
-	
+
 	xacToast toast;
+
+	Button btnMarkRead;
+	Button btnUnselect;
+	Button btnDelete;
+	ArrayList<Button> buttons;
+	RelativeLayout layoutButtons;
+
+	ArrayList<xacShape> selectedEmails;
+
+	xacShape openedEmail;
 
 	public Email(Context context) {
 		super(context);
@@ -81,23 +94,24 @@ public class Email extends App {
 
 		EmailManager.initGestureManager();
 		EmailManager.setPhone(this);
-		
+
 		canvas = new xacInteractiveCanvas(context);
 		canvas.setBackgroundColor(xacInteractiveCanvas.bgColorLight);
 
-		openedEmail = new LinearLayout(context);
-		openedEmail.setBackgroundColor(xacInteractiveCanvas.fgColorCream);
+		openedEmailLayout = new LinearLayout(context);
+		openedEmailLayout.setBackgroundColor(xacInteractiveCanvas.fgColorCream);
 		textViewEmail = new TextView(context);
 		textViewEmail.setTextSize(72);
 		textViewEmail.setTextColor(xacInteractiveCanvas.bgColorDark);
-		openedEmail.addView(textViewEmail);
+		openedEmailLayout.addView(textViewEmail);
 		paramsOpened = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.MATCH_PARENT);
-		openedEmail.setOnTouchListener(new View.OnTouchListener() {
+		openedEmailLayout.setOnTouchListener(new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				appLayout.removeView(openedEmail);
+				appLayout.removeView(openedEmailLayout);
+				openedEmail = null;
 				return true;
 			}
 		});
@@ -122,42 +136,120 @@ public class Email extends App {
 		random = new Random();
 		toast = new xacToast(context);
 		toast.setImgSrc(R.drawable.email);
-		
+
+		dispatchButtons(context);
+		selectedEmails = new ArrayList<xacShape>();
+
 		xacTouchSenseFeatureMaker.setLabel(xacTouchSenseFeatureMaker.UNKNOWN);
 		xacTouchSenseFeatureMaker.createFeatureTable();
 	}
-	
+
 	@Override
 	public void runOnUIThread() {
-		if ((random.nextInt() + 97)
-				% (Launcher.TIMERFPS * EMAILFREQUENCY) == 0) {
+		if ((random.nextInt() + 97) % (Launcher.TIMERFPS * EMAILFREQUENCY) == 0
+				&& cntEmail <= 40) {
 			addEmail();
 			updateInboxVisual();
-//			if(!toast.isDead()) {
-//				toast.kill();
-//			}
-			LauncherManager.showNotification(toast);
-			
-			EmailExtension emailExt = EmailManager.getWatch(); 
-			if(emailExt != null) {
-				emailExt.showNotification(1);
-			}
-			
+
+			LauncherManager.showNotificationOnPhone(R.drawable.email);
+			LauncherManager.showNotificationOnWatch(R.drawable.email_small,
+					true);
 			canvas.invalidate();
-		} else {
-			toast.fadeOut();
-			EmailManager.getWatch().showNotification(-1);
-		}
+		} 
 		
 	}
 
-	public void addEmail() {
+	private void dispatchButtons(Context context) {
+		layoutButtons = new RelativeLayout(context);
+
+		buttons = new ArrayList<Button>();
+
+		btnMarkRead = new Button(context);
+		btnMarkRead.setText("Mark as read");
+		btnMarkRead.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				for(xacShape email : selectedEmails) {
+					email.setTypeface(LauncherManager.getTypeface(LauncherManager.NORMAL));
+				}
+				canvas.invalidate();
+			}
+		});
+		// layoutButtons.addView(btnMarkRead);
+		buttons.add(btnMarkRead);
+
 		
+
+		btnDelete = new Button(context);
+		btnDelete.setText("Delete");
+		btnDelete.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				for(xacShape email : selectedEmails) {
+					allEmails.remove(email);
+					canvas.remove(email);
+					htEmails.remove(email);
+				}
+				updateInboxVisual();
+				selectedEmails.clear();
+				appLayout.removeView(layoutButtons);
+				canvas.invalidate();
+
+			}
+		});
+		// layoutButtons.addView(btnDelete);
+		buttons.add(btnDelete);
+		
+		btnUnselect = new Button(context);
+		btnUnselect.setText("Unselect");
+		btnUnselect.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				for(xacShape email : selectedEmails) {
+					email.toggleStroke();
+				}
+				selectedEmails.clear();
+				appLayout.removeView(layoutButtons);
+				canvas.invalidate();
+			}
+		});
+		// layoutButtons.addView(btnUnselect);
+		buttons.add(btnUnselect);
+
+		Button btnLast = null;
+		int idBtn = 1;
+		layoutButtons.setId(1027);
+		for (Button btn : buttons) {
+			btn.setId(1027 + idBtn);
+			btn.setBackgroundColor(0x88000000);
+			btn.setTextColor(0xDDFFFFFF);
+			btn.setTypeface(LauncherManager.getTypeface(LauncherManager.NORMAL));
+			btn.setTextSize(20);
+			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+					360, 240);
+			if (idBtn > 1) {
+				params.addRule(RelativeLayout.RIGHT_OF, btnLast.getId());
+			}
+			params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			layoutButtons.addView(btn, params);
+			idBtn++;
+			btnLast = btn;
+		}
+
+		// appLayout.addView(layoutButtons);
+	}
+
+	public void addEmail() {
+
 		xacShape emailEntry = canvas.addShape(xacShape.TEXTBOX, WIDTHEMAIL,
 				HEIGHTEMAIL, 0, 0, xacInteractiveCanvas.fgColorCream);
-		
+
+		emailEntry.setTypeface(LauncherManager
+				.getTypeface(LauncherManager.BOLD));
 		allEmails.add(emailEntry);
-		String textEmail = "Email No." + allEmails.size();
+		String textEmail = "Email No." + cntEmail;
 		htEmails.put(emailEntry, textEmail);
 
 		cntEmail++;
@@ -165,18 +257,28 @@ public class Email extends App {
 
 	public void updateInboxVisual() {
 		int numEmails = allEmails.size();
-		for(int i=0; i<numEmails; i++) {
+		for (int i = 0; i < numEmails; i++) {
 			float cx = WIDTHAPP / 2;
-			float cy = DIMMARGIN * (1 + i) + HEIGHTEMAIL * (i + 0.5f);
+			float cy = DIMMARGIN * (1 + i) + HEIGHTEMAIL * (i + 0.5f) - dScrollY;
+			
+//			if(cy - HEIGHTEMAIL - DIMMARGIN < 0 && cy > 0) {
+//				canvas.idxInScreen0 = i;
+//			}
+//			
+//			if(cy < HEIGHTAPP && cy + HEIGHTEMAIL + DIMMARGIN > HEIGHTAPP) {
+//				canvas.idxInScreen1 = i;
+//			}
+//			
 			xacShape emailEntry = allEmails.get(numEmails - 1 - i);
 			String textEmail = htEmails.get(emailEntry);
 			int lenPreview = Math.min(textEmail.length(), 128);
 			emailEntry.setText(textEmail.substring(0, lenPreview));
+			
 			emailEntry.setTextColor(xacInteractiveCanvas.bgColorDark);
 			emailEntry.setPosition(cx, cy);
 		}
 	}
-	
+
 	@Override
 	public void doAccelerometer(float values[]) {
 		xacHandSenseFeatureMaker.updatePhoneAccel(values);
@@ -200,26 +302,30 @@ public class Email extends App {
 
 		Calendar calendar = Calendar.getInstance();
 		long curTime = calendar.getTimeInMillis();
-		
+
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
-			appLayout.removeView(openedEmail);
+			appLayout.removeView(openedEmailLayout);
 			hitEmails = canvas.getTouchedShapes(xCur, yCur);
 			dTouchX = 0;
 			dTouchY = 0;
 
 			handPart = calculateHandPart(new double[] { event.getSize(0) });
-			
+
 			xTouchDown = coords.x;
 			yTouchDown = coords.y;
 
 			break;
 		case MotionEvent.ACTION_MOVE:
 			switch (handPart) {
+			case xacTouchSenseFeatureMaker.KNUCKLE:
+				break;
 			case xacTouchSenseFeatureMaker.PAD:
+			case xacTouchSenseFeatureMaker.SIDE:
+			default:
 				float speedRatio = 0.75f;
 				float dy = (yCur - yPrev) * speedRatio;
-				
+
 				float dx = (xCur - xPrev) * 50;
 				dy *= Math.max(0, 1 - Math.abs(dx) / APPWIDTH);
 
@@ -229,18 +335,16 @@ public class Email extends App {
 				dScrollY += (-dy);
 				// Log.d(LOGTAG, "scroll by " + dy);
 
-				canvas.scrollContentsBy(0, dy);
+//				canvas.scrollContentsBy(0, dy);
+				canvas.setOffsets(0, dy);
+				
 				canvas.invalidate();
 				dScrollY = Math.max(0, dScrollY);
 
 				dTouchX += Math.abs(xCur - xPrev);
 				dTouchY += Math.abs(yCur - yPrev);
 				break;
-			case xacTouchSenseFeatureMaker.SIDE:
-				break;
-			case xacTouchSenseFeatureMaker.KNUCKLE:
 
-				break;
 			}
 
 			break;
@@ -250,29 +354,45 @@ public class Email extends App {
 				for (xacShape hitEmail : hitEmails) {
 					// hitEmail.toggleStroke();
 					switch (handPart) {
+					case xacTouchSenseFeatureMaker.KNUCKLE:
+						if (selectedEmails.contains(hitEmail)) {
+							selectedEmails.remove(hitEmail);
+							if (selectedEmails.size() <= 0) {
+								appLayout.removeView(layoutButtons);
+							}
+						} else {
+							if (selectedEmails.size() <= 0) {
+								appLayout.addView(layoutButtons);
+							}
+							selectedEmails.add(hitEmail);
+						}
+						hitEmail.toggleStroke(20);
+
+						canvas.invalidate();
+						break;
 					case xacTouchSenseFeatureMaker.PAD:
+					case xacTouchSenseFeatureMaker.SIDE:
 						String textEmail = htEmails.get(hitEmail);
 						textViewEmail.setText(textEmail);
-						appLayout.addView(openedEmail, paramsOpened);
-						break;
-					case xacTouchSenseFeatureMaker.SIDE:
-						break;
-					case xacTouchSenseFeatureMaker.KNUCKLE:
-						hitEmail.toggleStroke(20);
-						canvas.invalidate();
+						appLayout.addView(openedEmailLayout, paramsOpened);
+						hitEmail.setTypeface(LauncherManager
+								.getTypeface(LauncherManager.NORMAL));
+						openedEmail = hitEmail;
+
 						break;
 					}
 				}
 			} else {
 				if (coords.x < xTouchDown && coords.y > yTouchDown) {
 					// Log.d(LOGTAG, "swipe close");
-					EmailManager.updatePhoneGesture(
-							EmailManager.SWIPECLOSE, curTime);
+					EmailManager.updatePhoneGesture(EmailManager.SWIPECLOSE,
+							curTime);
 				} else if (coords.x > xTouchDown && coords.y < yTouchDown) {
 					// Log.d(LOGTAG, "swipe open");
-					EmailManager.updatePhoneGesture(
-							EmailManager.SWIPEOPEN, curTime);
+					EmailManager.updatePhoneGesture(EmailManager.SWIPEOPEN,
+							curTime);
 				}
+				canvas.setOffsets(0, 0);
 			}
 			break;
 		}
@@ -281,36 +401,36 @@ public class Email extends App {
 		yPrev = yCur;
 	}
 
-	@SuppressLint("NewApi")
-	private void doDualTouch(MotionEvent event) {
-		int action = event.getAction();
-		PointerCoords coords = new PointerCoords();
-		event.getPointerCoords(0, coords);
-
-		Calendar calendar = Calendar.getInstance();
-		long curTime = calendar.getTimeInMillis();
-		
-		switch (action) {
-		case MotionEvent.ACTION_DOWN:
-			xTouchDown = coords.x;
-			yTouchDown = coords.y;
-			break;
-		case MotionEvent.ACTION_MOVE:
-			break;
-		case MotionEvent.ACTION_UP:
-			if (coords.x < xTouchDown && coords.y > yTouchDown) {
-				// Log.d(LOGTAG, "swipe close");
-				EmailManager.updatePhoneGesture(
-						EmailManager.SWIPECLOSE, curTime);
-			} else if (coords.x > xTouchDown && coords.y < yTouchDown) {
-				// Log.d(LOGTAG, "swipe open");
-				EmailManager.updatePhoneGesture(
-						EmailManager.SWIPEOPEN, curTime);
-			}
-			numTouch = 1;
-			break;
-		}
-	}
+	// @SuppressLint("NewApi")
+	// private void doDualTouch(MotionEvent event) {
+	// int action = event.getAction();
+	// PointerCoords coords = new PointerCoords();
+	// event.getPointerCoords(0, coords);
+	//
+	// Calendar calendar = Calendar.getInstance();
+	// long curTime = calendar.getTimeInMillis();
+	//
+	// switch (action) {
+	// case MotionEvent.ACTION_DOWN:
+	// xTouchDown = coords.x;
+	// yTouchDown = coords.y;
+	// break;
+	// case MotionEvent.ACTION_MOVE:
+	// break;
+	// case MotionEvent.ACTION_UP:
+	// if (coords.x < xTouchDown && coords.y > yTouchDown) {
+	// // Log.d(LOGTAG, "swipe close");
+	// EmailManager.updatePhoneGesture(
+	// EmailManager.SWIPECLOSE, curTime);
+	// } else if (coords.x > xTouchDown && coords.y < yTouchDown) {
+	// // Log.d(LOGTAG, "swipe open");
+	// EmailManager.updatePhoneGesture(
+	// EmailManager.SWIPEOPEN, curTime);
+	// }
+	// numTouch = 1;
+	// break;
+	// }
+	// }
 
 	private int calculateHandPart(double[] extras) {
 		int label = xacTouchSenseFeatureMaker.UNKNOWN;
@@ -342,9 +462,9 @@ public class Email extends App {
 
 		return label;
 	}
-	
+
 	public void setMute() {
-		
+
 	}
 
 }

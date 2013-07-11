@@ -34,7 +34,7 @@ public class MapManager extends AppManager {
 				Bitmap croppedBitmap = Bitmap.createBitmap(bitmap, cx, cy,
 						cropWidth, cropHeight);
 
-				updateWatchVisual(croppedBitmap);
+				updateWatchVisual(croppedBitmap, true);
 			} catch (Exception e) {
 
 			}

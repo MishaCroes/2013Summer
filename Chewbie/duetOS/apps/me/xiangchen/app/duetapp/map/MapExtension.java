@@ -17,6 +17,7 @@ public class MapExtension extends AppExtension {
 	@Override
 	public void doResume() {
 		showText("Map");
+		mute();
 	}
 
 	@Override

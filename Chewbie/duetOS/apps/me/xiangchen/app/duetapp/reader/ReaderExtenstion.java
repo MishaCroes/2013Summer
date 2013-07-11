@@ -8,6 +8,11 @@ import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
 public class ReaderExtenstion extends AppExtension {
 
 	@Override
+	public void doResume() {
+		showText("Reader");
+	}
+	
+	@Override
 	public void doAccelerometer(float[] values) {
 		xacHandSenseFeatureMaker.updateWatchAccel(values);
 		xacHandSenseFeatureMaker.addWatchFeatureEntry();
