@@ -129,25 +129,25 @@ containing a value of this type.
         public static final int zOrderOnTop=0x7f01000d;
     }
     public static final class color {
-        public static final int common_action_bar_splitter=0x7f040009;
+        public static final int common_action_bar_splitter=0x7f050009;
         /**  Sign-in Button Colors 
          */
-        public static final int common_signin_btn_dark_text_default=0x7f040000;
-        public static final int common_signin_btn_dark_text_disabled=0x7f040002;
-        public static final int common_signin_btn_dark_text_focused=0x7f040003;
-        public static final int common_signin_btn_dark_text_pressed=0x7f040001;
-        public static final int common_signin_btn_default_background=0x7f040008;
-        public static final int common_signin_btn_light_text_default=0x7f040004;
-        public static final int common_signin_btn_light_text_disabled=0x7f040006;
-        public static final int common_signin_btn_light_text_focused=0x7f040007;
-        public static final int common_signin_btn_light_text_pressed=0x7f040005;
-        public static final int common_signin_btn_text_dark=0x7f04000f;
-        public static final int common_signin_btn_text_light=0x7f040010;
-        public static final int smart_watch_text_color_grey=0x7f04000a;
-        public static final int smart_watch_text_color_orange=0x7f04000b;
-        public static final int smart_watch_text_color_white=0x7f04000c;
-        public static final int transBlack=0x7f04000d;
-        public static final int transWhite=0x7f04000e;
+        public static final int common_signin_btn_dark_text_default=0x7f050000;
+        public static final int common_signin_btn_dark_text_disabled=0x7f050002;
+        public static final int common_signin_btn_dark_text_focused=0x7f050003;
+        public static final int common_signin_btn_dark_text_pressed=0x7f050001;
+        public static final int common_signin_btn_default_background=0x7f050008;
+        public static final int common_signin_btn_light_text_default=0x7f050004;
+        public static final int common_signin_btn_light_text_disabled=0x7f050006;
+        public static final int common_signin_btn_light_text_focused=0x7f050007;
+        public static final int common_signin_btn_light_text_pressed=0x7f050005;
+        public static final int common_signin_btn_text_dark=0x7f05000f;
+        public static final int common_signin_btn_text_light=0x7f050010;
+        public static final int smart_watch_text_color_grey=0x7f05000a;
+        public static final int smart_watch_text_color_orange=0x7f05000b;
+        public static final int smart_watch_text_color_white=0x7f05000c;
+        public static final int transBlack=0x7f05000d;
+        public static final int transWhite=0x7f05000e;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -156,27 +156,27 @@ containing a value of this type.
          screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
     
          */
-        public static final int activity_horizontal_margin=0x7f070011;
-        public static final int activity_vertical_margin=0x7f070012;
-        public static final int headset_pro_control_height=0x7f070002;
-        public static final int headset_pro_control_width=0x7f070001;
-        public static final int headset_pro_text_size=0x7f070000;
-        public static final int smart_watch_control_height=0x7f070004;
-        public static final int smart_watch_control_width=0x7f070003;
-        public static final int smart_watch_text_size_normal=0x7f07000b;
-        public static final int smart_watch_text_size_small=0x7f07000c;
+        public static final int activity_horizontal_margin=0x7f080011;
+        public static final int activity_vertical_margin=0x7f080012;
+        public static final int headset_pro_control_height=0x7f080002;
+        public static final int headset_pro_control_width=0x7f080001;
+        public static final int headset_pro_text_size=0x7f080000;
+        public static final int smart_watch_control_height=0x7f080004;
+        public static final int smart_watch_control_width=0x7f080003;
+        public static final int smart_watch_text_size_normal=0x7f08000b;
+        public static final int smart_watch_text_size_small=0x7f08000c;
         /**  Badge only contain numbers and is language independant. 
          */
-        public static final int smart_watch_text_size_widget_badge=0x7f070010;
-        public static final int smart_watch_text_size_widget_name=0x7f07000d;
-        public static final int smart_watch_text_size_widget_text=0x7f07000f;
-        public static final int smart_watch_text_size_widget_time=0x7f07000e;
-        public static final int smart_watch_widget_height_inner=0x7f070008;
-        public static final int smart_watch_widget_height_outer=0x7f070006;
-        public static final int smart_watch_widget_text_background_height=0x7f07000a;
-        public static final int smart_watch_widget_text_background_width=0x7f070009;
-        public static final int smart_watch_widget_width_inner=0x7f070007;
-        public static final int smart_watch_widget_width_outer=0x7f070005;
+        public static final int smart_watch_text_size_widget_badge=0x7f080010;
+        public static final int smart_watch_text_size_widget_name=0x7f08000d;
+        public static final int smart_watch_text_size_widget_text=0x7f08000f;
+        public static final int smart_watch_text_size_widget_time=0x7f08000e;
+        public static final int smart_watch_widget_height_inner=0x7f080008;
+        public static final int smart_watch_widget_height_outer=0x7f080006;
+        public static final int smart_watch_widget_text_background_height=0x7f08000a;
+        public static final int smart_watch_widget_text_background_width=0x7f080009;
+        public static final int smart_watch_widget_width_inner=0x7f080007;
+        public static final int smart_watch_widget_width_outer=0x7f080005;
     }
     public static final class drawable {
         public static final int badge_counter=0x7f020000;
@@ -212,40 +212,56 @@ containing a value of this type.
         public static final int headset_pro_ok_icn=0x7f02001e;
         public static final int ic_extension=0x7f02001f;
         public static final int ic_launcher=0x7f020020;
-        public static final int left_back_wrist=0x7f020021;
-        public static final int left_inner_wrist=0x7f020022;
-        public static final int map_toronto=0x7f020023;
-        public static final int map_toronto_big=0x7f020024;
-        public static final int mute=0x7f020025;
-        public static final int mute_small=0x7f020026;
-        public static final int right_back_wrist=0x7f020027;
-        public static final int right_inner_wrist=0x7f020028;
-        public static final int text_bg=0x7f020029;
-        public static final int unmute=0x7f02002a;
-        public static final int unmute_small=0x7f02002b;
-        public static final int widget_frame=0x7f02002c;
+        public static final int key0=0x7f020021;
+        public static final int key1=0x7f020022;
+        public static final int key2=0x7f020023;
+        public static final int key3=0x7f020024;
+        public static final int key4=0x7f020025;
+        public static final int key5=0x7f020026;
+        public static final int key6=0x7f020027;
+        public static final int key7=0x7f020028;
+        public static final int key8=0x7f020029;
+        public static final int key9=0x7f02002a;
+        public static final int key_call=0x7f02002b;
+        public static final int key_delete=0x7f02002c;
+        public static final int key_null=0x7f02002d;
+        public static final int key_sharp=0x7f02002e;
+        public static final int key_speed_dial=0x7f02002f;
+        public static final int key_star=0x7f020030;
+        public static final int left_back_wrist=0x7f020031;
+        public static final int left_inner_wrist=0x7f020032;
+        public static final int map_toronto=0x7f020033;
+        public static final int map_toronto_big=0x7f020034;
+        public static final int mute=0x7f020035;
+        public static final int mute_small=0x7f020036;
+        public static final int right_back_wrist=0x7f020037;
+        public static final int right_inner_wrist=0x7f020038;
+        public static final int text_bg=0x7f020039;
+        public static final int unmute=0x7f02003a;
+        public static final int unmute_small=0x7f02003b;
+        public static final int widget_frame=0x7f02003c;
     }
     public static final class id {
-        public static final int action_settings=0x7f050013;
-        public static final int btnArchive=0x7f050007;
-        public static final int btnDelete=0x7f050008;
-        public static final int btnMarkRead=0x7f050006;
-        public static final int hybrid=0x7f050004;
-        public static final int layout=0x7f050005;
-        public static final int none=0x7f050000;
-        public static final int normal=0x7f050001;
-        public static final int satellite=0x7f050002;
-        public static final int smart_watch_notification_widget_background=0x7f050009;
-        public static final int smart_watch_notification_widget_text_background=0x7f05000a;
-        public static final int smart_watch_notification_widget_text_name=0x7f05000d;
-        public static final int smart_watch_notification_widget_text_time=0x7f05000b;
-        public static final int smart_watch_notification_widget_text_title=0x7f05000c;
-        public static final int smart_watch_widget_custom_image=0x7f05000e;
-        public static final int smart_watch_widget_custom_text_view=0x7f05000f;
-        public static final int smart_watch_widget_event_counter_badge=0x7f050011;
-        public static final int smart_watch_widget_event_counter_text=0x7f050012;
-        public static final int smart_watch_widget_icon=0x7f050010;
-        public static final int terrain=0x7f050003;
+        public static final int action_settings=0x7f060013;
+        public static final int btnArchive=0x7f060007;
+        public static final int btnDelete=0x7f060008;
+        public static final int btnMarkRead=0x7f060006;
+        public static final int hybrid=0x7f060004;
+        public static final int layout=0x7f060005;
+        public static final int none=0x7f060000;
+        public static final int normal=0x7f060001;
+        public static final int satellite=0x7f060002;
+        public static final int smart_watch_notification_widget_background=0x7f060009;
+        public static final int smart_watch_notification_widget_text_background=0x7f06000a;
+        public static final int smart_watch_notification_widget_text_name=0x7f06000d;
+        public static final int smart_watch_notification_widget_text_time=0x7f06000b;
+        public static final int smart_watch_notification_widget_text_title=0x7f06000c;
+        public static final int smart_watch_widget_custom_image=0x7f06000e;
+        public static final int smart_watch_widget_custom_text_view=0x7f06000f;
+        public static final int smart_watch_widget_event_counter_badge=0x7f060011;
+        public static final int smart_watch_widget_event_counter_text=0x7f060012;
+        public static final int smart_watch_widget_icon=0x7f060010;
+        public static final int terrain=0x7f060003;
     }
     public static final class layout {
         public static final int activity_launcher=0x7f030000;
@@ -254,93 +270,101 @@ containing a value of this type.
         public static final int smart_watch_widget=0x7f030003;
     }
     public static final class menu {
-        public static final int launcher=0x7f090000;
+        public static final int launcher=0x7f0a0000;
+    }
+    public static final class raw {
+        public static final int bedtime_story=0x7f040000;
+        public static final int ground_rules=0x7f040001;
+        public static final int listen_up=0x7f040002;
+        public static final int no_annoying_sounds=0x7f040003;
+        public static final int so_fluffy=0x7f040004;
+        public static final int stuffed_crust=0x7f040005;
     }
     public static final class string {
-        public static final int a_tale_of_two_cities=0x7f060028;
+        public static final int a_tale_of_two_cities=0x7f070028;
         /**  Action Toast, shown on accessory 
          */
-        public static final int action_event_1=0x7f06001c;
-        public static final int action_settings=0x7f060016;
+        public static final int action_event_1=0x7f07001c;
+        public static final int action_settings=0x7f070016;
         /**  At least one dummy resource is needed to satisfy aapt.
     Otherwise it complains about no res folder. 
          */
-        public static final int app_name=0x7f060015;
-        public static final int archive=0x7f06002a;
+        public static final int app_name=0x7f070015;
+        public static final int archive=0x7f07002a;
         /**   Title for notification shown when GooglePlayServices is unavailable [CHAR LIMIT=70] 
          */
-        public static final int auth_client_availability_notification_title=0x7f06000f;
+        public static final int auth_client_availability_notification_title=0x7f07000f;
         /**   Title for notification shown when GooglePlayServices is unavailable [CHAR LIMIT=42] 
          */
-        public static final int auth_client_play_services_err_notification_msg=0x7f060010;
+        public static final int auth_client_play_services_err_notification_msg=0x7f070010;
         /**   Requested by string saying which app requested the notification. [CHAR LIMIT=42] 
          */
-        public static final int auth_client_requested_by_msg=0x7f060011;
-        public static final int clear_failure=0x7f060027;
-        public static final int clear_success=0x7f060026;
+        public static final int auth_client_requested_by_msg=0x7f070011;
+        public static final int clear_failure=0x7f070027;
+        public static final int clear_success=0x7f070026;
         /**  Button in confirmation dialog to enable Google Play services.  Clicking it
         will direct user to application settings of Google Play services where they
         can enable it [CHAR LIMIT=40] 
          */
-        public static final int common_google_play_services_enable_button=0x7f060006;
+        public static final int common_google_play_services_enable_button=0x7f070006;
         /**  Message in confirmation dialog informing user they need to enable
         Google Play services in application settings [CHAR LIMIT=NONE] 
          */
-        public static final int common_google_play_services_enable_text=0x7f060005;
+        public static final int common_google_play_services_enable_text=0x7f070005;
         /**  Title of confirmation dialog informing user they need to enable
         Google Play services in application settings [CHAR LIMIT=40] 
          */
-        public static final int common_google_play_services_enable_title=0x7f060004;
+        public static final int common_google_play_services_enable_title=0x7f070004;
         /**  Button in confirmation dialog for installing Google Play services [CHAR LIMIT=40] 
          */
-        public static final int common_google_play_services_install_button=0x7f060003;
+        public static final int common_google_play_services_install_button=0x7f070003;
         /**  (For phones) Message in confirmation dialog informing user that
         they need to install Google Play services (from Play Store) [CHAR LIMIT=NONE] 
          */
-        public static final int common_google_play_services_install_text_phone=0x7f060001;
+        public static final int common_google_play_services_install_text_phone=0x7f070001;
         /**  (For tablets) Message in confirmation dialog informing user that
         they need to install Google Play services (from Play Store) [CHAR LIMIT=NONE] 
          */
-        public static final int common_google_play_services_install_text_tablet=0x7f060002;
+        public static final int common_google_play_services_install_text_tablet=0x7f070002;
         /**  Title of confirmation dialog informing user that they need to install
         Google Play services (from Play Store) [CHAR LIMIT=40] 
          */
-        public static final int common_google_play_services_install_title=0x7f060000;
+        public static final int common_google_play_services_install_title=0x7f070000;
         /**  Message in confirmation dialog informing user there is an unknown issue in Google Play
         services [CHAR LIMIT=NONE] 
          */
-        public static final int common_google_play_services_unknown_issue=0x7f060009;
+        public static final int common_google_play_services_unknown_issue=0x7f070009;
         /**  Message in confirmation dialog informing user that Google Play services is not supported on their device [CHAR LIMIT=NONE] 
          */
-        public static final int common_google_play_services_unsupported_text=0x7f06000b;
+        public static final int common_google_play_services_unsupported_text=0x7f07000b;
         /**  Title of confirmation dialog informing user that Google Play services is not supported on their device [CHAR LIMIT=40] 
          */
-        public static final int common_google_play_services_unsupported_title=0x7f06000a;
+        public static final int common_google_play_services_unsupported_title=0x7f07000a;
         /**  Button in confirmation dialog for updating Google Play services [CHAR LIMIT=40] 
          */
-        public static final int common_google_play_services_update_button=0x7f06000c;
+        public static final int common_google_play_services_update_button=0x7f07000c;
         /**  Message in confirmation dialog informing user that they need to update
         Google Play services (from Play Store) [CHAR LIMIT=NONE] 
          */
-        public static final int common_google_play_services_update_text=0x7f060008;
+        public static final int common_google_play_services_update_text=0x7f070008;
         /**  Title of confirmation dialog informing user that they need to update
         Google Play services (from Play Store) [CHAR LIMIT=40] 
          */
-        public static final int common_google_play_services_update_title=0x7f060007;
+        public static final int common_google_play_services_update_title=0x7f070007;
         /**  Sign-in button text [CHAR LIMIT=15] 
          */
-        public static final int common_signin_button_text=0x7f06000d;
+        public static final int common_signin_button_text=0x7f07000d;
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
-        public static final int common_signin_button_text_long=0x7f06000e;
+        public static final int common_signin_button_text_long=0x7f07000e;
         /**  Configuration text shown in preferences 
          */
-        public static final int configuration_text=0x7f060019;
-        public static final int delete=0x7f06002b;
+        public static final int configuration_text=0x7f070019;
+        public static final int delete=0x7f07002b;
         /**  Extension name, shown in preferences 
          */
-        public static final int extension_name=0x7f06001a;
-        public static final int hello_world=0x7f060017;
+        public static final int extension_name=0x7f07001a;
+        public static final int hello_world=0x7f070017;
         /**  Location client code resources (prefix with location_client) 
 
         Begin strings for location.reporting
@@ -349,25 +373,25 @@ containing a value of this type.
         Some InactiveReason names.  See more in OneUp/package/location/res/values/strings.xml
     
          */
-        public static final int location_client_ulr_inactive_age_under_13=0x7f060012;
-        public static final int location_client_ulr_inactive_age_unknown=0x7f060013;
-        public static final int location_client_ulr_inactive_unknown_restriction=0x7f060014;
-        public static final int mark_as_read=0x7f060029;
-        public static final int preference_activity_title=0x7f060018;
-        public static final int preference_key_clear=0x7f060025;
-        public static final int preference_key_is_active=0x7f060022;
-        public static final int preference_key_read_me=0x7f06001f;
-        public static final int preference_option_clear=0x7f060023;
-        public static final int preference_option_clear_txt=0x7f060024;
-        public static final int preference_option_is_active=0x7f060021;
-        public static final int preference_option_read_me=0x7f06001e;
-        public static final int preference_option_read_me_txt=0x7f060020;
+        public static final int location_client_ulr_inactive_age_under_13=0x7f070012;
+        public static final int location_client_ulr_inactive_age_unknown=0x7f070013;
+        public static final int location_client_ulr_inactive_unknown_restriction=0x7f070014;
+        public static final int mark_as_read=0x7f070029;
+        public static final int preference_activity_title=0x7f070018;
+        public static final int preference_key_clear=0x7f070025;
+        public static final int preference_key_is_active=0x7f070022;
+        public static final int preference_key_read_me=0x7f07001f;
+        public static final int preference_option_clear=0x7f070023;
+        public static final int preference_option_clear_txt=0x7f070024;
+        public static final int preference_option_is_active=0x7f070021;
+        public static final int preference_option_read_me=0x7f07001e;
+        public static final int preference_option_read_me_txt=0x7f070020;
         /**  Name of source, shown in preferences 
          */
-        public static final int source_name=0x7f06001b;
+        public static final int source_name=0x7f07001b;
         /**  Text that is read before the display name on accessories that supports text to speech 
          */
-        public static final int text_to_speech=0x7f06001d;
+        public static final int text_to_speech=0x7f07001d;
     }
     public static final class style {
         /** 
@@ -391,11 +415,11 @@ containing a value of this type.
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f080000;
+        public static final int AppBaseTheme=0x7f090000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f080001;
+        public static final int AppTheme=0x7f090001;
     }
     public static final class styleable {
         /** Attributes that can be used with a MapAttrs.

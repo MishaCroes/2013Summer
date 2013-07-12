@@ -2,8 +2,11 @@ package me.xiangchen.app.duetos;
 
 import me.xiangchen.app.duetapp.AppExtension;
 import me.xiangchen.ui.xacToast;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.util.Log;
 
 public class LauncherManager {
@@ -72,11 +75,19 @@ public class LauncherManager {
 	
 	static xacToast toastPhone;
 	static xacToast toastWatch;
+	
+	static MediaPlayer mediaPlayer;
 
 	public static void setPhone(Launcher p) {
 		phone = p;
 		toastPhone = new xacToast(phone);
 		toastWatch = new xacToast(phone);
+		
+		AudioManager audioManager = (AudioManager)phone.getSystemService(Context.AUDIO_SERVICE);
+		audioManager.setSpeakerphoneOn(false);
+		audioManager.setRouting(AudioManager.MODE_NORMAL, AudioManager.ROUTE_EARPIECE, AudioManager.ROUTE_ALL);
+		phone.setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+		audioManager.setMode(AudioManager.MODE_IN_CALL);
 	}
 
 	public static void setWatch(LauncherExtension w) {
@@ -280,5 +291,18 @@ public class LauncherManager {
 	
 	public static void muteWatch() {
 		isWatchMuted = true;
+	}
+	
+	public static void playAudio(int resId) {
+		try {
+			if(mediaPlayer != null && mediaPlayer.isPlaying()) {
+				mediaPlayer.stop();
+			}
+			
+			mediaPlayer = MediaPlayer.create(phone.getBaseContext(), resId);
+			mediaPlayer.start();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 }

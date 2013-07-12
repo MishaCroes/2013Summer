@@ -274,7 +274,7 @@ public class Email extends App {
 			int lenPreview = Math.min(textEmail.length(), 128);
 			emailEntry.setText(textEmail.substring(0, lenPreview));
 			
-			emailEntry.setTextColor(xacInteractiveCanvas.bgColorDark);
+//			emailEntry.setTextColor(xacInteractiveCanvas.bgColorDark);
 			emailEntry.setPosition(cx, cy);
 		}
 	}
@@ -401,36 +401,6 @@ public class Email extends App {
 		yPrev = yCur;
 	}
 
-	// @SuppressLint("NewApi")
-	// private void doDualTouch(MotionEvent event) {
-	// int action = event.getAction();
-	// PointerCoords coords = new PointerCoords();
-	// event.getPointerCoords(0, coords);
-	//
-	// Calendar calendar = Calendar.getInstance();
-	// long curTime = calendar.getTimeInMillis();
-	//
-	// switch (action) {
-	// case MotionEvent.ACTION_DOWN:
-	// xTouchDown = coords.x;
-	// yTouchDown = coords.y;
-	// break;
-	// case MotionEvent.ACTION_MOVE:
-	// break;
-	// case MotionEvent.ACTION_UP:
-	// if (coords.x < xTouchDown && coords.y > yTouchDown) {
-	// // Log.d(LOGTAG, "swipe close");
-	// EmailManager.updatePhoneGesture(
-	// EmailManager.SWIPECLOSE, curTime);
-	// } else if (coords.x > xTouchDown && coords.y < yTouchDown) {
-	// // Log.d(LOGTAG, "swipe open");
-	// EmailManager.updatePhoneGesture(
-	// EmailManager.SWIPEOPEN, curTime);
-	// }
-	// numTouch = 1;
-	// break;
-	// }
-	// }
 
 	private int calculateHandPart(double[] extras) {
 		int label = xacTouchSenseFeatureMaker.UNKNOWN;
@@ -463,8 +433,5 @@ public class Email extends App {
 		return label;
 	}
 
-	public void setMute() {
-
-	}
 
 }

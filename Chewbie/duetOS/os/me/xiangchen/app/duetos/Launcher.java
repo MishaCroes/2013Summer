@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import me.xiangchen.app.duetapp.App;
 import me.xiangchen.app.duetapp.AppExtension;
 import me.xiangchen.app.duetapp.call.Call;
+import me.xiangchen.app.duetapp.call.CallExtension;
 import me.xiangchen.app.duetapp.email.Email;
 import me.xiangchen.app.duetapp.email.EmailExtension;
 import me.xiangchen.app.duetapp.email.EmailManager;
@@ -23,7 +24,6 @@ import me.xiangchen.ui.xacShape;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -48,7 +48,7 @@ public class Launcher extends Activity implements SensorEventListener {
 	RelativeLayout layout;
 	xacInteractiveCanvas canvas;
 	xacInteractiveCanvas curtain;
-	
+
 	ArrayList<App> apps;
 	Hashtable<xacShape, App> htApps;
 	Hashtable<App, AppExtension> htAppExtensions;
@@ -69,7 +69,7 @@ public class Launcher extends Activity implements SensorEventListener {
 
 	float xPrev;
 	float yPrev;
-	
+
 	float xTouchDown;
 	float yTouchDown;
 
@@ -148,7 +148,6 @@ public class Launcher extends Activity implements SensorEventListener {
 						LauncherManager.updateToast();
 					}
 				});
-				
 
 				runOnUiThread(new Runnable() {
 					@Override
@@ -161,8 +160,6 @@ public class Launcher extends Activity implements SensorEventListener {
 
 			}
 		}, new Date(), 1000 / TIMERFPS);
-		
-//		Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Arial.otf");
 
 		xacAuthenticSenseFeatureMaker.createFeatureTable();
 		xacAuthenticSenseFeatureMaker
@@ -185,6 +182,8 @@ public class Launcher extends Activity implements SensorEventListener {
 		Call call = new Call(this);
 		addIcon(call);
 		apps.add(call);
+		CallExtension callExtension = new CallExtension();
+		htAppExtensions.put(call, callExtension);
 
 		Email email = new Email(this);
 		addIcon(email);
@@ -222,20 +221,6 @@ public class Launcher extends Activity implements SensorEventListener {
 		htApps.put(icon, app);
 	}
 
-//	private void updateToast() {
-//		// update toast on the phone
-//		if (!toast.isDead()) {
-//			runOnUiThread(new Runnable() {
-//				@Override
-//				public void run() {
-//					toast.fadeOut();
-//				}
-//			});
-//		}
-//
-//		// update toast on the watch
-//	}
-
 	private void lockScreen() {
 		layout.addView(curtain);
 		isLocked = true;
@@ -248,12 +233,6 @@ public class Launcher extends Activity implements SensorEventListener {
 		lastUsageTime = calendar.getTimeInMillis();
 	}
 
-//	public void doToast(xacToast t) {
-//		toast = t;
-//		toast.kill(layout);
-//		toast.fadeIn(layout);
-//	}
-	
 	public ViewGroup getLayout() {
 		return layout;
 	}
@@ -285,7 +264,11 @@ public class Launcher extends Activity implements SensorEventListener {
 				if (activeApp != null) {
 					View appView = activeApp.getViewGroup();
 					if (appView != null) {
-						layout.addView(appView);
+						try {
+							layout.addView(appView);
+						} catch (Exception e) {
+							;
+						}
 						LauncherManager.resumeWatch();
 					}
 				}
@@ -324,7 +307,7 @@ public class Launcher extends Activity implements SensorEventListener {
 
 		PointerCoords curCoord = new PointerCoords();
 		event.getPointerCoords(0, curCoord);
-		
+
 		Calendar calendar = Calendar.getInstance();
 		long curTime = calendar.getTimeInMillis();
 
@@ -363,7 +346,7 @@ public class Launcher extends Activity implements SensorEventListener {
 						break;
 					}
 					LauncherManager.showNotificationOnPhone(resId);
-					
+
 					layout.removeView(curtain);
 					isLocked = false;
 					lastUsageTime = curTime;
@@ -371,12 +354,12 @@ public class Launcher extends Activity implements SensorEventListener {
 			} else {
 				if (curCoord.x < xTouchDown && curCoord.y > yTouchDown) {
 					// Log.d(LOGTAG, "swipe close");
-					LauncherManager.updatePhoneGesture(
-							EmailManager.SWIPECLOSE, curTime);
+					LauncherManager.updatePhoneGesture(EmailManager.SWIPECLOSE,
+							curTime);
 				} else if (curCoord.x > xTouchDown && curCoord.y < yTouchDown) {
 					// Log.d(LOGTAG, "swipe open");
-					LauncherManager.updatePhoneGesture(
-							EmailManager.SWIPEOPEN, curTime);
+					LauncherManager.updatePhoneGesture(EmailManager.SWIPEOPEN,
+							curTime);
 				}
 			}
 			break;
