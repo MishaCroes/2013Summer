@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "WTEConstants.h"
 #include <sys/time.h>
+#include "xacFeatureTable.h"
+
+#define TOSHOWTIME false
 
 @interface xacTestText : UIView
 
@@ -18,6 +21,17 @@
 @property int timeTyping;
 @property int idxWord;
 @property NSString* curWord;
+
+@property int technique;
+@property int participantId;
+@property int section;
+@property int block;
+@property int trial;
+@property long switchToTime;
+@property long startTime;
+@property long finishTime;
+@property int errors;
+@property xacFeatureTable* featureTable;
 
 - (void) loadWords;
 - (void) loadWord :(int)sign;

@@ -9,6 +9,9 @@
 #ifndef WTE_WTEConstants_h
 #define WTE_WTEConstants_h
 
+#define SWIPEBOARD 0
+#define ZOOMBOARD 1
+
 #define WATCHWIDTH 128
 #define WATCHHEIGHT 128
 
@@ -22,6 +25,10 @@
 
 #define FONTSIZE 15
 #define TEXTLENGTH 12
+
+#define NUMSECTIONS 2
+#define NUMBLOCKS 1
+#define NUMTRIALS 2
 
 #endif
 

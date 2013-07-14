@@ -14,7 +14,7 @@
 
 - (void) zoomIn:(float)x :(float)y :(float)zoomFactor;
 - (void) zoomOut:(float)zoomFactor;
-//- (void) touchType: (UIEvent*)event;
+
 - (void) startSession;
 
 @property bool readyToType;

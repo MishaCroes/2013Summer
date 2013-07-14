@@ -16,11 +16,6 @@ UIButton *btnA; UIButton *btnS; UIButton *btnD; UIButton *btnF; UIButton *btnG;
 UIButton *btnH; UIButton *btnJ; UIButton *btnK; UIButton *btnL; UIButton *btnZ;
 UIButton *btnX; UIButton *btnC; UIButton *btnV; UIButton *btnB; UIButton *btnM;
 UIButton *btnN;; UIButton *btnComma; UIButton *btnPeriod;
-//UIButton *btnBackspace;
-//UIButton *btnSpace;
-//UIButton *btnEnter;
-
-//xacDummyLayer *swipeView;
 
 NSArray *lineOne;
 NSArray *lineTwo;
@@ -29,7 +24,6 @@ NSArray *lineThree;
 NSArray *keysOne;
 NSArray *keysTwo;
 NSArray *keysThree;
-
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -61,8 +55,6 @@ float zoomY;
 float centerX;
 float centerY;
 
-
-
 - (void) zoomIn:(float)x :(float)y :(float)zoomFactor{
     zoomedFactor = zoomFactor;
     [self zoom :x :y :zoomFactor];
@@ -74,7 +66,7 @@ float centerY;
 
 - (void) zoom :(float)x :(float)y :(float)factor {
     CGAffineTransform tr = CGAffineTransformScale(self.transform, factor, factor);
-    [UIView animateWithDuration:0.5 delay:0 options:0 animations:^{
+    [UIView animateWithDuration:0.1 delay:0 options:0 animations:^{
 
         self.center = CGPointMake(x, y);
                 self.transform = tr;
@@ -85,9 +77,6 @@ float centerY;
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
     
-//    if(_readyToType) {
-//        _readyToType = false;
-//    NSLog(@"Event = %@", event);
     float x = point.x;
     float y = point.y;
     for(UIButton *btn1 in lineOne) {
