@@ -1,0 +1,219 @@
+package me.xiangchen.technique.touchsense;
+
+import me.xiangchen.app.duetos.LauncherExtension;
+import me.xiangchen.app.duetos.LauncherManager;
+import me.xiangchen.lib.xacAccelerometer;
+import me.xiangchen.network.xacUDPTask;
+
+public class xacTouchSenseFeatureMaker {
+
+	public final static int TOUCHTIMEOUT = 500; // ms
+	public final static int UNKNOWN = -1;
+	public final static int PAD = 0;
+	public final static int SIDE = 1;
+	public final static int KNUCKLE = 2;
+
+	static final int MAXNUMROW = 8096;
+	static final int NUMSOURCES = 2;
+
+	static String[] featureNames = null;
+	static double[][] featureTablePhone = null;
+	static double[][] featureTableWatch = null;
+	static int pntrEntryPhone = 0;
+	static int pntrEntryWatch = 0;
+	static int numFeatures = 0;
+	static String tag = "FeatureMaker";
+	static int label = -1;
+
+	static xacAccelerometer accelWatch;
+	static xacAccelerometer accelPhone;
+	static xacAccelerometer[] accels;
+	
+	final static int NUMROWSHANDPARTS = LauncherManager.PHONEACCELFPSGAME
+			* TOUCHTIMEOUT / 1000;
+
+	/**
+	 * create a table of features, including the first row (the names of the
+	 * attributes)
+	 */
+	public static void createFeatureTable() {
+		numFeatures = xacAccelerometer.NUMACCELAXES;
+		featureTablePhone = new double[MAXNUMROW][numFeatures + 1];
+		featureTableWatch = new double[MAXNUMROW][numFeatures + 1];
+		pntrEntryPhone = 0;
+		pntrEntryWatch = 0;
+
+		accelWatch = new xacAccelerometer();
+		accelPhone = new xacAccelerometer();
+		accels = new xacAccelerometer[] { accelWatch, accelPhone };
+	}
+
+	/**
+	 * add a row in the feature table
+	 * 
+	 * @param features
+	 * @param val
+	 */
+	public static void addPhoneFeatureEntry() {
+		if (pntrEntryPhone >= MAXNUMROW) {
+			pntrEntryPhone = 0;
+		}
+
+		int idxFeat = 0;
+		// for (int i = 0; i < NUMSOURCES; i++) {
+		featureTablePhone[pntrEntryPhone][idxFeat++] = accelPhone.getX();
+		featureTablePhone[pntrEntryPhone][idxFeat++] = accelPhone.getY();
+		featureTablePhone[pntrEntryPhone][idxFeat++] = accelPhone.getZ();
+		// }
+
+		// featureTable[pntrEntry][numFeatures] = label;
+
+		// Log.d(tag, "The " + (pntrEntry+1) + "th entry added");
+		pntrEntryPhone++;
+	}
+
+	public static void addWatchFeatureEntry() {
+		if (pntrEntryWatch >= MAXNUMROW) {
+			pntrEntryWatch = 0;
+		}
+
+		int idxFeat = 0;
+		// for (int i = 0; i < NUMSOURCES; i++) {
+		featureTableWatch[pntrEntryWatch][idxFeat++] = accelWatch.getX();
+		featureTableWatch[pntrEntryWatch][idxFeat++] = accelWatch.getY();
+		featureTableWatch[pntrEntryWatch][idxFeat++] = accelWatch.getZ();
+		// }
+
+		// featureTable[pntrEntry][numFeatures] = label;
+
+		// Log.d(tag, "The " + (pntrEntry+1) + "th entry added");
+		pntrEntryWatch++;
+	}
+
+	public static void setLabel(int lb) {
+		label = lb;
+	}
+
+	public static void updateWatchAccel(float[] values) {
+		if (accelWatch == null)
+			return;
+		accelWatch.update(values[0], values[1], values[2]);
+	}
+
+	public static void updatePhoneAccel(float[] values) {
+		if (accelPhone == null)
+			return;
+		accelPhone.update(values[0], values[1], values[2]);
+	}
+
+	public static void sendOffData(int numToSend, String[] classLabels) {
+		int lockedPntrEntryPhone = pntrEntryPhone;
+		int lockedPntrEntryWatch = pntrEntryWatch;
+		int numToSendPhone = numToSend;
+		int numToSendWatch = numToSendPhone * LauncherExtension.WATCHACCELFPS
+				/ LauncherManager.PHONEACCELFPSGAME;
+
+		if (label < 0 || numToSendPhone > lockedPntrEntryPhone
+				|| numToSendWatch > lockedPntrEntryWatch)
+			return;
+
+		String strFeatureRow = "";
+
+		// 1. the phone's
+		for (int i = lockedPntrEntryPhone - numToSendPhone; i < lockedPntrEntryPhone; i++) {
+			for (int j = 0; j < numFeatures; j++) {
+				strFeatureRow += String.format("%.2f", featureTablePhone[i][j])
+						+ ",";
+			}
+		}
+
+		// 2. the watch's
+		for (int i = lockedPntrEntryWatch - numToSendWatch; i < lockedPntrEntryWatch; i++) {
+			for (int j = 0; j < numFeatures; j++) {
+				strFeatureRow += String.format("%.2f", featureTableWatch[i][j])
+						+ ",";
+			}
+		}
+
+		strFeatureRow += classLabels[label] + '\0';
+
+		new xacUDPTask().execute(strFeatureRow);
+	}
+
+	public static Object[] getFlattenedData(int numToSend, double[] extras) {
+		int lockedPntrEntryPhone = pntrEntryPhone;
+		int lockedPntrEntryWatch = pntrEntryWatch;
+		int numToSendPhone = numToSend;
+		int numToSendWatch = numToSendPhone * LauncherExtension.WATCHACCELFPS
+				/ LauncherManager.PHONEACCELFPSGAME;
+
+		if (numToSendPhone > lockedPntrEntryPhone
+				|| numToSendWatch > lockedPntrEntryWatch)
+			return null;
+
+		Object[] flattened = new Object[(numToSendPhone + numToSendWatch)
+				* numFeatures + extras.length];
+		int idxFeature = 0;
+
+		// 1. the phone's
+		for (int i = lockedPntrEntryPhone - numToSendPhone; i < lockedPntrEntryPhone; i++) {
+			for (int j = 0; j < numFeatures; j++) {
+				flattened[idxFeature++] = featureTablePhone[i][j];
+			}
+		}
+
+		// 2. the watch's
+		for (int i = lockedPntrEntryWatch - numToSendWatch; i < lockedPntrEntryWatch; i++) {
+			for (int j = 0; j < numFeatures; j++) {
+				flattened[idxFeature++] = featureTableWatch[i][j];
+			}
+		}
+
+		// 3. extra features
+		if (extras != null) {
+			for (double feat : extras) {
+				flattened[idxFeature++] = feat;
+			}
+		}
+
+		return flattened;
+	}
+
+	public static void clearData() {
+		featureTablePhone = new double[MAXNUMROW][numFeatures + 1];
+		featureTableWatch = new double[MAXNUMROW][numFeatures + 1];
+		pntrEntryPhone = 0;
+		pntrEntryWatch = 0;
+	}
+
+	public static int calculateHandPart(double[] extras) {
+		int label = xacTouchSenseFeatureMaker.UNKNOWN;
+
+		Object[] features = xacTouchSenseFeatureMaker.getFlattenedData(
+				NUMROWSHANDPARTS, extras);
+		int idxClass = -1;
+		try {
+			idxClass = (int) TouchSenseClassifier.classify(features);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		switch (idxClass) {
+		case 0:
+			label = xacTouchSenseFeatureMaker.PAD;
+			// Log.d(LOGTAG, "pad");
+			break;
+		case 1:
+			label = xacTouchSenseFeatureMaker.SIDE;
+			// Log.d(LOGTAG, "side");
+			break;
+		case 2:
+			label = xacTouchSenseFeatureMaker.KNUCKLE;
+			// Log.d(LOGTAG, "knuckle");
+			break;
+		}
+
+		return label;
+	}
+}
