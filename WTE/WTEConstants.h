@@ -12,6 +12,10 @@
 #define SWIPEBOARD 0
 #define ZOOMBOARD 1
 
+#define TRAINING 0
+#define EVALUATIONONE 1
+#define EVALUATIONTWO 2
+
 #define WATCHWIDTH 128
 #define WATCHHEIGHT 128
 
@@ -24,11 +28,16 @@
 #define TEXTFIELDHEIGHTRATIO 0.4f
 
 #define FONTSIZE 15
-#define TEXTLENGTH 12
+#define TEXTLENGTH 36
 
-#define NUMSECTIONS 2
-#define NUMBLOCKS 1
-#define NUMTRIALS 2
+#define NUMSECTIONS 3 // first one is training
+#define NUMBLOCKS 5
+#define NUMTRIALS 1
+
+#define BREAKTIME 180
+
+#define PARTICIPANT 0
+#define SECTION EVALUATIONONE
 
 #endif
 

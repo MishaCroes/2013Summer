@@ -39,7 +39,7 @@
     NSDateFormatter* dateTimeFormatter = [[NSDateFormatter alloc] init];
     [dateTimeFormatter setDateFormat:@"yyyy-MM-dd_hh:mm:ss"];
     NSString *strDateTime = [dateTimeFormatter stringFromDate:[NSDate date]];
-    NSString *docName = [NSString stringWithFormat:@"WatchTextEntry-%d-%d-%@.csv", pId, section, strDateTime];
+    NSString *docName = [NSString stringWithFormat:@"WatchTextEntry-Participant%d-Section%d-%@.csv", pId, section, strDateTime];
     NSString *docFile = [docDir stringByAppendingPathComponent: docName];
 
     [_strTable writeToFile:docFile atomically:NO encoding:NSUTF8StringEncoding error:nil];

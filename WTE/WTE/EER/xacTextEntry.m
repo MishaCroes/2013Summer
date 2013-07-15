@@ -359,8 +359,9 @@ bool isThereNewInput = false;
 - (void) getWord :(int)sign {
     if(_isTrialEnded) {
         [self cleanUp];
-        [_testText loadWord:sign];
-        _isTrialEnded = false;
+        if([_testText loadWord:sign]) {
+            _isTrialEnded = false;
+        }
     }
 }
 

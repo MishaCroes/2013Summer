@@ -32,9 +32,10 @@
 @property long finishTime;
 @property int errors;
 @property xacFeatureTable* featureTable;
+@property BOOL isBlockEnded;
 
 - (void) loadWords;
-- (void) loadWord :(int)sign;
+- (BOOL) loadWord :(int)sign;
 - (BOOL) update :(NSString*) input :(int) idxSubStr;
 - (void) resetTimer;
 - (void) loadSharedString;

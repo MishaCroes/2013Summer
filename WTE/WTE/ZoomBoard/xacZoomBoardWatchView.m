@@ -171,8 +171,9 @@ bool isZoomed = false;
 - (void) getWord :(int)sign {
     if(_trialFinished) {
         [self cleanUp];
-        [_testText loadWord:sign];
-        _trialFinished = false;
+        if([_testText loadWord:sign]) {
+            _trialFinished = false;
+        }
     }
 }
 
@@ -219,7 +220,7 @@ bool isZoomed = false;
 
 - (void) doSpace {
     NSLog(@"doSpace");
-    [self addTypedKey:@" "];
+    [self addTypedKey:@"_"];
     [self updateTextField];
 }
 

@@ -47,17 +47,17 @@ UIButton* btnLast;
 //    [btnLast addTarget:self action:@selector(lastWord) forControlEvents:UIControlEventTouchUpInside];
 //    [_mainView addSubview:btnLast];
     
-    _watchView.testText = [[xacTestText alloc] initWithFrame:CGRectMake(oriX - WATCHWIDTH * 2 / 3, oriY - WATCHHEIGHT / 8 - WATCHHEIGHT / 6, WATCHWIDTH * 3, WATCHHEIGHT / 6)];
+    _watchView.testText = [[xacTestText alloc] initWithFrame:CGRectMake(oriX - WATCHWIDTH * 2 / 3, oriY - WATCHHEIGHT / 6, WATCHWIDTH * 4, WATCHHEIGHT / 6)];
     [_mainView addSubview:_watchView.testText];
     [_watchView.testText loadWords];
-    [_watchView.testText setBackgroundColor:[UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:0.5f]];
+    [_watchView.testText setBackgroundColor:[UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:0.75f]];
     _watchView.testText.technique = ZOOMBOARD;
 //    _watchView.testText = _testText;
     
-    _textField = [[UITextField alloc] initWithFrame:CGRectMake(oriX - WATCHWIDTH * 2 / 3, oriY - WATCHHEIGHT / 8, WATCHWIDTH * 3, WATCHHEIGHT / 6)];
+    _textField = [[UITextField alloc] initWithFrame:CGRectMake(oriX - WATCHWIDTH * 2 / 3, oriY, WATCHWIDTH * 4, WATCHHEIGHT / 6)];
     _textField.textAlignment = NSTextAlignmentLeft;
     [_textField setUserInteractionEnabled:NO];
-    [_textField setBackgroundColor:[UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:0.5f]];
+    [_textField setBackgroundColor:[UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:0.75f]];
     [_mainView addSubview:_textField];
     _watchView.textField = _textField;
     
