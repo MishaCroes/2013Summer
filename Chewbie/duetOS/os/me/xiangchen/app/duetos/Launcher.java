@@ -44,6 +44,7 @@ public class Launcher extends Activity implements SensorEventListener {
 	public final static int AUTOLOCKTIMEOUT = 1800; // sec
 	public final static int TIMERFPS = 30;
 	public final static float TAPTHRS = 200;
+	public final static int LONGPRESSTIMEOUT = 750; // ms
 
 	RelativeLayout layout;
 	xacInteractiveCanvas canvas;
@@ -72,6 +73,17 @@ public class Launcher extends Activity implements SensorEventListener {
 
 	float xTouchDown;
 	float yTouchDown;
+
+	Call call;
+	Email email;
+	Reader reader;
+	Map map;
+
+	long timeTouchDown;
+
+	String sup;
+
+	boolean isPreviewing = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -152,10 +164,16 @@ public class Launcher extends Activity implements SensorEventListener {
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
+
 						if (activeApp != null) {
 							activeApp.runOnUIThread();
+						} else {
+							if (!isPreviewing) {
+								LauncherManager.showTime();
+							}
 						}
 					}
+
 				});
 
 			}
@@ -179,25 +197,25 @@ public class Launcher extends Activity implements SensorEventListener {
 		htApps = new Hashtable<xacShape, App>();
 		htAppExtensions = new Hashtable<App, AppExtension>();
 
-		Call call = new Call(this);
+		call = new Call(this);
 		addIcon(call);
 		apps.add(call);
 		CallExtension callExtension = new CallExtension();
 		htAppExtensions.put(call, callExtension);
 
-		Email email = new Email(this);
+		email = new Email(this);
 		addIcon(email);
 		apps.add(email);
 		EmailExtension emailExtension = new EmailExtension(this);
 		htAppExtensions.put(email, emailExtension);
 
-		Reader reader = new Reader(this);
+		reader = new Reader(this);
 		addIcon(reader);
 		apps.add(reader);
 		ReaderExtenstion readerExtension = new ReaderExtenstion();
 		htAppExtensions.put(reader, readerExtension);
 
-		Map map = new Map(this);
+		map = new Map(this);
 		addIcon(map);
 		apps.add(map);
 		MapExtension mapExtension = new MapExtension();
@@ -240,7 +258,8 @@ public class Launcher extends Activity implements SensorEventListener {
 	@SuppressLint("NewApi")
 	private void doCanvasTouch(MotionEvent event) {
 		Calendar calendar = Calendar.getInstance();
-		lastUsageTime = calendar.getTimeInMillis();
+		long curTime = calendar.getTimeInMillis();
+		lastUsageTime = curTime;
 
 		int action = event.getAction();
 		PointerCoords curCoord = new PointerCoords();
@@ -248,31 +267,60 @@ public class Launcher extends Activity implements SensorEventListener {
 
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
-			hitIcons = canvas.getTouchedShapes(curCoord.x, curCoord.y);
+			timeTouchDown = curTime;
 			break;
 		case MotionEvent.ACTION_MOVE:
-			break;
-		case MotionEvent.ACTION_UP:
-			if (hitIcons.size() > 0) {
-				xacShape hitIcon = hitIcons.get(0);
-				activeApp = htApps.get(hitIcon);
-				LauncherManager.setAppExtension(htAppExtensions.get(activeApp));
-				LauncherExtension watch = LauncherManager.getWatch();
-				if (watch != null) {
-					watch.showText(activeApp.getTitle());
-				}
-				if (activeApp != null) {
-					View appView = activeApp.getViewGroup();
-					if (appView != null) {
-						try {
-							layout.addView(appView);
-						} catch (Exception e) {
-							;
+			if (curTime - timeTouchDown > LONGPRESSTIMEOUT) {
+				isPreviewing = true;
+				hitIcons = canvas.getTouchedShapes(curCoord.x, curCoord.y);
+				if (hitIcons.size() > 0) {
+					xacShape hitIcon = hitIcons.get(0);
+					App hoverApp = htApps.get(hitIcon);
+					if (hoverApp != null) {
+						String supNew = hoverApp.getSup();
+						if (sup != supNew) {
+							sup = supNew;
+							LauncherManager.watchUp(sup);
 						}
-						LauncherManager.resumeWatch();
+
 					}
 				}
-			} else {
+			}
+			break;
+		case MotionEvent.ACTION_UP:
+			hitIcons = canvas.getTouchedShapes(curCoord.x, curCoord.y);
+			// if hitting an icon
+			if (hitIcons.size() > 0) {
+				if (curTime - timeTouchDown < LONGPRESSTIMEOUT) {
+					// LauncherManager.watchUp(activeApp.getSup());
+					// } else {
+					xacShape hitIcon = hitIcons.get(0);
+					activeApp = htApps.get(hitIcon);
+					LauncherManager.setAppExtension(htAppExtensions
+							.get(activeApp));
+					LauncherExtension watch = LauncherManager.getWatch();
+					if (watch != null) {
+						watch.showText(activeApp.getTitle());
+					}
+					if (activeApp != null) {
+						View appView = activeApp.getViewGroup();
+						if (appView != null) {
+							try {
+								layout.addView(appView);
+							} catch (Exception e) {
+								;
+							}
+							LauncherManager.resumeWatch();
+						}
+					}
+				} else {
+					isPreviewing = false;
+					activeApp = null;
+					sup = "";
+				}
+			}
+			// not hitting an icon
+			else {
 				int watchConfig = xacAuthenticSenseFeatureMaker
 						.calculateAuthentication();
 				LauncherManager.setWatchConfig(watchConfig);
@@ -405,6 +453,41 @@ public class Launcher extends Activity implements SensorEventListener {
 		xacAuthenticSenseFeatureMaker.addPhoneFeatureEntry();
 		if (activeApp != null) {
 			activeApp.doAccelerometer(event.values);
+		}
+	}
+
+	public void switchApp(int appId) {
+		if (activeApp != null) {
+			layout.removeView(activeApp.getViewGroup());
+			activeApp = null;
+			LauncherManager.setAppExtension(null);
+			LauncherManager.resumeWatch();
+		}
+		switch (appId) {
+		case LauncherManager.CALL:
+			activeApp = call;
+			break;
+		case LauncherManager.EMAIL:
+			activeApp = email;
+			break;
+		case LauncherManager.READER:
+			activeApp = reader;
+			break;
+		case LauncherManager.MAP:
+			activeApp = map;
+			break;
+		}
+
+		if (activeApp != null) {
+			View appView = activeApp.getViewGroup();
+			if (appView != null) {
+				try {
+					layout.addView(appView);
+				} catch (Exception e) {
+					;
+				}
+				LauncherManager.resumeWatch();
+			}
 		}
 	}
 

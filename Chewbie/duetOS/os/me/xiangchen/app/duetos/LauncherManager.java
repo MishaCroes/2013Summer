@@ -4,9 +4,11 @@ import me.xiangchen.app.duetapp.AppExtension;
 import me.xiangchen.ui.xacToast;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Vibrator;
 import android.util.Log;
 
 public class LauncherManager {
@@ -46,6 +48,14 @@ public class LauncherManager {
 	
 	public final static int NORMAL = 0;
 	public final static int BOLD = 1;
+	
+	public final static int LOCAL = 0;
+	public final static int GLOBAL = 1;
+	
+	public final static int CALL = 0;
+	public final static int EMAIL = 1;
+	public final static int READER = 2;
+	public final static int MAP = 3;
 
 	static int watchMode = REGULAR;
 	static int phoneMode = REGULAR;
@@ -78,6 +88,10 @@ public class LauncherManager {
 	
 	static MediaPlayer mediaPlayer;
 
+	public static int APPSWITCHINGBMP = R.drawable.app_switching; 
+	
+	static int watchPerspective = LOCAL;
+	
 	public static void setPhone(Launcher p) {
 		phone = p;
 		toastPhone = new xacToast(phone);
@@ -148,6 +162,12 @@ public class LauncherManager {
 					watch.buzz(100);
 				}
 			}
+		}
+	}
+	
+	public static void showTime() {
+		if(watch != null) {
+			watch.showTime();
 		}
 	}
 
@@ -304,5 +324,46 @@ public class LauncherManager {
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
+	}
+	
+	public static void vibrate(int duration) {
+		Vibrator vibrator = (Vibrator) phone.getSystemService(Context.VIBRATOR_SERVICE);
+		vibrator.vibrate(duration);
+	}
+	
+	public static void buzz() {
+		if(watch != null) {
+			watch.buzz(100);
+		}
+	}
+	
+	public static void showText(String text) {
+		if(watch != null) {
+			watch.showText(text);
+		}
+	}
+	
+	public static Bitmap getBitmap(int resId) {
+		return BitmapFactory.decodeResource(phone.getResources(), resId);
+	}
+	
+	public static int getWatchPerspective() {
+		return watchPerspective;
+	}
+	
+	public static void setWatchPerspective(int pers) {
+		watchPerspective = pers;
+	}
+	
+	public static void switchApp(int appId) {
+		if(phone != null) {
+			phone.switchApp(appId);
+		}
+	}
+	
+	public static void watchUp(String sup) {
+		if(watch != null) {
+			watch.showText(sup);
+		}
 	}
 }

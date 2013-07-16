@@ -25,4 +25,28 @@ public class CallManager extends AppManager {
 			phone.playNextVoiceMail();
 		}
 	}
+	
+	public static void nextAppExtension() {
+		if(watch != null) {
+			watch.nextAppExtension();
+		}
+	}
+	
+	public static void lastAppExtension() {
+		if(watch != null) {
+			watch.lastAppExtension();
+		}
+	}
+	
+	public static void nextItem() {
+		if(watch != null) {
+			watch.nextItem();
+		}
+	}
+	
+	public static void lastItem() {
+		if(watch != null) {
+			watch.lastItem();
+		}
+	}
 }

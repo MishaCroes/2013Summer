@@ -10,6 +10,7 @@ public class App {
 	protected ViewGroup appLayout;
 	protected int color;
 	protected String title = "";
+	protected String sup = "";
 	
 	public App(Context context) {
 	}
@@ -36,5 +37,9 @@ public class App {
 	
 	public void doAccelerometer(float[] values) {
 		
+	}
+	
+	public String getSup() {
+		return sup;
 	}
 }

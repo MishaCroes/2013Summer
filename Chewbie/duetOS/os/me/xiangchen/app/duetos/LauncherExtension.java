@@ -47,6 +47,15 @@ public class LauncherExtension extends ControlExtension {
 
 	boolean isSensorWorking = false;
 
+	boolean wasALongPress = false;
+	
+	int appIdTouchDown = -1;
+	int appIdTouchUp = -1;
+	
+	int prevHours = -1;
+	int prevMins = -1;
+	int prevSeconds = -1;
+
 	public LauncherExtension(Context context, String hostAppPackageName) {
 		super(context, hostAppPackageName);
 		LauncherManager.setWatch(this);
@@ -110,7 +119,7 @@ public class LauncherExtension extends ControlExtension {
 	}
 
 	public void showText(String text) {
-		textView.setTextSize(10);
+		textView.setTextSize(text.length() > 0 ? (int)(5f + 50.0f / text.length()) : 0);
 		textView.setText(text);
 		updateVisual();
 	}
@@ -123,13 +132,30 @@ public class LauncherExtension extends ControlExtension {
 		@SuppressWarnings("deprecation")
 		int curMinutes = dt.getMinutes();// .getDisplayName(Calendar.MINUTE,
 											// Calendar.SHORT, Locale.US);
-		textView.setTextSize(16);
-		textView.setText((curHours < 10 ? "0" : "") + curHours + ":"
-				+ (curMinutes < 10 ? "0" : "") + curMinutes);
-		updateVisual();
+		
+		@SuppressWarnings("deprecation")
+		int curSecons = dt.getSeconds();;
+		
+		if(curMinutes != prevMins || curHours != prevHours || curSecons != prevSeconds) {
+			textView.setTextSize(16);
+			textView.setText((curHours < 10 ? "0" : "") + curHours + ":"
+					+ (curMinutes < 10 ? "0" : "") + curMinutes);
+			updateVisual();
+			
+			prevHours = curHours;
+			prevMins = curMinutes;
+			prevSeconds = curSecons;
+		}
 	}
 
 	public void updateVisual() {
+
+		if (LauncherManager.getWatchPerspective() == LauncherManager.GLOBAL) {
+			showBitmap(LauncherManager
+					.getBitmap(LauncherManager.APPSWITCHINGBMP));
+			return;
+		}
+
 		bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bitmap);
 		layout.draw(canvas);
@@ -138,6 +164,12 @@ public class LauncherExtension extends ControlExtension {
 	}
 
 	public void updateVisual(Bitmap bmp, boolean toStick) {
+		if (LauncherManager.getWatchPerspective() == LauncherManager.GLOBAL) {
+			showBitmap(LauncherManager
+					.getBitmap(LauncherManager.APPSWITCHINGBMP));
+			return;
+		}
+
 		if (!toStick) {
 			if (bmp == null) {
 				showTime();
@@ -179,12 +211,71 @@ public class LauncherExtension extends ControlExtension {
 
 	@Override
 	public void onTouch(final ControlTouchEvent event) {
-		if (appExt == null) {
-			appExt = LauncherManager.getAppExtension();
-		}
 
-		if (appExt != null) {
-			appExt.doTouch(event);
+		if (LauncherManager.getWatchPerspective() == LauncherManager.LOCAL) {
+			if (event.getAction() == Control.Intents.TOUCH_ACTION_LONGPRESS) {
+				if (!wasALongPress) {
+					wasALongPress = true;
+//					Log.d(LOGTAG, "do app switching!");
+					LauncherManager.setWatchPerspective(LauncherManager.GLOBAL);
+					updateVisual();
+					startVibrator(100, 100, 3);
+					
+				}
+				// updateVisual(LauncherManager.getBitmap(LauncherManager.APPSWITCHINGBMP),
+				// true);
+			} else {
+				wasALongPress = false;
+				if (appExt == null) {
+					appExt = LauncherManager.getAppExtension();
+				}
+
+				if (appExt != null) {
+					appExt.doTouch(event);
+				}
+			}
+		} else {
+			if (event.getAction() == Control.Intents.TOUCH_ACTION_LONGPRESS) {
+				if (!wasALongPress) {
+					wasALongPress = true;
+//					Log.d(LOGTAG, "do app switching!");
+					LauncherManager.setWatchPerspective(LauncherManager.LOCAL);
+					appIdTouchDown = -1;
+					updateVisual();
+					startVibrator(100, 100, 3);
+				}
+			} else {
+				
+				int appId = -1;
+				wasALongPress = false;
+				float x = event.getX();
+				float y = event.getY();
+				
+				if(x < width / 2 && y < height / 2) {
+//					Log.d(LOGTAG, "Call");
+					appId = LauncherManager.CALL;
+				} else if(x > width / 2 && y < height / 2) {
+//					Log.d(LOGTAG, "Email");
+					appId = LauncherManager.EMAIL;
+				} else if(x > width / 2 && y > height / 2) {
+//					Log.d(LOGTAG, "Map");
+					appId = LauncherManager.MAP;
+				} else if(x < width / 2 && y > height / 2) {
+//					Log.d(LOGTAG, "Reader");
+					appId = LauncherManager.READER;
+				}
+				
+//				Log.d(LOGTAG, x + " " + y);
+				
+				if(event.getAction() == Control.Intents.TOUCH_ACTION_PRESS) {
+					appIdTouchDown = appId;
+				} else if(event.getAction() == Control.Intents.TOUCH_ACTION_RELEASE) {
+					if(appId == appIdTouchDown) {
+						Log.d(LOGTAG, "App Id: " + appId);
+						LauncherManager.switchApp(appId);
+					}
+				}
+			}
 		}
 	}
 
