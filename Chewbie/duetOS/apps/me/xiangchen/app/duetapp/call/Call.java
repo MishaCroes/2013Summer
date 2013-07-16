@@ -54,6 +54,10 @@ public class Call extends App {
 
 	float xTouchDown;
 	float yTouchDown;
+	
+	RelativeLayout layoutCallScreen;
+	boolean isCalling = false;
+	
 	public Call(Context context) {
 		super(context);
 		color = xacInteractiveCanvas.fgColorGreen;
@@ -73,7 +77,6 @@ public class Call extends App {
 					return false;
 				}
 				
-				doTouch(event);
 				return true;
 			}
 		});
@@ -81,10 +84,33 @@ public class Call extends App {
 		appLayout.addView(layoutViews);
 
 		dispatchViews(context);
+		
+		layoutCallScreen = new RelativeLayout(context);
+		layoutCallScreen.setBackgroundColor(0xDD000000);
+		layoutCallScreen.setOnTouchListener(new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				
+				posture = xacPostureSenseFeatureMaker.calculatePosture();
+				if(posture == xacPostureSenseFeatureMaker.NONE) {
+					if(event.getAction() == MotionEvent.ACTION_UP) {
+						appLayout.removeView(layoutCallScreen);
+						isCalling = false;
+					}
+				} else if(posture == xacPostureSenseFeatureMaker.NOWATCH) {
+					doTouch(event);
+				}
+				
+				return true;
+			}
+		});
 
 		xacPostureSenseFeatureMaker
 				.setLabel(xacPostureSenseFeatureMaker.NONE);
 		xacPostureSenseFeatureMaker.createFeatureTable();
+		
+		sup = "5 missing calls from Tiffany";
 	}
 
 	private void dispatchViews(Context context) {
@@ -233,12 +259,17 @@ public class Call extends App {
 
 							@Override
 							public boolean onLongClick(View arg0) {
+								if(isCalling) {
+									return false;
+								}
+								
 								posture = xacPostureSenseFeatureMaker.calculatePosture();
 								if(posture != xacPostureSenseFeatureMaker.NONE) {
 									return false;
 								}
 								
-								Log.d(LOGTAG, "voice mail!");
+//								Log.d(LOGTAG, "voice mail!");
+								LauncherManager.vibrate(500);
 								CallManager.playNextVoiceMail();
 								wasLongClick = true;
 								return false;
@@ -250,6 +281,10 @@ public class Call extends App {
 					btn.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View view) {
+							if(isCalling) {
+								return;
+							}
+							
 							posture = xacPostureSenseFeatureMaker.calculatePosture();
 							if(posture != xacPostureSenseFeatureMaker.NONE) {
 								return;
@@ -273,11 +308,35 @@ public class Call extends App {
 				} else {
 					if (i == 4 && j == 1) {
 						// phone call
-
+						
+						btn.setOnClickListener(new View.OnClickListener() {
+							
+							@Override
+							public void onClick(View arg0) {
+								if(isCalling) {
+									return;
+								}
+								
+								RelativeLayout.LayoutParams paramsCallScreen = new RelativeLayout.LayoutParams(
+										RelativeLayout.LayoutParams.MATCH_PARENT,
+										RelativeLayout.LayoutParams.MATCH_PARENT);
+//								paramsCallScreen.addRule(RelativeLayout.ABOVE, layoutViews.getId());
+								appLayout.addView(layoutCallScreen, paramsCallScreen);
+								isCalling = true;
+								
+							}
+						});
+						
 					} else if (i == 4 && j == 2) {
+						// delete
+						
 						btn.setOnClickListener(new View.OnClickListener() {
 							@Override
 							public void onClick(View view) {
+								if(isCalling) {
+									return;
+								}
+								
 								posture = xacPostureSenseFeatureMaker.calculatePosture();
 								if(posture != xacPostureSenseFeatureMaker.NONE) {
 									return;
@@ -369,15 +428,19 @@ public class Call extends App {
 			float dy = coord.y - yTouchDown;
 			if(Math.abs(dx) < TAPTHRS) {
 				if(dy > TAPTHRS) {
-					Log.d(LOGTAG, "down");
+//					Log.d(LOGTAG, "down");
+					CallManager.nextAppExtension();
 				} else if(dy < -TAPTHRS){
-					Log.d(LOGTAG, "up");
+//					Log.d(LOGTAG, "up");
+					CallManager.lastAppExtension();
 				}
 			} else if(Math.abs(dy) < TAPTHRS){
 				if(dx > TAPTHRS) {
 					Log.d(LOGTAG, "right");
+					CallManager.nextItem();
 				} else {
 					Log.d(LOGTAG, "left");
+					CallManager.lastItem();
 				}
 			}
 			break;

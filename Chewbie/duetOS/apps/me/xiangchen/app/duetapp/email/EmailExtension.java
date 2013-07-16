@@ -3,11 +3,11 @@ package me.xiangchen.app.duetapp.email;
 import java.util.Calendar;
 
 import me.xiangchen.app.duetapp.AppExtension;
-import me.xiangchen.app.duetos.LauncherExtension;
 import me.xiangchen.app.duetos.LauncherManager;
 import me.xiangchen.app.duetos.R;
 import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
 import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
+import me.xiangchen.technique.sharesense.xacShareSenseFeatureMaker;
 import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
 import me.xiangchen.ui.xacToast;
 import android.content.Context;
@@ -22,6 +22,9 @@ public class EmailExtension extends AppExtension {
 	
 	public EmailExtension(Context context) {
 		EmailManager.setWatch(this);
+		
+		xacShareSenseFeatureMaker.createFeatureTable();
+		xacShareSenseFeatureMaker.setLabel(xacShareSenseFeatureMaker.PUBLIC);
 		
 		toast = new xacToast(context);
 		toast.setImage(R.drawable.email_small);
@@ -42,6 +45,9 @@ public class EmailExtension extends AppExtension {
 		
 		xacFlipSenseFeatureMaker.updateWatchAccel(values);
 		xacFlipSenseFeatureMaker.addWatchFeatureEntry();
+		
+		xacShareSenseFeatureMaker.updateWatchAccel(values);
+		xacShareSenseFeatureMaker.addWatchFeatureEntry();
 	}
 	
 	@Override

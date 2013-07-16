@@ -11,6 +11,7 @@ import me.xiangchen.app.duetos.LauncherManager;
 import me.xiangchen.app.duetos.R;
 import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
 import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
+import me.xiangchen.technique.sharesense.xacShareSenseFeatureMaker;
 import me.xiangchen.technique.touchsense.TouchSenseClassifier;
 import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
 import me.xiangchen.ui.xacInteractiveCanvas;
@@ -18,7 +19,7 @@ import me.xiangchen.ui.xacShape;
 import me.xiangchen.ui.xacToast;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Typeface;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.View;
@@ -35,14 +36,14 @@ public class Email extends App {
 	public final static int WIDTHEMAIL = 1024;
 	public final static int DIMMARGIN = (WIDTHAPP - WIDTHEMAIL) / 2;
 	public final static int HEIGHTEMAIL = 320;
-	public final static int NUMSTARTINGEMAILS = 10;
+	public final static int NUMSTARTINGEMAILS = 5;
 	public final static int TAPOFFSETTHRES = 50;
 
 	final static int NUMROWSHANDPARTS = LauncherManager.PHONEACCELFPSGAME
 			* xacTouchSenseFeatureMaker.TOUCHTIMEOUT / 1000;
 	private static final float APPWIDTH = 1080;
 
-	public final static int EMAILFREQUENCY = 3;
+	public final static int EMAILFREQUENCY = 30;
 
 	int cntEmail = 0;
 
@@ -67,6 +68,7 @@ public class Email extends App {
 
 	ArrayList<xacShape> hitEmails;
 	ArrayList<xacShape> allEmails;
+	ArrayList<xacShape> unreadEmails;
 
 	int handPart;
 
@@ -86,6 +88,26 @@ public class Email extends App {
 
 	xacShape openedEmail;
 
+	int numUnnotifiedEmail = 0;
+
+	int prevWatchMode = xacShareSenseFeatureMaker.PUBLIC;
+	int prevNumUnnotified = 0;
+
+	int idxEmailText = 0;
+	String[] emailTitles = {
+			"My Starbucks Rewards - Treat yourself. Treat Receipt is back.",
+			"Jane Skout - FMS -- Peak Demand Electricity Management Event – July 16, 2046",
+			"Google Calendar - Reminder: meeting @ Tue Jul 16, 2046 11:30am - 1pm (Wang)",
+			"ACM Learning Center - Register for Tomorrow's ACM-SIGHPC Webcast - Changing How Programmers Think about Parallel Programming",
+			"Facebook - You have a new message from someone you don't know" };
+	String[] emailTexts = {
+			"My Starbucks Rewards - Treat yourself. Treat Receipt is back.",
+			"Jane Skout - FMS -- Peak Demand Electricity Management Event – July 16, 2046",
+			"Google Calendar - Reminder: meeting @ Tue Jul 16, 2046 11:30am - 1pm (Wang)",
+			"ACM Learning Center - Register for Tomorrow's ACM-SIGHPC Webcast - Changing How Programmers Think about Parallel Programming",
+			"Facebook - You have a new message from someone you don't know" };
+	Hashtable<xacShape, String> htEmailText;
+
 	public Email(Context context) {
 		super(context);
 		color = xacInteractiveCanvas.fgColorRed;
@@ -101,7 +123,7 @@ public class Email extends App {
 		openedEmailLayout = new LinearLayout(context);
 		openedEmailLayout.setBackgroundColor(xacInteractiveCanvas.fgColorCream);
 		textViewEmail = new TextView(context);
-		textViewEmail.setTextSize(72);
+		textViewEmail.setTextSize(24);
 		textViewEmail.setTextColor(xacInteractiveCanvas.bgColorDark);
 		openedEmailLayout.addView(textViewEmail);
 		paramsOpened = new LinearLayout.LayoutParams(
@@ -127,12 +149,16 @@ public class Email extends App {
 		});
 
 		htEmails = new Hashtable<xacShape, String>();
+		htEmailText = new Hashtable<xacShape, String>();
 		allEmails = new ArrayList<xacShape>();
+		unreadEmails = new ArrayList<xacShape>();
 		for (int i = 0; i < NUMSTARTINGEMAILS; i++) {
 			addEmail();
 			updateInboxVisual();
 		}
 
+		
+		
 		random = new Random();
 		toast = new xacToast(context);
 		toast.setImgSrc(R.drawable.email);
@@ -146,17 +172,35 @@ public class Email extends App {
 
 	@Override
 	public void runOnUIThread() {
+		int watchMode = xacShareSenseFeatureMaker.doClassification();
 		if ((random.nextInt() + 97) % (Launcher.TIMERFPS * EMAILFREQUENCY) == 0
 				&& cntEmail <= 40) {
 			addEmail();
 			updateInboxVisual();
 
 			LauncherManager.showNotificationOnPhone(R.drawable.email);
-			LauncherManager.showNotificationOnWatch(R.drawable.email_small,
-					true);
+
+			if (watchMode == xacShareSenseFeatureMaker.PRIVATE) {
+				LauncherManager.showNotificationOnWatch(R.drawable.email_small,
+						true);
+			} else {
+				LauncherManager.buzz();
+			}
+			numUnnotifiedEmail++;
 			canvas.invalidate();
-		} 
-		
+		}
+
+		if (watchMode == xacShareSenseFeatureMaker.PUBLIC) {
+			LauncherManager.showTime();
+		} else {
+			if (prevWatchMode == xacShareSenseFeatureMaker.PUBLIC
+					|| prevNumUnnotified != numUnnotifiedEmail) {
+				LauncherManager.showText(numUnnotifiedEmail + " new email(s)");
+			}
+		}
+
+		prevWatchMode = watchMode;
+		prevNumUnnotified = numUnnotifiedEmail;
 	}
 
 	private void dispatchButtons(Context context) {
@@ -169,8 +213,9 @@ public class Email extends App {
 		btnMarkRead.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				for(xacShape email : selectedEmails) {
-					email.setTypeface(LauncherManager.getTypeface(LauncherManager.NORMAL));
+				for (xacShape email : selectedEmails) {
+					email.setTypeface(LauncherManager
+							.getTypeface(LauncherManager.NORMAL));
 				}
 				canvas.invalidate();
 			}
@@ -178,15 +223,13 @@ public class Email extends App {
 		// layoutButtons.addView(btnMarkRead);
 		buttons.add(btnMarkRead);
 
-		
-
 		btnDelete = new Button(context);
 		btnDelete.setText("Delete");
 		btnDelete.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				for(xacShape email : selectedEmails) {
+				for (xacShape email : selectedEmails) {
 					allEmails.remove(email);
 					canvas.remove(email);
 					htEmails.remove(email);
@@ -200,14 +243,14 @@ public class Email extends App {
 		});
 		// layoutButtons.addView(btnDelete);
 		buttons.add(btnDelete);
-		
+
 		btnUnselect = new Button(context);
 		btnUnselect.setText("Unselect");
 		btnUnselect.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				for(xacShape email : selectedEmails) {
+				for (xacShape email : selectedEmails) {
 					email.toggleStroke();
 				}
 				selectedEmails.clear();
@@ -249,9 +292,13 @@ public class Email extends App {
 		emailEntry.setTypeface(LauncherManager
 				.getTypeface(LauncherManager.BOLD));
 		allEmails.add(emailEntry);
-		String textEmail = "Email No." + cntEmail;
-		htEmails.put(emailEntry, textEmail);
-
+		unreadEmails.add(emailEntry);
+//		String titleEmail = ;
+	
+		htEmails.put(emailEntry, emailTitles[idxEmailText]);
+		htEmailText.put(emailEntry, emailTexts[idxEmailText]);
+		
+		idxEmailText = (idxEmailText + 1) % emailTitles.length;
 		cntEmail++;
 	}
 
@@ -259,22 +306,15 @@ public class Email extends App {
 		int numEmails = allEmails.size();
 		for (int i = 0; i < numEmails; i++) {
 			float cx = WIDTHAPP / 2;
-			float cy = DIMMARGIN * (1 + i) + HEIGHTEMAIL * (i + 0.5f) - dScrollY;
-			
-//			if(cy - HEIGHTEMAIL - DIMMARGIN < 0 && cy > 0) {
-//				canvas.idxInScreen0 = i;
-//			}
-//			
-//			if(cy < HEIGHTAPP && cy + HEIGHTEMAIL + DIMMARGIN > HEIGHTAPP) {
-//				canvas.idxInScreen1 = i;
-//			}
-//			
+			float cy = DIMMARGIN * (1 + i) + HEIGHTEMAIL * (i + 0.5f)
+					- dScrollY;
+
 			xacShape emailEntry = allEmails.get(numEmails - 1 - i);
 			String textEmail = htEmails.get(emailEntry);
 			int lenPreview = Math.min(textEmail.length(), 128);
 			emailEntry.setText(textEmail.substring(0, lenPreview));
-			
-//			emailEntry.setTextColor(xacInteractiveCanvas.bgColorDark);
+
+			// emailEntry.setTextColor(xacInteractiveCanvas.bgColorDark);
 			emailEntry.setPosition(cx, cy);
 		}
 	}
@@ -335,9 +375,9 @@ public class Email extends App {
 				dScrollY += (-dy);
 				// Log.d(LOGTAG, "scroll by " + dy);
 
-//				canvas.scrollContentsBy(0, dy);
+				// canvas.scrollContentsBy(0, dy);
 				canvas.setOffsets(0, dy);
-				
+
 				canvas.invalidate();
 				dScrollY = Math.max(0, dScrollY);
 
@@ -372,9 +412,13 @@ public class Email extends App {
 						break;
 					case xacTouchSenseFeatureMaker.PAD:
 					case xacTouchSenseFeatureMaker.SIDE:
-						String textEmail = htEmails.get(hitEmail);
-						textViewEmail.setText(textEmail);
+					default:
+						String titleEmail = htEmails.get(hitEmail);
+						String textEmail = htEmailText.get(hitEmail);
+//						textViewEmail.setTypeface(LauncherManager.getTypeface(LauncherManager.BOLD));
+						textViewEmail.setText(titleEmail + "\n" + textEmail);
 						appLayout.addView(openedEmailLayout, paramsOpened);
+						unreadEmails.remove(hitEmail);
 						hitEmail.setTypeface(LauncherManager
 								.getTypeface(LauncherManager.NORMAL));
 						openedEmail = hitEmail;
@@ -400,7 +444,6 @@ public class Email extends App {
 		xPrev = xCur;
 		yPrev = yCur;
 	}
-
 
 	private int calculateHandPart(double[] extras) {
 		int label = xacTouchSenseFeatureMaker.UNKNOWN;
@@ -433,5 +476,14 @@ public class Email extends App {
 		return label;
 	}
 
-
+	 @Override
+	 public String getSup() {
+		 int cntUnread = unreadEmails.size();
+		 if(cntUnread > 0) {
+			 sup = htEmailText.get(unreadEmails.get(cntUnread - 1));
+		 } else {
+			 sup = "Inbox zero :)";
+		 }
+		 return sup;
+	 }
 }
