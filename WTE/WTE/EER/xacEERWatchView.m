@@ -19,7 +19,7 @@
         _swipe = [[xacSwipe alloc] init];
         _textEntry = [[xacTextEntry alloc] init];
         [_textEntry initVisualView:self];
-        [_textEntry initTextField:self];
+//        [_textEntry initTextField:self];
         
     }
     return self;

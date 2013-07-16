@@ -15,5 +15,8 @@
 
 @interface xacZoomBoardViewController : UIViewController
 @property (strong, nonatomic) IBOutlet UIView *mainView;
+@property xacZoomBoardWatchView *watchView;
+//@property xacTestText* testText;
+@property UITextField* textField;
 
 @end

@@ -11,7 +11,6 @@
 @implementation xacTextEntry
 
 UIImageView *imgView;
-UITextField *textField;
 NSMutableArray *charArray;
 int ptrCharEER = 0;
 NSString* cursorEER = @"";
@@ -40,9 +39,11 @@ bool isThereNewInput = false;
         _gestureMap = [[NSMutableDictionary alloc] init];
         [self initGestureMap];
         
-        textField = nil;
+        _textField = nil;
         charArray = [[NSMutableArray alloc] initWithCapacity:TEXTLENGTH];
         imgView = nil;
+        
+        _isTrialEnded = true;
         
     }
     return self;
@@ -92,7 +93,7 @@ bool isThereNewInput = false;
     isThereNewInput = true;
     
     // back to keyboard
-    if(_secondSwipe.gesture == NORTH) {
+    if(_secondSwipe.gesture == SOUTH) {
         if(imgView != nil) {
             [self updateVisual:UNKNOWN];
         }
@@ -154,20 +155,21 @@ bool isThereNewInput = false;
         _subStrInput = [_strInput substringWithRange:(NSRange){idxSubString, lenAvailableSubstr}];
     
         if([_testText update:_strInput :idxSubString]) {
+            _isTrialEnded = true;
             [self cleanUp];
         }
         isThereNewInput = false;
     }
     
-    [textField setText:[_subStrInput stringByAppendingString:cursorEER]];
+    [_textField setText:[_strInput stringByAppendingString:cursorEER]];
 }
 
 - (void) cleanUp {
     [charArray removeAllObjects];
     ptrCharEER = 0;
     idxSubString = 0;
-    _subStrInput = @"";
-    [textField setText:[_subStrInput stringByAppendingString:cursorEER]];
+    _strInput = @"";
+    [_textField setText:[_strInput stringByAppendingString:cursorEER]];
 }
 
 - (long) getCurrentTimeInMS
@@ -237,6 +239,25 @@ bool isThereNewInput = false;
     [_gestureMap setObject:@"northwest" forKey:[NSNumber numberWithInt:NORTHWEST]];
 }
 
+- (void) readConfig {
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"participant-section" ofType:@"txt"];
+    NSString *strFile = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+    int len = strFile.length;
+    NSLog(@"%@", strFile);
+    NSRange textRange = [strFile rangeOfString:@","];
+    for ( int idxComma = textRange.location, i = 0;textRange.location != NSNotFound; i++)
+    {
+        NSString *strFeat = [strFile substringToIndex:idxComma];
+        if(i == 0) {
+            _testText.participantId = [strFeat intValue];
+        } else if(i == 1) {
+            _testText.section = [strFeat intValue];
+        }
+        strFile = [strFile substringFromIndex:idxComma + 1];
+        textRange = [strFile rangeOfString:@","];
+    }
+}
+
 - (void) readKeyMap {
     NSString *path = [[NSBundle mainBundle] pathForResource:@"key-mapping" ofType:@"csv"];
     NSString *strFile = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
@@ -283,15 +304,15 @@ bool isThereNewInput = false;
     float W = view.frame.size.width;
     float H = view.frame.size.height;
     
-    textField = [[UITextField alloc] initWithFrame:CGRectMake(W * TEXTFIELDORIX, H * TEXTFIELDORIY, W * TEXTFIELDWIDTHRATIO, H * TEXTFIELDHEIGHTRATIO)];
-    textField.textAlignment = NSTextAlignmentLeft;
-    [textField setBackgroundColor:[UIColor clearColor]];
-    [textField setUserInteractionEnabled:NO];
-    [view addSubview:textField];
+//    textField = [[UITextField alloc] initWithFrame:CGRectMake(W * TEXTFIELDORIX, H * TEXTFIELDORIY, W * TEXTFIELDWIDTHRATIO, H * TEXTFIELDHEIGHTRATIO)];
+//    textField.textAlignment = NSTextAlignmentLeft;
+//    [textField setBackgroundColor:[UIColor clearColor]];
+//    [textField setUserInteractionEnabled:NO];
+//    [view addSubview:textField];
     
-    _testText = [[xacTestText alloc] initWithFrame:CGRectMake(W * TEXTFIELDORIX, H * TEXTFIELDORIY / 5, W * TEXTFIELDWIDTHRATIO, H * TEXTFIELDHEIGHTRATIO)];
-    [view addSubview:_testText];
-    [_testText loadWords];
+//    _testText = [[xacTestText alloc] initWithFrame:CGRectMake(W * TEXTFIELDORIX - W / 2, H * TEXTFIELDORIY - H / 2, W * TEXTFIELDWIDTHRATIO * 2, H * TEXTFIELDHEIGHTRATIO)];
+//    [view addSubview:_testText];
+//    [_testText loadWords];
 }
 
 - (void) updateVisual :(int)swipe {
@@ -336,8 +357,12 @@ bool isThereNewInput = false;
 //}
 
 - (void) getWord :(int)sign {
-    [self cleanUp];
-    [_testText loadWord:sign];
+    if(_isTrialEnded) {
+        [self cleanUp];
+        if([_testText loadWord:sign]) {
+            _isTrialEnded = false;
+        }
+    }
 }
 
 - (void) loadSharedString {

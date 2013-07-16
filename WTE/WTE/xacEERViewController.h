@@ -14,6 +14,6 @@
 
 @property (strong, nonatomic) IBOutlet UIView *mainView;
 @property xacEERWatchView *watchView;
-@property xacTestText* testText;
+//@property xacTestText* testText;
 
 @end

@@ -32,6 +32,8 @@ enum EntryState {
 @property xacTestText* testText;
 @property NSString* strInput;
 @property NSString* subStrInput;
+@property UITextField *textField;
+@property BOOL isTrialEnded;
 
 - (void) update :(xacSwipe*) swipe;
 - (void) initVisualView :(UIView*) view;
@@ -40,5 +42,6 @@ enum EntryState {
 - (void) checkTimer;
 //- (void) loadSharedString;
 - (void) getWord :(int)sign;
+- (void) readConfig;
 
 @end

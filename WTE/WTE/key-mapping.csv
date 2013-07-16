@@ -26,5 +26,4 @@ numFingers,firstStroke,secondStroke,key
 1,south,east,N
 1,southeast,west,M
 1,southeast,east,.
-1,south,south, 
-1,southeast,southeast,\n
+1,southeast,southeast,_
