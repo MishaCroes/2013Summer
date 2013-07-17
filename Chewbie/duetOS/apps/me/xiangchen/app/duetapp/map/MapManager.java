@@ -56,4 +56,8 @@ public class MapManager extends AppManager {
 	public static void doTranslation(float dx, float dy) {
 		phone.doTranslation(dx, dy);
 	}
+	
+	public static void switchMapViews() {
+		phone.swtichMapView();
+	}
 }

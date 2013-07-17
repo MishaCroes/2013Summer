@@ -1,15 +1,18 @@
 package me.xiangchen.app.duetapp.reader;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
 
 import me.xiangchen.app.duetapp.App;
+import me.xiangchen.app.duetos.LauncherManager;
 import me.xiangchen.app.duetos.R;
 import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
 import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
 import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
 import me.xiangchen.ui.xacBufferCanvas;
 import me.xiangchen.ui.xacInteractiveCanvas;
+import me.xiangchen.ui.xacShape;
 import me.xiangchen.ui.xacSketchCanvas;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -24,6 +27,7 @@ import android.text.style.BackgroundColorSpan;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -44,6 +48,14 @@ public class Reader extends App {
 	public final static int SHIFTHORI = 0;
 	public final static int SHIFTVERT = 0;
 
+	public final static int MAXFONTSIZE = 30;
+	public final static int MINFONTSIZE = 10;
+	public final static int STEPSIZE = 2;
+	
+	public final static float MAXBRIGHTNESS = 1.0f;
+	public final static float MINBRIGHTNESS = 0.1f;
+	public final static float STEPBRIGHTNESS = 0.1f;
+	
 	TextView textView;
 	String text;
 	ScrollView scrollView;
@@ -78,6 +90,15 @@ public class Reader extends App {
 	float firstX;
 	int prevLine;
 	int prevOffset;
+	
+	int textSize = 20;
+	float brightness = 0.8f;
+	Button btnIncrFontSize;
+	Button btnDecrFontSize;
+	Button btnIncrBrightness;
+	Button btnDecrBrightness;
+	ArrayList<Button> buttons;
+	RelativeLayout layoutButtons;
 
 	public Reader(Context context) {
 		super(context);
@@ -86,6 +107,7 @@ public class Reader extends App {
 		// appView.setBackgroundColor(color);
 
 		appLayout = new RelativeLayout(context);
+		appLayout.setBackgroundColor(0xFF000000);
 		scrollLayout = new RelativeLayout(context);
 
 		// scroll view
@@ -101,10 +123,11 @@ public class Reader extends App {
 
 		// text view
 		textView = new TextView(context);
-		textView.setTextSize(20);
+		textView.setTextSize(textSize);
 		textView.setBackgroundColor(Color.WHITE);
 		text = context.getString(R.string.a_tale_of_two_cities);
 		textView.setText(text);
+		textView.setBackgroundColor(Color.argb((int) (255 * brightness), 255, 255, 255));
 		scrollLayout.addView(textView);
 
 		// sketch canvs
@@ -126,31 +149,104 @@ public class Reader extends App {
 		appLayout.addView(scrollView);
 
 		// menu
-		menu = new xacInteractiveCanvas(context);
-		GradientDrawable gradientDrawable = new GradientDrawable(
-				GradientDrawable.Orientation.TOP_BOTTOM, new int[] {
-						0x00000000, 0x33000000, 0xAA000000, 0xEE000000,
-						0xEE000000 });
-		gradientDrawable.setCornerRadius(0f);
-		menu.setOnTouchListener(new View.OnTouchListener() {
+//		menu = new xacInteractiveCanvas(context);
+		layoutButtons = new RelativeLayout(context);
+		layoutButtons.setOnTouchListener(new View.OnTouchListener() {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				appLayout.removeView(menu);
+				appLayout.removeView(layoutButtons);
 				return false;
 			}
 		});
-		menu.setBackgroundDrawable(gradientDrawable);
+		dispatchButtons(context);
+	}
+	
+	private void dispatchButtons(Context context) {
+//		layoutButtons = new RelativeLayout(context);
 
-		// sensing initialization
-		xacHandSenseFeatureMaker.setLabel(xacHandSenseFeatureMaker.UNKNOWN);
-		xacHandSenseFeatureMaker.createFeatureTable();
+		buttons = new ArrayList<Button>();
 
-		xacTouchSenseFeatureMaker.setLabel(xacTouchSenseFeatureMaker.UNKNOWN);
-		xacTouchSenseFeatureMaker.createFeatureTable();
+		btnIncrFontSize = new Button(context);
+		btnIncrFontSize.setText("A+");
+		btnIncrFontSize.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+//				float sizeText = textView.getTextSize();
+				textSize += STEPSIZE;
+				textSize = Math.min(textSize, MAXFONTSIZE);
+				textView.setTextSize(textSize);
+			}
+		});
+		// layoutButtons.addView(btnIncrFontSize);
+		buttons.add(btnIncrFontSize);
 
-		xacFlipSenseFeatureMaker.setLabel(xacFlipSenseFeatureMaker.UNKNOWN);
-		xacFlipSenseFeatureMaker.createFeatureTable();
+		btnDecrFontSize = new Button(context);
+		btnDecrFontSize.setText("A-");
+		btnDecrFontSize.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+//				float sizeText = textView.getTextSize();
+				textSize -= STEPSIZE;
+				textSize = Math.max(textSize, MINFONTSIZE);
+				textView.setTextSize(textSize);
+
+			}
+		});
+		// layoutButtons.addView(btnDecrFontSize);
+		buttons.add(btnDecrFontSize);
+
+		btnIncrBrightness = new Button(context);
+		btnIncrBrightness.setText("B+");
+		btnIncrBrightness.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				brightness += STEPBRIGHTNESS;
+				brightness = Math.min(brightness, MAXBRIGHTNESS);
+				textView.setBackgroundColor(Color.argb((int) (255 * brightness), 255, 255, 255));
+			}
+		});
+		// layoutButtons.addView(btnIncrBrightness);
+		buttons.add(btnIncrBrightness);
+		
+		btnDecrBrightness = new Button(context);
+		btnDecrBrightness.setText("B-");
+		btnDecrBrightness.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				brightness -= STEPBRIGHTNESS;
+				brightness = Math.max(brightness, MINBRIGHTNESS);
+				textView.setBackgroundColor(Color.argb((int) (255 * brightness), 255, 255, 255));
+			}
+		});
+		// layoutButtons.addView(btnIncrBrightness);
+		buttons.add(btnDecrBrightness);
+
+		Button btnLast = null;
+		int idBtn = 1;
+		layoutButtons.setId(1027);
+		int cntButtons = buttons.size();
+		for (Button btn : buttons) {
+			btn.setId(1027 + idBtn);
+			btn.setBackgroundColor(0x88000000);
+			btn.setTextColor(0xDDFFFFFF);
+			btn.setTypeface(LauncherManager.getTypeface(LauncherManager.NORMAL));
+			btn.setTextSize(20);
+			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+					APPWIDTH / cntButtons, APPWIDTH / cntButtons * 2 / 3);
+			if (idBtn > 1) {
+				params.addRule(RelativeLayout.RIGHT_OF, btnLast.getId());
+			}
+			params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			layoutButtons.addView(btn, params);
+			idBtn++;
+			btnLast = btn;
+		}
+
+		// appLayout.addView(layoutButtons);
 	}
 
 	@Override
@@ -178,7 +274,7 @@ public class Reader extends App {
 		case MotionEvent.ACTION_DOWN:
 
 			timeTouchDown = curTime;
-			appLayout.removeView(menu);
+			appLayout.removeView(layoutButtons);
 			if (selectedText.length() > 0) {
 				unSelectText(textView, text);
 				selectedText = "";
@@ -189,7 +285,7 @@ public class Reader extends App {
 			switch (isFlipped) {
 			case xacFlipSenseFeatureMaker.FLIP:
 				// show menu
-				appLayout.addView(menu);
+				appLayout.addView(layoutButtons);
 				// alphaMenu = 0.0f;
 				// menu.setAlpha(alphaMenu);
 				break;

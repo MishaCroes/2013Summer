@@ -6,10 +6,12 @@ import java.util.Date;
 import me.xiangchen.app.duetapp.AppExtension;
 import me.xiangchen.app.duetapp.email.EmailManager;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
+import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -55,6 +57,8 @@ public class LauncherExtension extends ControlExtension {
 	int prevHours = -1;
 	int prevMins = -1;
 	int prevSeconds = -1;
+	
+	boolean isSharing = false;
 
 	public LauncherExtension(Context context, String hostAppPackageName) {
 		super(context, hostAppPackageName);
@@ -84,8 +88,12 @@ public class LauncherExtension extends ControlExtension {
 					appExt = LauncherManager.getAppExtension();
 				}
 
+				xacTouchSenseFeatureMaker.updateWatchAccel(values);
+				xacTouchSenseFeatureMaker.addWatchFeatureEntry();
+				
 				xacAuthenticSenseFeatureMaker.updateWatchAccel(values);
 				xacAuthenticSenseFeatureMaker.addWatchFeatureEntry();
+				
 				if (appExt != null) {
 					appExt.doAccelerometer(values);
 				}
@@ -158,6 +166,11 @@ public class LauncherExtension extends ControlExtension {
 
 		bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bitmap);
+		if (isSharing) {
+			Matrix matrix = new Matrix();
+			matrix.setRotate(180, width / 2, height / 2);
+			canvas.setMatrix(matrix);
+		}
 		layout.draw(canvas);
 
 		showBitmap(bitmap);
@@ -281,24 +294,35 @@ public class LauncherExtension extends ControlExtension {
 
 	@Override
 	public void onSwipe(int direction) {
-
 		Calendar calendar = Calendar.getInstance();
 		long curTime = calendar.getTimeInMillis();
-		switch (direction) {
-		case Control.Intents.SWIPE_DIRECTION_RIGHT:
-			LauncherManager
-					.updateWatchGesture(EmailManager.SWIPECLOSE, curTime);
-			break;
-		case Control.Intents.SWIPE_DIRECTION_LEFT:
-			LauncherManager.updateWatchGesture(EmailManager.SWIPEOPEN, curTime);
-			break;
-		}
-
 		if (appExt == null) {
+			
+			switch (direction) {
+			case Control.Intents.SWIPE_DIRECTION_UP:
+				isSharing = true;
+				break;
+			case Control.Intents.SWIPE_DIRECTION_DOWN:
+				isSharing = false;
+				break;
+			
+			}
+			
 			appExt = LauncherManager.getAppExtension();
 		}
 
 		if (appExt != null) {
+			if(LauncherManager.isPhoneLocked()) {
+				switch(direction) {
+				case Control.Intents.SWIPE_DIRECTION_RIGHT:
+					LauncherManager
+							.updateWatchGesture(EmailManager.SWIPECLOSE, curTime);
+					break;
+				case Control.Intents.SWIPE_DIRECTION_LEFT:
+					LauncherManager.updateWatchGesture(EmailManager.SWIPEOPEN, curTime);
+					break;
+				}
+			}
 			appExt.doSwipe(direction);
 		}
 	}

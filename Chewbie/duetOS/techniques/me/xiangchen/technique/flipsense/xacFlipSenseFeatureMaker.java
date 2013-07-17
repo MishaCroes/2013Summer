@@ -12,7 +12,7 @@ public class xacFlipSenseFeatureMaker {
 	public final static int NOFLIP = 0;
 	public final static int FLIP = 1;
 	
-	static final int MAXNUMROW = 8096;
+	static final int MAXNUMROW = 2048;
 	static final int NUMSOURCES = 2;
 	
 	static String[] featureNames = null;

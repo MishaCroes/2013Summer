@@ -12,7 +12,7 @@ import android.content.Context;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 @SuppressLint("NewApi")
@@ -56,6 +56,11 @@ public class Map extends App {
 	float yPrev;
 	float distX;
 	float distY;
+	
+	int idxMapViews = 0;
+	int[] mapViews = {R.drawable.map_n, R.drawable.map_s};
+	
+	ImageView mapView;
 
 	public Map(Context context) {
 		super(context);
@@ -65,12 +70,13 @@ public class Map extends App {
 
 		appLayout = new RelativeLayout(context);
 		mapLayout = new RelativeLayout(context);
-		LinearLayout mapView = new LinearLayout(context);
-		RelativeLayout.LayoutParams paramsMap = new RelativeLayout.LayoutParams(HEIGHT, HEIGHT);
-		mapView.setBackgroundResource(R.drawable.map_toronto);
-		
+		mapView = new ImageView(context);
+		RelativeLayout.LayoutParams paramsMap = new RelativeLayout.LayoutParams(
+				HEIGHT, HEIGHT);
+		mapView.setImageResource(mapViews[idxMapViews]);
+
 		mapView.setId(1026);
-		
+
 		canvas = new xacInteractiveCanvas(context);
 		canvas.setBackgroundColor(0x00000000);
 		for (int i = 0; i < NUMTARGETS; i++) {
@@ -82,17 +88,18 @@ public class Map extends App {
 					DIMTARGET, cx, cy, color);
 			marker.setStrokeColor(0xFF000000);
 		}
-		RelativeLayout.LayoutParams paramsCanvas = new RelativeLayout.LayoutParams(HEIGHT, HEIGHT);
+		RelativeLayout.LayoutParams paramsCanvas = new RelativeLayout.LayoutParams(
+				HEIGHT, HEIGHT);
 		canvas.setId(1025);
-		
-//		paramsMap.addRule(RelativeLayout.BELOW, canvas.getId());
+
+		// paramsMap.addRule(RelativeLayout.BELOW, canvas.getId());
 		mapLayout.addView(mapView, paramsMap);
-//		paramsCanvas.addRule(RelativeLayout.ABOVE, mapView.getId());
+		// paramsCanvas.addRule(RelativeLayout.ABOVE, mapView.getId());
 		mapLayout.addView(canvas, paramsCanvas);
-		
+
 		mapLayout.setScaleX(zoomFactor);
 		mapLayout.setScaleY(zoomFactor);
-		
+
 		mapLayout.setOnTouchListener(new View.OnTouchListener() {
 
 			@Override
@@ -220,4 +227,10 @@ public class Map extends App {
 		MapManager.shift(mapLayout, xTouchDown, yTouchDown, SHIFTWIDTH,
 				SHIFTHEIGHT);
 	}
+
+	public void swtichMapView() {
+		idxMapViews = (idxMapViews + 1) % mapViews.length;
+		mapView.setImageResource(mapViews[idxMapViews]);
+	}
+
 }

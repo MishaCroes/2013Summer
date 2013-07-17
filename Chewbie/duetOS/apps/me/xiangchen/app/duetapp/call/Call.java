@@ -105,18 +105,15 @@ public class Call extends App {
 				return true;
 			}
 		});
-
-		xacPostureSenseFeatureMaker
-				.setLabel(xacPostureSenseFeatureMaker.NONE);
-		xacPostureSenseFeatureMaker.createFeatureTable();
 		
-		sup = "5 missing calls from Tiffany";
+		sup = "5 missed calls from Tiffany";
 	}
 
 	private void dispatchViews(Context context) {
 
 		layoutCall = new RelativeLayout(context);
 		layoutCall.setBackgroundColor(0xFF000000);
+//		layoutCall.setBackgroundColor(xacInteractiveCanvas.bgColorGreen);
 		makeNumPad(context);
 
 		layoutLog = new RelativeLayout(context);

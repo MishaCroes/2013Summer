@@ -14,11 +14,13 @@ public class xacInteractiveCanvas extends View {
 
 	final public static int bgColorLight = 0xFF4E4231;
 	final public static int bgColorDark = 0xFF472A2B;
-	final public static int fgColorBlue = 0xFFCDDCF7;
-	final public static int fgColorGreen = 0xFF9FFE9F;
+	final public static int fgColorBlue = 0xFF4DDCF7;
+	final public static int fgColorGreen = 0xFF4FFE4F;
+	final public static int bgColorGreen = 0x882FFE2F;
 	final public static int fgColorYellow = 0xFFF4880C;
 	final public static int fgColorCream = 0xFFE3CC86;
 	final public static int fgColorRed = 0xFFE80C7A;
+	final public static int bgColorRed = 0xFF880C3A;
 
 	private ArrayList<xacShape> shapes;
 	private float xOffset;

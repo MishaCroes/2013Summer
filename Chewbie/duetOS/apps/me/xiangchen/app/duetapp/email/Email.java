@@ -36,14 +36,14 @@ public class Email extends App {
 	public final static int WIDTHEMAIL = 1024;
 	public final static int DIMMARGIN = (WIDTHAPP - WIDTHEMAIL) / 2;
 	public final static int HEIGHTEMAIL = 320;
-	public final static int NUMSTARTINGEMAILS = 5;
+	public final static int NUMSTARTINGEMAILS = 8;
 	public final static int TAPOFFSETTHRES = 50;
 
 	final static int NUMROWSHANDPARTS = LauncherManager.PHONEACCELFPSGAME
 			* xacTouchSenseFeatureMaker.TOUCHTIMEOUT / 1000;
 	private static final float APPWIDTH = 1080;
 
-	public final static int EMAILFREQUENCY = 30;
+	public final static int EMAILFREQUENCY = 2;
 
 	int cntEmail = 0;
 
@@ -95,11 +95,11 @@ public class Email extends App {
 
 	int idxEmailText = 0;
 	String[] emailTitles = {
-			"My Starbucks Rewards - Treat yourself. Treat Receipt is back.",
-			"Jane Skout - FMS -- Peak Demand Electricity Management Event – July 16, 2046",
-			"Google Calendar - Reminder: meeting @ Tue Jul 16, 2046 11:30am - 1pm (Wang)",
-			"ACM Learning Center - Register for Tomorrow's ACM-SIGHPC Webcast - Changing How Programmers Think about Parallel Programming",
-			"Facebook - You have a new message from someone you don't know" };
+			"My Starbucks Rewards Treat yourself. Treat Receipt is back.",
+			"Jane Skout - FMS \n Peak Demand Electricity Management Event – July 16, 2046",
+			"Google Calendar \n Reminder: meeting @ Tue Jul 16, 2046 11:30am - 1pm (Wang)",
+			"ACM Learning Center \n Register for Tomorrow's ACM-SIGHPC Webcast - Changing How Programmers Think about Parallel Programming",
+			"Facebook \n You have a new message from someone you don't know" };
 	String[] emailTexts = {
 			"My Starbucks Rewards - Treat yourself. Treat Receipt is back.",
 			"Jane Skout - FMS -- Peak Demand Electricity Management Event – July 16, 2046",
@@ -118,14 +118,15 @@ public class Email extends App {
 		EmailManager.setPhone(this);
 
 		canvas = new xacInteractiveCanvas(context);
-		canvas.setBackgroundColor(xacInteractiveCanvas.bgColorLight);
+		canvas.setBackgroundColor(xacInteractiveCanvas.bgColorRed);
 
 		openedEmailLayout = new LinearLayout(context);
 		openedEmailLayout.setBackgroundColor(xacInteractiveCanvas.fgColorCream);
+		openedEmailLayout.setBackgroundResource(R.drawable.email_body_1);
 		textViewEmail = new TextView(context);
 		textViewEmail.setTextSize(24);
 		textViewEmail.setTextColor(xacInteractiveCanvas.bgColorDark);
-		openedEmailLayout.addView(textViewEmail);
+//		openedEmailLayout.addView(textViewEmail);
 		paramsOpened = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.MATCH_PARENT);
@@ -158,16 +159,13 @@ public class Email extends App {
 		}
 
 		
-		
 		random = new Random();
 		toast = new xacToast(context);
 		toast.setImgSrc(R.drawable.email);
 
 		dispatchButtons(context);
 		selectedEmails = new ArrayList<xacShape>();
-
-		xacTouchSenseFeatureMaker.setLabel(xacTouchSenseFeatureMaker.UNKNOWN);
-		xacTouchSenseFeatureMaker.createFeatureTable();
+		
 	}
 
 	@Override
@@ -175,8 +173,8 @@ public class Email extends App {
 		int watchMode = xacShareSenseFeatureMaker.doClassification();
 		if ((random.nextInt() + 97) % (Launcher.TIMERFPS * EMAILFREQUENCY) == 0
 				&& cntEmail <= 40) {
-			addEmail();
-			updateInboxVisual();
+//			addEmail();
+//			updateInboxVisual();
 
 			LauncherManager.showNotificationOnPhone(R.drawable.email);
 
@@ -188,15 +186,6 @@ public class Email extends App {
 			}
 			numUnnotifiedEmail++;
 			canvas.invalidate();
-		}
-
-		if (watchMode == xacShareSenseFeatureMaker.PUBLIC) {
-			LauncherManager.showTime();
-		} else {
-			if (prevWatchMode == xacShareSenseFeatureMaker.PUBLIC
-					|| prevNumUnnotified != numUnnotifiedEmail) {
-				LauncherManager.showText(numUnnotifiedEmail + " new email(s)");
-			}
 		}
 
 		prevWatchMode = watchMode;
@@ -286,8 +275,10 @@ public class Email extends App {
 
 	public void addEmail() {
 
-		xacShape emailEntry = canvas.addShape(xacShape.TEXTBOX, WIDTHEMAIL,
-				HEIGHTEMAIL, 0, 0, xacInteractiveCanvas.fgColorCream);
+		xacShape emailEntry = canvas.addShape(xacShape.BITMAP, WIDTHEMAIL,
+				HEIGHTEMAIL, 0, 0, 0xFFFFFFFF);
+		emailEntry.setBitmap(LauncherManager.getBitmap(R.drawable.email_snapshot_1));
+//		emailEntry.setStrokeColor(xacInteractiveCanvas.fgColorRed);
 
 		emailEntry.setTypeface(LauncherManager
 				.getTypeface(LauncherManager.BOLD));

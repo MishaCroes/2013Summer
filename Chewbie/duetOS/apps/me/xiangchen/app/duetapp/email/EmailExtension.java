@@ -57,7 +57,10 @@ public class EmailExtension extends AppExtension {
 
 		switch (action) {
 		case Control.Intents.TOUCH_ACTION_PRESS:
-
+			int watchMode = xacShareSenseFeatureMaker.doClassification();
+			if (watchMode == xacShareSenseFeatureMaker.PRIVATE) {
+				LauncherManager.showText(EmailManager.getNumUnnotifiedEmails() + " new email(s)");
+			}
 			break;
 		case Control.Intents.TOUCH_ACTION_RELEASE:
 			

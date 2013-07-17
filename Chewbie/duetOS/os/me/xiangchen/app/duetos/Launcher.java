@@ -19,11 +19,17 @@ import me.xiangchen.app.duetapp.map.MapExtension;
 import me.xiangchen.app.duetapp.reader.Reader;
 import me.xiangchen.app.duetapp.reader.ReaderExtenstion;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
+import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
+import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
+import me.xiangchen.technique.posturesense.xacPostureSenseFeatureMaker;
+import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
+import me.xiangchen.technique.updownsense.xacUpDownSenseFeatureMaker;
 import me.xiangchen.ui.xacInteractiveCanvas;
 import me.xiangchen.ui.xacShape;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -84,6 +90,11 @@ public class Launcher extends Activity implements SensorEventListener {
 	String sup;
 
 	boolean isPreviewing = false;
+
+	int handpart = xacTouchSenseFeatureMaker.UNKNOWN;
+
+	float prevX;
+	float prevY;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -179,9 +190,24 @@ public class Launcher extends Activity implements SensorEventListener {
 			}
 		}, new Date(), 1000 / TIMERFPS);
 
+		xacHandSenseFeatureMaker.setLabel(xacHandSenseFeatureMaker.UNKNOWN);
+		xacHandSenseFeatureMaker.createFeatureTable();
+
+		xacFlipSenseFeatureMaker.setLabel(xacFlipSenseFeatureMaker.UNKNOWN);
+		xacFlipSenseFeatureMaker.createFeatureTable();
+
+		xacTouchSenseFeatureMaker.setLabel(xacTouchSenseFeatureMaker.UNKNOWN);
+		xacTouchSenseFeatureMaker.createFeatureTable();
+
 		xacAuthenticSenseFeatureMaker.createFeatureTable();
 		xacAuthenticSenseFeatureMaker
 				.setLabel(xacAuthenticSenseFeatureMaker.INTHEWILD);
+
+		xacPostureSenseFeatureMaker.setLabel(xacPostureSenseFeatureMaker.NONE);
+		xacPostureSenseFeatureMaker.createFeatureTable();
+		
+		xacUpDownSenseFeatureMaker.setLabel(xacUpDownSenseFeatureMaker.UP);
+		xacUpDownSenseFeatureMaker.createFeatureTable();
 
 	}
 
@@ -198,31 +224,31 @@ public class Launcher extends Activity implements SensorEventListener {
 		htAppExtensions = new Hashtable<App, AppExtension>();
 
 		call = new Call(this);
-		addIcon(call);
+		addIcon(call, R.drawable.call_icon);
 		apps.add(call);
 		CallExtension callExtension = new CallExtension();
 		htAppExtensions.put(call, callExtension);
 
 		email = new Email(this);
-		addIcon(email);
+		addIcon(email, R.drawable.email_icon);
 		apps.add(email);
 		EmailExtension emailExtension = new EmailExtension(this);
 		htAppExtensions.put(email, emailExtension);
 
 		reader = new Reader(this);
-		addIcon(reader);
+		addIcon(reader, R.drawable.reader_icon);
 		apps.add(reader);
 		ReaderExtenstion readerExtension = new ReaderExtenstion();
 		htAppExtensions.put(reader, readerExtension);
 
 		map = new Map(this);
-		addIcon(map);
+		addIcon(map, R.drawable.map_icon);
 		apps.add(map);
 		MapExtension mapExtension = new MapExtension();
 		htAppExtensions.put(map, mapExtension);
 	}
 
-	private void addIcon(App app) {
+	private void addIcon(App app, int resId) {
 		// the visual
 		int numRows = apps.size() / LauncherManager.NUMAPPSROW;
 		float cy = LauncherManager.MARGINHEIGHT * (numRows + 1)
@@ -232,10 +258,10 @@ public class Launcher extends Activity implements SensorEventListener {
 		float cx = LauncherManager.MARGINWIDTH * (numCols + 1)
 				+ LauncherManager.APPWIDTH * (numCols + 0.5f);
 
-		xacShape icon = canvas.addShape(xacShape.ROUNDRECT,
+		xacShape icon = canvas.addShape(xacShape.BITMAP,
 				LauncherManager.APPWIDTH, LauncherManager.APPHEIGHT, cx, cy,
 				app.getColor());
-
+		icon.setBitmap(BitmapFactory.decodeResource(this.getResources(), resId));
 		htApps.put(icon, app);
 	}
 
@@ -268,85 +294,113 @@ public class Launcher extends Activity implements SensorEventListener {
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			timeTouchDown = curTime;
+			handpart = xacTouchSenseFeatureMaker
+					.calculateHandPart(new double[] { event.getSize(0) });
+			if (handpart == xacTouchSenseFeatureMaker.KNUCKLE) {
+				hitIcons = canvas.getTouchedShapes(curCoord.x, curCoord.y);
+			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if (curTime - timeTouchDown > LONGPRESSTIMEOUT) {
-				isPreviewing = true;
-				hitIcons = canvas.getTouchedShapes(curCoord.x, curCoord.y);
-				if (hitIcons.size() > 0) {
-					xacShape hitIcon = hitIcons.get(0);
-					App hoverApp = htApps.get(hitIcon);
-					if (hoverApp != null) {
-						String supNew = hoverApp.getSup();
-						if (sup != supNew) {
-							sup = supNew;
-							LauncherManager.watchUp(sup);
-						}
+			if (handpart == xacTouchSenseFeatureMaker.KNUCKLE) {
+				for (xacShape icon : hitIcons) {
+					icon.offset(curCoord.x - prevX, curCoord.y - prevY);
+				}
+				canvas.invalidate();
+			} else {
+				if (curTime - timeTouchDown > LONGPRESSTIMEOUT) {
+					isPreviewing = true;
+					hitIcons = canvas.getTouchedShapes(curCoord.x, curCoord.y);
+					if (hitIcons.size() > 0) {
+						xacShape hitIcon = hitIcons.get(0);
+						App hoverApp = htApps.get(hitIcon);
+						if (hoverApp != null) {
+							String supNew = hoverApp.getSup();
+							if (sup != supNew) {
+								sup = supNew;
+								LauncherManager.watchUp(sup);
+							}
 
+						}
 					}
 				}
 			}
 			break;
 		case MotionEvent.ACTION_UP:
-			hitIcons = canvas.getTouchedShapes(curCoord.x, curCoord.y);
-			// if hitting an icon
-			if (hitIcons.size() > 0) {
-				if (curTime - timeTouchDown < LONGPRESSTIMEOUT) {
-					// LauncherManager.watchUp(activeApp.getSup());
-					// } else {
-					xacShape hitIcon = hitIcons.get(0);
-					activeApp = htApps.get(hitIcon);
-					LauncherManager.setAppExtension(htAppExtensions
-							.get(activeApp));
-					LauncherExtension watch = LauncherManager.getWatch();
-					if (watch != null) {
-						watch.showText(activeApp.getTitle());
-					}
-					if (activeApp != null) {
-						View appView = activeApp.getViewGroup();
-						if (appView != null) {
-							try {
-								layout.addView(appView);
-							} catch (Exception e) {
-								;
-							}
-							LauncherManager.resumeWatch();
-						}
-					}
-				} else {
-					isPreviewing = false;
-					activeApp = null;
-					sup = "";
+			if (handpart == xacTouchSenseFeatureMaker.KNUCKLE) {
+				for (xacShape icon : hitIcons) {
+					int numCols = Math.max(0, (int) (icon.getX() / icon.getW()) - 1);
+					float cx = LauncherManager.MARGINWIDTH * (numCols + 1)
+							+ LauncherManager.APPWIDTH * (numCols + 0.5f);
+					int numRows = Math.max(0, (int) (icon.getY() / icon.getH()) - 1);
+					float cy = LauncherManager.MARGINHEIGHT * (numRows + 1)
+							+ LauncherManager.APPHEIGHT * (numRows + 0.5f);
+					icon.setPosition(cx, cy);
 				}
-			}
-			// not hitting an icon
-			else {
-				int watchConfig = xacAuthenticSenseFeatureMaker
-						.calculateAuthentication();
-				LauncherManager.setWatchConfig(watchConfig);
-				if (watchConfig != xacAuthenticSenseFeatureMaker.INTHEWILD) {
-					lockScreen();
-
-					int resId = -1;
-					switch (watchConfig) {
-					case xacAuthenticSenseFeatureMaker.LEFTBACKWRIST:
-						resId = R.drawable.left_back_wrist;
-						break;
-					case xacAuthenticSenseFeatureMaker.LEFTINNERWRIST:
-						resId = R.drawable.left_inner_wrist;
-						break;
-					case xacAuthenticSenseFeatureMaker.RIGHTBACKWRIST:
-						resId = R.drawable.right_back_wrist;
-						break;
-					case xacAuthenticSenseFeatureMaker.RIGHTINNERWRIST:
-						resId = R.drawable.right_inner_wrist;
-						break;
+				canvas.invalidate();
+			} else {
+				hitIcons = canvas.getTouchedShapes(curCoord.x, curCoord.y);
+				// if hitting an icon
+				if (hitIcons.size() > 0) {
+					if (curTime - timeTouchDown < LONGPRESSTIMEOUT) {
+						// LauncherManager.watchUp(activeApp.getSup());
+						// } else {
+						xacShape hitIcon = hitIcons.get(0);
+						activeApp = htApps.get(hitIcon);
+						LauncherManager.setAppExtension(htAppExtensions
+								.get(activeApp));
+						LauncherExtension watch = LauncherManager.getWatch();
+						if (watch != null) {
+							watch.showText(activeApp.getTitle());
+						}
+						if (activeApp != null) {
+							View appView = activeApp.getViewGroup();
+							if (appView != null) {
+								try {
+									layout.addView(appView);
+								} catch (Exception e) {
+									;
+								}
+								LauncherManager.resumeWatch();
+							}
+						}
+					} else {
+						isPreviewing = false;
+						activeApp = null;
+						sup = "";
 					}
-					LauncherManager.showNotificationOnPhone(resId);
+				}
+				// not hitting an icon
+				else {
+					int watchConfig = xacAuthenticSenseFeatureMaker
+							.calculateAuthentication();
+					LauncherManager.setWatchConfig(watchConfig);
+					if (watchConfig != xacAuthenticSenseFeatureMaker.INTHEWILD) {
+						lockScreen();
+
+						int resId = -1;
+						switch (watchConfig) {
+						case xacAuthenticSenseFeatureMaker.LEFTBACKWRIST:
+							resId = R.drawable.left_back_wrist;
+							break;
+						case xacAuthenticSenseFeatureMaker.LEFTINNERWRIST:
+							resId = R.drawable.left_inner_wrist;
+							break;
+						case xacAuthenticSenseFeatureMaker.RIGHTBACKWRIST:
+							resId = R.drawable.right_back_wrist;
+							break;
+						case xacAuthenticSenseFeatureMaker.RIGHTINNERWRIST:
+							resId = R.drawable.right_inner_wrist;
+							break;
+						}
+						LauncherManager.showNotificationOnPhone(resId);
+					}
 				}
 			}
 			break;
 		}
+
+		prevX = curCoord.x;
+		prevY = curCoord.y;
 	}
 
 	@SuppressLint("NewApi")
@@ -448,6 +502,8 @@ public class Launcher extends Activity implements SensorEventListener {
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
+		xacTouchSenseFeatureMaker.updatePhoneAccel(event.values);
+		xacTouchSenseFeatureMaker.addPhoneFeatureEntry();
 
 		xacAuthenticSenseFeatureMaker.updatePhoneAccel(event.values);
 		xacAuthenticSenseFeatureMaker.addPhoneFeatureEntry();

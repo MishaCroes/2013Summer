@@ -97,11 +97,11 @@ public class LauncherManager {
 		toastPhone = new xacToast(phone);
 		toastWatch = new xacToast(phone);
 		
-		AudioManager audioManager = (AudioManager)phone.getSystemService(Context.AUDIO_SERVICE);
-		audioManager.setSpeakerphoneOn(false);
-		audioManager.setRouting(AudioManager.MODE_NORMAL, AudioManager.ROUTE_EARPIECE, AudioManager.ROUTE_ALL);
-		phone.setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
-		audioManager.setMode(AudioManager.MODE_IN_CALL);
+//		AudioManager audioManager = (AudioManager)phone.getSystemService(Context.AUDIO_SERVICE);
+//		audioManager.setSpeakerphoneOn(false);
+//		audioManager.setRouting(AudioManager.MODE_NORMAL, AudioManager.ROUTE_EARPIECE, AudioManager.ROUTE_ALL);
+//		phone.setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+//		audioManager.setMode(AudioManager.MODE_IN_CALL);
 	}
 
 	public static void setWatch(LauncherExtension w) {
@@ -304,7 +304,7 @@ public class LauncherManager {
 			typeface = Typeface.createFromAsset(phone.getAssets(), "fonts/HelveticaBQ-Light.otf");
 			break;
 		case BOLD:
-			typeface = Typeface.createFromAsset(phone.getAssets(), "fonts/HelveticaBQ-Bold.otf");
+			typeface = Typeface.createFromAsset(phone.getAssets(), "fonts/HelveticaBQ-Medium.otf");
 		}
 		return typeface;
 	}
@@ -365,5 +365,9 @@ public class LauncherManager {
 		if(watch != null) {
 			watch.showText(sup);
 		}
+	}
+	
+	public static boolean isPhoneLocked() {
+		return phone.isLocked;
 	}
 }

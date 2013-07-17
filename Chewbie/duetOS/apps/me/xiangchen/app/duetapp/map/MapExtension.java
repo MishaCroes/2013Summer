@@ -1,6 +1,9 @@
 package me.xiangchen.app.duetapp.map;
 
 import me.xiangchen.app.duetapp.AppExtension;
+import me.xiangchen.technique.sharesense.xacShareSenseFeatureMaker;
+import me.xiangchen.technique.updownsense.xacUpDownSenseFeatureMaker;
+import android.util.Log;
 
 import com.sonyericsson.extras.liveware.aef.control.Control;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlTouchEvent;
@@ -13,7 +16,7 @@ public class MapExtension extends AppExtension {
 	public MapExtension() {
 		MapManager.setWatch(this);
 	}
-	
+
 	@Override
 	public void doResume() {
 		showText("Map");
@@ -25,7 +28,7 @@ public class MapExtension extends AppExtension {
 		int action = event.getAction();
 		int width = getWidth();
 		int height = getHeight();
-		
+
 		switch (action) {
 		case Control.Intents.TOUCH_ACTION_PRESS:
 
@@ -37,24 +40,38 @@ public class MapExtension extends AppExtension {
 			break;
 		}
 	}
-	
+
 	@Override
 	public void doSwipe(int direction) {
-		float xStep = getWidth() / 10;
-		float yStep = getHeight() / 10;
-		switch(direction) {
-		case Control.Intents.SWIPE_DIRECTION_LEFT:
-			MapManager.doTranslation(-xStep, 0);
-			break;
-		case Control.Intents.SWIPE_DIRECTION_UP:
-			MapManager.doTranslation(0, -yStep);
-			break;
-		case Control.Intents.SWIPE_DIRECTION_RIGHT:
-			MapManager.doTranslation(xStep, 0);
-			break;
-		case Control.Intents.SWIPE_DIRECTION_DOWN:
-			MapManager.doTranslation(0, yStep);
-			break;
+		buzz(100);
+		int pointing = xacUpDownSenseFeatureMaker.doClassification();
+
+		if (pointing == xacUpDownSenseFeatureMaker.DOWN) {
+			Log.d(LOGTAG, "down swipe");
+			MapManager.switchMapViews();
+		} else {
+			float xStep = getWidth() / 10;
+			float yStep = getHeight() / 10;
+			switch (direction) {
+			case Control.Intents.SWIPE_DIRECTION_LEFT:
+				MapManager.doTranslation(-xStep, 0);
+				break;
+			case Control.Intents.SWIPE_DIRECTION_UP:
+				MapManager.doTranslation(0, -yStep);
+				break;
+			case Control.Intents.SWIPE_DIRECTION_RIGHT:
+				MapManager.doTranslation(xStep, 0);
+				break;
+			case Control.Intents.SWIPE_DIRECTION_DOWN:
+				MapManager.doTranslation(0, yStep);
+				break;
+			}
 		}
+	}
+	
+	@Override
+	public void doAccelerometer(float[] values) {
+		xacUpDownSenseFeatureMaker.updateWatchAccel(values);
+		xacUpDownSenseFeatureMaker.addWatchFeatureEntry();
 	}
 }

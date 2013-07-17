@@ -17,7 +17,7 @@ public class xacPostureSenseFeatureMaker {
 	final static int NUMROWSHANDEDNESS = LauncherManager.PHONEACCELFPSGAME
 			* POSTURETIMEOUT / 1000;
 
-	static final int MAXNUMROW = 8096;
+	static final int MAXNUMROW = 2048;
 	static final int NUMSOURCES = 2;
 
 	static String[] featureNames = null;
