@@ -32,11 +32,11 @@
 
 #define NUMSECTIONS 3 // first one is training
 #define NUMBLOCKS 5
-#define NUMTRIALS 1
+#define NUMTRIALS 10
 
 #define BREAKTIME 180
 
-#define PARTICIPANT 0
+#define PARTICIPANT 2
 #define SECTION EVALUATIONONE
 
 #endif

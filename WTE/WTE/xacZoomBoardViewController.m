@@ -26,7 +26,7 @@ UIButton* btnLast;
     float oriX = (_mainView.frame.size.height - WATCHWIDTH) * WATCHORIX;
     float oriY = (_mainView.frame.size.width - WATCHHEIGHT) * WATCHORIY;
     
-    _watchView = [[xacZoomBoardWatchView alloc] initWithFrame:CGRectMake(oriX, oriY, WATCHWIDTH, WATCHHEIGHT)];
+    _watchView = [[xacZoomBoardWatchView alloc] initWithFrame:CGRectMake(oriX, oriY - WATCHHEIGHT / 6, WATCHWIDTH, WATCHHEIGHT)];
     [_watchView setBackgroundColor:[UIColor whiteColor]];
     [_mainView addSubview:_watchView];
     
