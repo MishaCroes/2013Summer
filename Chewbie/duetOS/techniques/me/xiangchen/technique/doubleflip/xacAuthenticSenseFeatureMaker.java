@@ -1,5 +1,7 @@
 package me.xiangchen.technique.doubleflip;
 
+import java.util.Calendar;
+
 import me.xiangchen.app.duetos.LauncherExtension;
 import me.xiangchen.app.duetos.LauncherManager;
 import me.xiangchen.lib.xacAccelerometer;
@@ -9,12 +11,19 @@ import android.util.Log;
 
 public class xacAuthenticSenseFeatureMaker {
 
+	public final static int UNKNOWN = 0;
+	public final static int DOING = 1;
+	public final static int NOTDOING = 2;
+	
 	public final static String LOGTAG = "DuetOS";
 	public final static int INTHEWILD = 0;
 	public final static int LEFTBACKWRIST = 1;
 	public final static int LEFTINNERWRIST = 2;
 	public final static int RIGHTBACKWRIST = 3;
 	public final static int RIGHTINNERWRIST = 4;
+	
+	public final static float TAPTHRS = 200;
+	public final static int  HOLDTIMEOUT = 500; // ms
 	
 	public final static int PHONEAUTHENDURATION = 1000; // ms
 	public final static int NUMROWPHONEAUTHEN = LauncherManager.PHONEACCELFPSGAME
@@ -35,6 +44,16 @@ public class xacAuthenticSenseFeatureMaker {
 	static xacAccelerometer accelWatch;
 	static xacAccelerometer accelPhone;
 	static xacAccelerometer[] accels;
+	
+	static float distX;
+	static float distY;
+	
+	static float prevX;
+	static float prevY;
+	
+	static long timeTouchDown;
+	
+	static int configStatus;
 
 	/**
 	 * create a table of features, including the first row (the names of the
@@ -221,6 +240,46 @@ public class xacAuthenticSenseFeatureMaker {
 
 		xacFlipSenseFeatureMaker.clearData();
 		return label;
+	}
+	
+	public static void initTouch(float x, float y) {
+		Calendar calendar = Calendar.getInstance();
+		long curTime = calendar.getTimeInMillis();
+		timeTouchDown = curTime;
+		
+		configStatus = UNKNOWN;
+		
+		distX = 0;
+		distY = 0;
+		
+		prevX = x;
+		prevY = y;
+	}
+	
+	public static void isAHold(float x, float y) {
+		Calendar calendar = Calendar.getInstance();
+		long curTime = calendar.getTimeInMillis();
+		
+		distX += Math.abs(x - prevX);
+		distY += Math.abs(y - prevY);
+		
+		prevX = x;
+		prevY = y;
+		
+		if(curTime - timeTouchDown < HOLDTIMEOUT) {
+			configStatus = UNKNOWN;
+			return;
+		}
+		
+		if (Math.max(distX, distY) < TAPTHRS) {
+			configStatus = DOING;
+		} else {
+			configStatus = NOTDOING;
+		}
+	}
+	
+	public static int getConfigStatus() {
+		return configStatus;
 	}
 
 }

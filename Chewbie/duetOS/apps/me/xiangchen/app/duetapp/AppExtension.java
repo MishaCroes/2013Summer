@@ -6,10 +6,10 @@ import android.graphics.Bitmap;
 
 import com.sonyericsson.extras.liveware.extension.util.control.ControlTouchEvent;
 
-public class AppExtension {
-
+public class AppExtension { 
+	
 	public void doResume() {
-
+		
 	}
 
 	public void doAccelerometer(float[] values) {

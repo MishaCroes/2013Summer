@@ -176,7 +176,7 @@ public class Email extends App {
 //			addEmail();
 //			updateInboxVisual();
 
-			LauncherManager.showNotificationOnPhone(R.drawable.email);
+			LauncherManager.showNotificationOnLockedPhone(R.drawable.email);
 
 			if (watchMode == xacShareSenseFeatureMaker.PRIVATE) {
 				LauncherManager.showNotificationOnWatch(R.drawable.email_small,

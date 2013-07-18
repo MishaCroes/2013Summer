@@ -2,6 +2,7 @@ package me.xiangchen.app.duetapp.map;
 
 import me.xiangchen.app.duetapp.AppExtension;
 import me.xiangchen.technique.sharesense.xacShareSenseFeatureMaker;
+import me.xiangchen.technique.tiltsense.xacTiltSenseFeatureMaker;
 import me.xiangchen.technique.updownsense.xacUpDownSenseFeatureMaker;
 import android.util.Log;
 
@@ -73,5 +74,8 @@ public class MapExtension extends AppExtension {
 	public void doAccelerometer(float[] values) {
 		xacUpDownSenseFeatureMaker.updateWatchAccel(values);
 		xacUpDownSenseFeatureMaker.addWatchFeatureEntry();
+		
+		xacTiltSenseFeatureMaker.updateWatchAccel(values);
+		xacTiltSenseFeatureMaker.addWatchFeatureEntry();
 	}
 }

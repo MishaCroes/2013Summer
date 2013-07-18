@@ -9,11 +9,11 @@ import me.xiangchen.network.xacUDPTask;
 public class xacHandSenseFeatureMaker {
 	
 	public final static int UNKNOWN = -1;
-	public final static int LEFTHAND = 0;
-	public final static int RIGHTHAND = 1;
+	public final static int NOWATCH = 0;
+	public final static int WATCH = 1;
 	
-	public final static int HANDTIMEOUT = 700; // ms
-	public final static int TOUCHONSETTIME = 350; // ms
+	public final static int HANDTIMEOUT = 600; // ms
+	public final static int TOUCHONSETTIME = 100; // ms
 	final static int NUMROWSHANDEDNESS = LauncherManager.PHONEACCELFPSGAME
 			* HANDTIMEOUT / 1000;
 	
@@ -191,12 +191,12 @@ public class xacHandSenseFeatureMaker {
 
 		switch (idxClass) {
 		case 0:
-			label = xacHandSenseFeatureMaker.LEFTHAND;
-			Log.d(LOGTAG, "left hand");
+			label = xacHandSenseFeatureMaker.NOWATCH;
+			Log.d(LOGTAG, "NO WATCH");
 			break;
 		case 1:
-			label = xacHandSenseFeatureMaker.RIGHTHAND;
-			Log.d(LOGTAG, "right hand");
+			label = xacHandSenseFeatureMaker.WATCH;
+			Log.d(LOGTAG, "WATCH");
 			break;
 		}
 

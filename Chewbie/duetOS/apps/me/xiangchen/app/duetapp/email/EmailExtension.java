@@ -23,9 +23,6 @@ public class EmailExtension extends AppExtension {
 	public EmailExtension(Context context) {
 		EmailManager.setWatch(this);
 		
-		xacShareSenseFeatureMaker.createFeatureTable();
-		xacShareSenseFeatureMaker.setLabel(xacShareSenseFeatureMaker.PUBLIC);
-		
 		toast = new xacToast(context);
 		toast.setImage(R.drawable.email_small);
 	}

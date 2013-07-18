@@ -233,7 +233,6 @@ public class LauncherExtension extends ControlExtension {
 					LauncherManager.setWatchPerspective(LauncherManager.GLOBAL);
 					updateVisual();
 					startVibrator(100, 100, 3);
-					
 				}
 				// updateVisual(LauncherManager.getBitmap(LauncherManager.APPSWITCHINGBMP),
 				// true);

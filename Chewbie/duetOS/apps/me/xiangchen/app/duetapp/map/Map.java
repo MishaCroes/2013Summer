@@ -5,10 +5,13 @@ import java.util.Random;
 
 import me.xiangchen.app.duetapp.App;
 import me.xiangchen.app.duetos.R;
+import me.xiangchen.lib.xacPhoneGesture;
+import me.xiangchen.technique.tiltsense.xacTiltSenseFeatureMaker;
 import me.xiangchen.ui.xacInteractiveCanvas;
 import me.xiangchen.ui.xacShape;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.View;
@@ -18,6 +21,7 @@ import android.widget.RelativeLayout;
 @SuppressLint("NewApi")
 public class Map extends App {
 
+	public final static String LOGTAG = "DuetOS";
 	public final static float EPS = 0.0001f;
 	public final static int WIDTH = 1080;
 	public final static int HEIGHT = 1920;
@@ -61,6 +65,11 @@ public class Map extends App {
 	int[] mapViews = {R.drawable.map_n, R.drawable.map_s};
 	
 	ImageView mapView;
+	
+	xacPhoneGesture doubleTap;
+	xacPhoneGesture pressAndHold;
+	
+	boolean isTiltInputOn = false;
 
 	public Map(Context context) {
 		super(context);
@@ -104,6 +113,22 @@ public class Map extends App {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
+				if(doubleTap.update(event) == xacPhoneGesture.YES) {
+					zoomCenterX = mapView.getWidth() / 2;
+					zoomCenterY = mapView.getHeight() / 2;
+
+					zoomFactor += 0.75 * SCALERATE;
+					zoomFactor = Math.max(1.0f, zoomFactor);
+
+					mapLayout.setScaleX(zoomFactor);
+					mapLayout.setScaleY(zoomFactor);
+				}
+				
+				isTiltInputOn = false;
+				if(pressAndHold.update(event) == xacPhoneGesture.YES) {
+					isTiltInputOn = true;
+				}
+				
 				doTouch(event);
 				return true;
 			}
@@ -111,9 +136,29 @@ public class Map extends App {
 
 		appLayout.addView(mapLayout);
 		appLayout.setBackgroundColor(0xFF000000);
+		
+		doubleTap = new xacPhoneGesture(xacPhoneGesture.DOUBLETAP);
+		pressAndHold = new xacPhoneGesture(xacPhoneGesture.PRESSANDHOLD);
 
 	}
 
+	@Override
+	public void runOnUIThread() {
+		if(isTiltInputOn) {
+			int tilt = xacTiltSenseFeatureMaker.calculateTilting();
+			if(tilt == xacTiltSenseFeatureMaker.TILTOUT) {
+				zoomCenterX = mapView.getWidth() / 2;
+				zoomCenterY = mapView.getHeight() / 2;
+
+				zoomFactor += -0.05 * SCALERATE;
+				zoomFactor = Math.max(1.0f, zoomFactor);
+
+				mapLayout.setScaleX(zoomFactor);
+				mapLayout.setScaleY(zoomFactor);
+			}
+		}
+	}
+	
 	public void doSelection(float xRatio, float yRatio) {
 		float dx = SHIFTWIDTH * xRatio;
 		float dy = SHIFTHEIGHT * yRatio;

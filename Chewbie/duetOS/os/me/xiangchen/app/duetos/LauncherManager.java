@@ -1,6 +1,7 @@
 package me.xiangchen.app.duetos;
 
 import me.xiangchen.app.duetapp.AppExtension;
+import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.ui.xacToast;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -139,11 +140,25 @@ public class LauncherManager {
 	}
 
 	public static void setWatchConfig(int wc) {
-		watchConfig = wc;
+		if(wc != xacAuthenticSenseFeatureMaker.INTHEWILD) {
+			watchConfig = wc;
+		}
+	}
+	
+	public static int getWatchConfig() {
+		return watchConfig;
 	}
 
-	public static void showNotificationOnPhone(int resId) {
+	public static void showNotificationOnLockedPhone(int resId) {
 		if (phone.isLocked && !isPhoneMuted) {
+			toastPhone.setImage(resId);
+			toastPhone.kill(phone.getLayout());
+			toastPhone.fadeIn(phone.getLayout());
+		}
+	}
+	
+	public static void showNotificationOnUnockedPhone(int resId) {
+		if (!isPhoneMuted) {
 			toastPhone.setImage(resId);
 			toastPhone.kill(phone.getLayout());
 			toastPhone.fadeIn(phone.getLayout());
@@ -261,9 +276,9 @@ public class LauncherManager {
 		}
 
 		if(isPhoneToBeMuted) {
-			showNotificationOnPhone(R.drawable.mute);
+			showNotificationOnLockedPhone(R.drawable.mute);
 		} else {
-			showNotificationOnPhone(R.drawable.unmute);
+			showNotificationOnLockedPhone(R.drawable.unmute);
 		}
 		
 		if(isWatchToBeMuted) {
