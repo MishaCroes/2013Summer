@@ -23,13 +23,13 @@ public class xacAuthenticSenseFeatureMaker {
 	public final static int RIGHTINNERWRIST = 4;
 	
 	public final static float TAPTHRS = 200;
-	public final static int  HOLDTIMEOUT = 500; // ms
+	public final static int  HOLDTIMEOUT = 750; // ms
 	
 	public final static int PHONEAUTHENDURATION = 1000; // ms
 	public final static int NUMROWPHONEAUTHEN = LauncherManager.PHONEACCELFPSGAME
 			* PHONEAUTHENDURATION / 1000;
 
-	static final int MAXNUMROW = 2048;
+	static final int MAXNUMROW = 256;
 	static final int NUMSOURCES = 2;
 
 	static String[] featureNames = null;

@@ -5,6 +5,7 @@ import java.util.Calendar;
 import me.xiangchen.app.duetapp.AppExtension;
 import me.xiangchen.app.duetos.LauncherManager;
 import me.xiangchen.app.duetos.R;
+import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
 import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
 import me.xiangchen.technique.sharesense.xacShareSenseFeatureMaker;
@@ -45,6 +46,9 @@ public class EmailExtension extends AppExtension {
 		
 		xacShareSenseFeatureMaker.updateWatchAccel(values);
 		xacShareSenseFeatureMaker.addWatchFeatureEntry();
+		
+		xacAuthenticSenseFeatureMaker.updateWatchAccel(values);
+		xacAuthenticSenseFeatureMaker.addWatchFeatureEntry();
 	}
 	
 	@Override

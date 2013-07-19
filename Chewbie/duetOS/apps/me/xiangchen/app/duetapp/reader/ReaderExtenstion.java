@@ -4,6 +4,7 @@ import me.xiangchen.app.duetapp.AppExtension;
 import me.xiangchen.app.duetapp.call.CallManager;
 import me.xiangchen.app.duetos.LauncherManager;
 import me.xiangchen.app.duetos.R;
+import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
 import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
 import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
@@ -21,7 +22,10 @@ public class ReaderExtenstion extends AppExtension {
 	int idxToolPallete = 0;
 	int[] bmpToolPallets = { R.drawable.tool_pallete_1,
 			R.drawable.tool_pallete_2 };
-
+	
+	int idxTextOptionScreen = 1;
+	String selectedText = "";
+	
 	public ReaderExtenstion() {
 		ReaderManager.setWatch(this);
 	}
@@ -33,53 +37,89 @@ public class ReaderExtenstion extends AppExtension {
 
 	@Override
 	public void doTouch(ControlTouchEvent event) {
-		if (event.getAction() == Control.Intents.TOUCH_ACTION_PRESS) {
-			int width = getWidth();
-			int height = getHeight();
-			float x = event.getX();
-			float y = event.getY();
+		if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTINNERWRIST) {
+			if (event.getAction() == Control.Intents.TOUCH_ACTION_PRESS) {
+				int width = getWidth();
+				int height = getHeight();
+				float x = event.getX();
+				float y = event.getY();
 
-			switch (idxToolPallete) {
-			case 0:
-				if (x < width / 2 && y < height / 2) {
-					ReaderManager.setTool(xacSketchCanvas.PEN);
-				} else if (x > width / 2 && y < height / 2) {
-					ReaderManager.setTool(xacSketchCanvas.HIGHLIGHTER);
-				} else if (x > width / 2 && y > height / 2) {
-					ReaderManager.redo();
-				} else if (x < width / 2 && y > height / 2) {
-					ReaderManager.undo();
+				switch (idxToolPallete) {
+				case 0:
+					if (x < width / 2 && y < height / 2) {
+						ReaderManager.setTool(xacSketchCanvas.PEN);
+					} else if (x > width / 2 && y < height / 2) {
+						ReaderManager.setTool(xacSketchCanvas.HIGHLIGHTER);
+					} else if (x > width / 2 && y > height / 2) {
+						ReaderManager.redo();
+					} else if (x < width / 2 && y > height / 2) {
+						ReaderManager.undo();
+					}
+					break;
+				case 1:
+					if (x < width / 2 && y < height / 2) {
+						ReaderManager.decrTextSize();
+					} else if (x > width / 2 && y < height / 2) {
+						ReaderManager.incrTextSize();
+					} else if (x > width / 2 && y > height / 2) {
+						ReaderManager.incrBrightness();
+					} else if (x < width / 2 && y > height / 2) {
+						ReaderManager.decrBrightness();
+					}
+					break;
 				}
-				break;
-			case 1:
-				if (x < width / 2 && y < height / 2) {
-					ReaderManager.decrTextSize();
-				} else if (x > width / 2 && y < height / 2) {
-					ReaderManager.incrTextSize();
-				} else if (x > width / 2 && y > height / 2) {
-					ReaderManager.incrBrightness();
-				} else if (x < width / 2 && y > height / 2) {
-					ReaderManager.decrBrightness();
-				}
-				break;
 			}
 		}
 	}
 
 	@Override
 	public void doSwipe(int direction) {
-		switch (direction) {
-		case Control.Intents.SWIPE_DIRECTION_LEFT:
-			idxToolPallete = (idxToolPallete + NUMTOOLPALLETES - 1)
-					% NUMTOOLPALLETES;
-			updateWatchVisual(
-					LauncherManager.getBitmap(bmpToolPallets[idxToolPallete]),
-					true);
+		if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTINNERWRIST) {
+			switch (direction) {
+			case Control.Intents.SWIPE_DIRECTION_LEFT:
+				idxToolPallete = (idxToolPallete + NUMTOOLPALLETES - 1)
+						% NUMTOOLPALLETES;
+				updateWatchVisual(
+						LauncherManager
+								.getBitmap(bmpToolPallets[idxToolPallete]),
+						true);
+				break;
+			case Control.Intents.SWIPE_DIRECTION_RIGHT:
+				idxToolPallete = (idxToolPallete + 1) % NUMTOOLPALLETES;
+				updateWatchVisual(
+						LauncherManager
+								.getBitmap(bmpToolPallets[idxToolPallete]),
+						true);
+				break;
+			}
+		} else if(LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST) {
+			switch (direction) {
+			case Control.Intents.SWIPE_DIRECTION_LEFT:
+				idxTextOptionScreen++;
+				idxTextOptionScreen = Math.max(0, idxTextOptionScreen);
+				
+				break;
+			case Control.Intents.SWIPE_DIRECTION_RIGHT:
+				idxTextOptionScreen--;
+				idxTextOptionScreen = Math.min(3, idxTextOptionScreen);
+				break;
+			}
+			updateTextOptionScreen(idxTextOptionScreen);
+		}
+	}
+	
+	private void updateTextOptionScreen(int idx) {
+		switch (idx) {
+		case 0:
+			showDictionary();
 			break;
-		case Control.Intents.SWIPE_DIRECTION_RIGHT:
-			idxToolPallete = (idxToolPallete + 1) % NUMTOOLPALLETES;
+		case 1:
+			showTextOption();
+			break;
+		case 2:
 			updateWatchVisual(
-					LauncherManager.getBitmap(bmpToolPallets[idxToolPallete]),
+					LauncherManager
+							.getBitmap(R.drawable.share),
 					true);
 			break;
 		}
@@ -100,5 +140,32 @@ public class ReaderExtenstion extends AppExtension {
 
 		xacFlipSenseFeatureMaker.updateWatchAccel(values);
 		xacFlipSenseFeatureMaker.addWatchFeatureEntry();
+		
+		xacAuthenticSenseFeatureMaker.updateWatchAccel(values);
+		xacAuthenticSenseFeatureMaker.addWatchFeatureEntry();
+	}
+
+	private void showDictionary() {
+		int lengthSubText = Math.min(selectedText.length(), 15);
+		String subText = selectedText.substring(0, lengthSubText)
+				+ (selectedText.length() == lengthSubText ? "" : "...");
+		String dicEntry = "Dictionary explanation of this word or sentence." +
+				"Blah blah blah";
+		showText(subText + "\n\n" + dicEntry);
+	}
+	
+	private void showTextOption() {
+		int lengthSubText = Math.min(selectedText.length(), 15);
+		String subText = selectedText.substring(0, lengthSubText)
+				+ (selectedText.length() == lengthSubText ? "" : "...");
+		String option1 = ">> Check dictionary";
+		String option2 = "<< Share this text";
+
+		showText(subText + "\n\n" + option1 + "\n" + option2);
+	}
+	
+	public void showTextOption(String text) {
+		selectedText = text;
+		showTextOption();
 	}
 }

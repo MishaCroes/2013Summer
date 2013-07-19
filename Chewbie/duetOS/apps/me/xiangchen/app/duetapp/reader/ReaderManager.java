@@ -59,4 +59,18 @@ public class ReaderManager extends AppManager {
 			reader.decrBrightness();
 		}
 	}
+	
+	public static void showTextOption(String text) {
+		if(watch != null) {
+			ReaderExtenstion readerExtension = (ReaderExtenstion) watch;
+			readerExtension.showTextOption(text);
+		}
+	}
+	
+	public static void showTooltip(String text) {
+		if(watch != null) {
+			ReaderExtenstion readerExtension = (ReaderExtenstion) watch;
+			readerExtension.showText(text);
+		}
+	}
 }

@@ -24,7 +24,7 @@ public class AppExtension {
 
 	}
 
-	protected void showText(String text) {
+	public void showText(String text) {
 		LauncherExtension watch = LauncherManager.getWatch();
 		if(watch != null) {
 			watch.showText(text);

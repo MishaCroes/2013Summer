@@ -6,7 +6,7 @@ import me.xiangchen.network.xacUDPTask;
 
 public class xacTiltSenseFeatureMaker {
 	
-	static final int MAXNUMROW = 2048;
+	static final int MAXNUMROW = 256;
 	static final int NUMSOURCES = 2;
 	
 	public final static int NONE = 0;

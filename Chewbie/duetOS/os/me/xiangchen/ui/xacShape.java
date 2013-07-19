@@ -15,7 +15,8 @@ public class xacShape {
 	final public static int OVAL = 0;
 	final public static int ROUNDRECT = 1;
 	final public static int TEXTBOX = 2;
-	final public static int BITMAP = 3;
+	final public static int ICON = 3;
+	final public static int ITEM = 4;
 
 	final static int DEFAULTALPHA = 192;
 
@@ -153,16 +154,26 @@ public class xacShape {
 			// marginHeight, textPaint);
 
 			break;
-		case BITMAP:
-			float dim = Math.min(rectF.width(), rectF.height());
-			canvas.drawRoundRect(rectF, dim / 6, dim / 6,
+		case ICON:
+			float dimIcon = Math.min(rectF.width(), rectF.height());
+			canvas.drawRoundRect(rectF, dimIcon / 6, dimIcon / 6,
 					fillPaint);
-			canvas.drawRoundRect(rectF, dim / 6, dim / 6,
+			canvas.drawRoundRect(rectF, dimIcon / 6, dimIcon / 6,
 					strokePaint);
-			float marginWidthBitmap = dim * 0.15f;
-			float marginHeightBitmap = dim * 0.15f;
-			canvas.drawBitmap(bitmap, rectF.left + marginWidthBitmap, rectF.top
-					+ marginHeightBitmap, new Paint());
+			float marginWidthIcon = dimIcon * 0.15f;
+			float marginHeightIcon = dimIcon * 0.15f;
+			canvas.drawBitmap(bitmap, rectF.left + marginWidthIcon, rectF.top
+					+ marginHeightIcon, new Paint());
+			break;
+		case ITEM:
+			float dimItem = Math.min(rectF.width(), rectF.height());
+			canvas.drawRect(rectF, fillPaint);
+			canvas.drawRect(rectF, strokePaint);
+			float marginWidthItem = dimItem * 0.05f;
+			float marginHeightItem = dimItem * 0.05f;
+			canvas.drawBitmap(bitmap, rectF.left + marginWidthItem, rectF.top
+					+ marginHeightItem, new Paint());
+			break;
 		}
 	}
 
@@ -181,6 +192,14 @@ public class xacShape {
 
 	public boolean hitTest(float x, float y) {
 		return (Math.abs(x - xCenter) < width / 2 && Math.abs(y - yCenter) < height / 2);
+	}
+	
+	public boolean hitTest(float x, float y, float rw) {
+		return  ((Math.abs(x - rw - xCenter) < width / 2 && Math.abs(y - rw - yCenter) < height / 2)) ||
+				((Math.abs(x + rw - xCenter) < width / 2 && Math.abs(y - rw - yCenter) < height / 2)) ||
+				((Math.abs(x + rw - xCenter) < width / 2 && Math.abs(y + rw - yCenter) < height / 2)) ||
+				((Math.abs(x - rw - xCenter) < width / 2 && Math.abs(y + rw - yCenter) < height / 2)) ||
+				((Math.abs(x - xCenter) < width / 2 && Math.abs(y - yCenter) < height / 2));
 	}
 
 	public boolean isIn(RectF rectF) {
@@ -204,5 +223,9 @@ public class xacShape {
 		strokePaint
 				.setColor(strokePaint.getColor() == colorStroke ? Color.TRANSPARENT
 						: colorStroke);
+	}
+	
+	public void setAlpha(int alpha) {
+		fillPaint.setAlpha(alpha);
 	}
 }

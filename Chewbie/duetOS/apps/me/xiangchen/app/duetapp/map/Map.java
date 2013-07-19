@@ -30,8 +30,8 @@ public class Map extends App {
 	public final static int NUMTARGETS = 100;
 	public final static float DIMTARGET = 25;
 	public final static int SELECTRATIO = 3;
-	public final static int SHIFTWIDTH = 64;
-	public final static int SHIFTHEIGHT = 64;
+	public final static int SHIFTWIDTH = 128;
+	public final static int SHIFTHEIGHT = 128;
 	public final static float SCALERATE = 1.0f;
 	public final static float TRANSLATERATE = 0.5f;
 	public final static float INITMAPSCALE = 1.0f;
@@ -65,6 +65,8 @@ public class Map extends App {
 	int[] mapViews = {R.drawable.map_n, R.drawable.map_s};
 	
 	ImageView mapView;
+	ImageView mapViewNormal;
+	ImageView mapViewSatellite;
 	
 	xacPhoneGesture doubleTap;
 	xacPhoneGesture pressAndHold;
@@ -73,17 +75,22 @@ public class Map extends App {
 
 	public Map(Context context) {
 		super(context);
-		color = xacInteractiveCanvas.fgColorYellow;
+		color = xacInteractiveCanvas.fgColorBlack;
 
 		MapManager.setPhone(this);
 
 		appLayout = new RelativeLayout(context);
 		mapLayout = new RelativeLayout(context);
-		mapView = new ImageView(context);
-		RelativeLayout.LayoutParams paramsMap = new RelativeLayout.LayoutParams(
-				HEIGHT, HEIGHT);
-		mapView.setImageResource(mapViews[idxMapViews]);
+		
+		mapViewNormal = new ImageView(context);
+		mapViewNormal.setImageResource(mapViews[0]);
+		mapViewNormal.setAlpha(0.65f);
+		
+		mapViewSatellite = new ImageView(context);
+		mapViewSatellite.setImageResource(mapViews[1]);
+		mapViewSatellite.setAlpha(0.65f);
 
+		mapView = mapViewNormal;
 		mapView.setId(1026);
 
 		canvas = new xacInteractiveCanvas(context);
@@ -97,13 +104,17 @@ public class Map extends App {
 					DIMTARGET, cx, cy, color);
 			marker.setStrokeColor(0xFF000000);
 		}
-		RelativeLayout.LayoutParams paramsCanvas = new RelativeLayout.LayoutParams(
-				HEIGHT, HEIGHT);
+		
 		canvas.setId(1025);
 
 		// paramsMap.addRule(RelativeLayout.BELOW, canvas.getId());
+		
+		RelativeLayout.LayoutParams paramsMap = new RelativeLayout.LayoutParams(
+				HEIGHT, HEIGHT);
 		mapLayout.addView(mapView, paramsMap);
 		// paramsCanvas.addRule(RelativeLayout.ABOVE, mapView.getId());
+		RelativeLayout.LayoutParams paramsCanvas = new RelativeLayout.LayoutParams(
+				HEIGHT, HEIGHT);
 		mapLayout.addView(canvas, paramsCanvas);
 
 		mapLayout.setScaleX(zoomFactor);
@@ -134,8 +145,11 @@ public class Map extends App {
 			}
 		});
 
+//		RelativeLayout.LayoutParams paramsMapLayout = new RelativeLayout.LayoutParams(
+//				RelativeLayout.LayoutParams.MATCH_PARENT,
+//				RelativeLayout.LayoutParams.MATCH_PARENT);
 		appLayout.addView(mapLayout);
-		appLayout.setBackgroundColor(0xFF000000);
+		appLayout.setBackgroundColor(xacInteractiveCanvas.bgColorBlack);
 		
 		doubleTap = new xacPhoneGesture(xacPhoneGesture.DOUBLETAP);
 		pressAndHold = new xacPhoneGesture(xacPhoneGesture.PRESSANDHOLD);
@@ -167,7 +181,8 @@ public class Map extends App {
 	}
 
 	private void selectTarget(float x, float y) {
-		ArrayList<xacShape> shapes = canvas.getTouchedShapes(x, y);
+		int rectWidth = 16;
+		ArrayList<xacShape> shapes = canvas.getTouchedShapesByRect(x, y, rectWidth);
 		for (xacShape shape : shapes) {
 			shape.toggleStroke();
 		}
@@ -275,7 +290,26 @@ public class Map extends App {
 
 	public void swtichMapView() {
 		idxMapViews = (idxMapViews + 1) % mapViews.length;
-		mapView.setImageResource(mapViews[idxMapViews]);
+//		mapView.setImageResource(mapViews[idxMapViews]);
+		
+		mapLayout.removeView(canvas);
+		mapLayout.removeView(mapView);
+		
+		switch(idxMapViews) {
+		case 0:
+			mapView = mapViewNormal;
+			break;
+		case 1:
+			mapView = mapViewSatellite;
+			break;
+		}
+		
+		RelativeLayout.LayoutParams paramsMap = new RelativeLayout.LayoutParams(
+				HEIGHT, HEIGHT);
+		mapLayout.addView(mapView, paramsMap);
+		RelativeLayout.LayoutParams paramsCanvas = new RelativeLayout.LayoutParams(
+				HEIGHT, HEIGHT);
+		mapLayout.addView(canvas, paramsCanvas);
 	}
 
 }

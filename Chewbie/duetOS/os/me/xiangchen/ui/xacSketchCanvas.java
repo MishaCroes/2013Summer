@@ -166,14 +166,14 @@ public class xacSketchCanvas extends SurfaceView implements
 			paint.setStyle(Paint.Style.STROKE);
 			paint.setStrokeJoin(Paint.Join.ROUND);
 			paint.setStrokeCap(Paint.Cap.ROUND);
-			paint.setStrokeWidth(10);
+			paint.setStrokeWidth(15);
 			break;
 		case HIGHLIGHTER:
 			paint.setColor(0x44FFFF00);
 			paint.setStyle(Paint.Style.STROKE);
 			paint.setStrokeJoin(Paint.Join.BEVEL);
 			paint.setStrokeCap(Paint.Cap.SQUARE);
-			paint.setStrokeWidth(50);
+			paint.setStrokeWidth(75);
 			break;
 		case ERASER:
 			paint.setColor(0x00000000);

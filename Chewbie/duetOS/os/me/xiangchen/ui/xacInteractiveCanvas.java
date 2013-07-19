@@ -12,15 +12,19 @@ import android.view.WindowManager;
 
 public class xacInteractiveCanvas extends View {
 
-	final public static int bgColorLight = 0xFF4E4231;
+	final public static int bgColorLight = 0xFFEADFD5;
 	final public static int bgColorDark = 0xFF472A2B;
 	final public static int fgColorBlue = 0xFF4DDCF7;
-	final public static int fgColorGreen = 0xFF4FFE4F;
-	final public static int bgColorGreen = 0x882FFE2F;
+	final public static int fgColorGreen = 0xFF558c03;
+	final public static int bgColorGreen = 0xAA2FFE2F;
 	final public static int fgColorYellow = 0xFFF4880C;
 	final public static int fgColorCream = 0xFFE3CC86;
 	final public static int fgColorRed = 0xFFE80C7A;
-	final public static int bgColorRed = 0xFF880C3A;
+	final public static int bgColorRed = 0x88880C7A;
+	final public static int fgColorWood = 0xFFD4A876;
+	final public static int bgColorWood = 0xAAD4A876;
+	final public static int fgColorBlack = 0xFF2D3E50;
+	final public static int bgColorBlack = 0xCC2D3E50;
 
 	private ArrayList<xacShape> shapes;
 	private float xOffset;
@@ -78,6 +82,18 @@ public class xacInteractiveCanvas extends View {
 
 		return tShapes;
 	}
+	
+	public ArrayList<xacShape> getTouchedShapesByRect(float x, float y, float rw) {
+		ArrayList<xacShape> tShapes = new ArrayList<xacShape>();
+
+		for (xacShape shape : shapes) {
+			if (shape.hitTest(x, y, rw)) {
+				tShapes.add(shape);
+			}
+		}
+
+		return tShapes;
+	}
 
 	public ArrayList<xacShape> getShapes() {
 		return shapes;
@@ -110,29 +126,10 @@ public class xacInteractiveCanvas extends View {
 	protected void onDraw(Canvas canvas) {
 
 		for (xacShape shape : shapes) {
-			
 			shape.offset(xOffset, yOffset);
-//			float scaleRatio = scaleCurr / scalePrev;
-//			shape.scale(scaleRatio);
 			if(shape.getY() + shape.getH() > 0 && shape.getY() < this.getMeasuredHeight()) {
 				shape.draw(canvas);
 			}
 		}
-		
-//		if(idxInScreen0 < idxInScreen1) {
-//			int numShapes = shapes.size();
-//			for(int i=(int) idxInScreen0; i<=idxInScreen1; i++) {
-//				xacShape shape = shapes.get(numShapes - 1 - i);
-//				shape.draw(canvas);
-//			}
-//		} else {
-//			for (xacShape shape : shapes) {
-//				
-//				shape.offset(xOffset, yOffset);
-////				
-//					shape.draw(canvas);
-////				}
-//			}
-//		}
 	}
 }

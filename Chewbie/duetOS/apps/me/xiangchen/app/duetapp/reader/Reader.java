@@ -96,7 +96,7 @@ public class Reader extends App {
 	int prevLine;
 	int prevOffset;
 
-	int textSize = 20;
+	int textSize = 27;
 	float brightness = 0.8f;
 	Button btnIncrFontSize;
 	Button btnDecrFontSize;
@@ -111,19 +111,27 @@ public class Reader extends App {
 
 	int numTouches;
 	
-	int imgBtn[] = {R.drawable.pencil, R.drawable.highlighter, R.drawable.sun_small, R.drawable.sun_big,
-			R.drawable.pencil, R.drawable.highlighter, R.drawable.sun_small, R.drawable.sun_big};
+	boolean wasLongClick = false;
+	
+	int bgAlpha = 96;
+	
+	int imgBtn[] = {R.drawable.pencil, R.drawable.highlighter, R.drawable.undo, R.drawable.redo,
+			R.drawable.font_decr, R.drawable.font_incr, R.drawable.sun_small, R.drawable.sun_big};
+	
+	String tooltips[] = {"A pencil tool for annotation", "A highlighter tool for annotation", "Undo the last stroke", "Redo the last stroke",
+			"Decrease the font size", "Increase the font size", "Decrease the screen brightness", "Increase the screen brightness"};
+	Hashtable<Button, String> htTooltips;
 
 	public Reader(Context context) {
 		super(context);
-		color = xacInteractiveCanvas.fgColorBlue;
+		color = xacInteractiveCanvas.fgColorWood;
 		// appView = new xacInteractiveCanvas(context);
 		// appView.setBackgroundColor(color);
 
 		ReaderManager.setPhone(this);
 
 		appLayout = new RelativeLayout(context);
-		appLayout.setBackgroundColor(0xFF000000);
+		appLayout.setBackgroundColor(xacInteractiveCanvas.bgColorWood);
 		scrollLayout = new RelativeLayout(context);
 
 		// scroll view
@@ -134,7 +142,8 @@ public class Reader extends App {
 
 				doWatchConfig(event);
 
-				if (xacAuthenticSenseFeatureMaker.getConfigStatus() != xacAuthenticSenseFeatureMaker.DOING) {
+				if (xacAuthenticSenseFeatureMaker.getConfigStatus() != xacAuthenticSenseFeatureMaker.DOING
+						|| event.getAction() == MotionEvent.ACTION_DOWN) {
 					if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST) {
 						doTouchWatchOnWristBack(event);
 					} else if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTINNERWRIST) {
@@ -149,10 +158,10 @@ public class Reader extends App {
 		// text view
 		textView = new TextView(context);
 		textView.setTextSize(textSize);
-		textView.setBackgroundColor(Color.WHITE);
 		text = context.getString(R.string.a_tale_of_two_cities);
 		textView.setText(text);
-		textView.setBackgroundColor(Color.argb((int) (255 * brightness), 255,
+		textView.setTypeface(LauncherManager.getTypeface(LauncherManager.READ));
+		textView.setBackgroundColor(Color.argb(bgAlpha, 255,
 				255, 255));
 		scrollLayout.addView(textView);
 
@@ -164,7 +173,7 @@ public class Reader extends App {
 		// buffer canvas
 		bufCan = new xacBufferCanvas(context);
 		Paint rectPaint = new Paint();
-		rectPaint.setColor(0x880000FF);
+		rectPaint.setColor(xacInteractiveCanvas.bgColorWood);
 		bufCan.setRectPaint(rectPaint);
 		RelativeLayout.LayoutParams paramsBufCan = new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -192,58 +201,8 @@ public class Reader extends App {
 
 	private void dispatchButtons(Context context) {
 		// layoutButtons = new RelativeLayout(context);
-
 		buttons = new ArrayList<Button>();
-
-		btnIncrFontSize = new Button(context);
-//		btnIncrFontSize.setText("A+");
-		btnIncrFontSize.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				// float sizeText = textView.getTextSize();
-				incrTextSize();
-			}
-		});
-		// layoutButtons.addView(btnIncrFontSize);
-		buttons.add(btnIncrFontSize);
-
-		btnDecrFontSize = new Button(context);
-//		btnDecrFontSize.setText("A-");
-		btnDecrFontSize.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// float sizeText = textView.getTextSize();
-				decrTextSize();
-
-			}
-		});
-		// layoutButtons.addView(btnDecrFontSize);
-		buttons.add(btnDecrFontSize);
-
-		btnIncrBrightness = new Button(context);
-//		btnIncrBrightness.setText("B+");
-		btnIncrBrightness.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				incrBrightness();
-			}
-		});
-		// layoutButtons.addView(btnIncrBrightness);
-		buttons.add(btnIncrBrightness);
-
-		btnDecrBrightness = new Button(context);
-//		btnDecrBrightness.setText("B-");
-		btnDecrBrightness.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				decrBrightness();
-			}
-		});
-		// layoutButtons.addView(btnIncrBrightness);
-		buttons.add(btnDecrBrightness);
+		htTooltips = new Hashtable<Button, String>();
 		
 		btnPen = new Button(context);
 //		btnPen.setText("Pen");
@@ -251,6 +210,10 @@ public class Reader extends App {
 			@Override
 			public void onClick(View arg0) {
 				// float sizeText = textView.getTextSize();
+				if(wasLongClick) {
+					wasLongClick = false;
+					return;
+				}
 				setTool(xacSketchCanvas.PEN);
 			}
 		});
@@ -263,7 +226,10 @@ public class Reader extends App {
 
 			@Override
 			public void onClick(View arg0) {
-				// float sizeText = textView.getTextSize();
+				if(wasLongClick) {
+					wasLongClick = false;
+					return;
+				}
 				setTool(xacSketchCanvas.HIGHLIGHTER);
 
 			}
@@ -277,6 +243,10 @@ public class Reader extends App {
 
 			@Override
 			public void onClick(View arg0) {
+				if(wasLongClick) {
+					wasLongClick = false;
+					return;
+				}
 				undo();
 			}
 		});
@@ -289,11 +259,79 @@ public class Reader extends App {
 
 			@Override
 			public void onClick(View arg0) {
+				if(wasLongClick) {
+					wasLongClick = false;
+					return;
+				}
 				redo();
 			}
 		});
 		// layoutButtons.addView(btnIncrBrightness);
 		buttons.add(btnRedo);
+
+		btnDecrFontSize = new Button(context);
+//		btnDecrFontSize.setText("A-");
+		btnDecrFontSize.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				if(wasLongClick) {
+					wasLongClick = false;
+					return;
+				}
+				decrTextSize();
+
+			}
+		});
+		// layoutButtons.addView(btnDecrFontSize);
+		buttons.add(btnDecrFontSize);
+
+		btnIncrFontSize = new Button(context);
+//		btnIncrFontSize.setText("A+");
+		btnIncrFontSize.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if(wasLongClick) {
+					wasLongClick = false;
+					return;
+				}
+				incrTextSize();
+			}
+		});
+		// layoutButtons.addView(btnIncrFontSize);
+		buttons.add(btnIncrFontSize);
+		
+		btnDecrBrightness = new Button(context);
+//		btnDecrBrightness.setText("B-");
+		btnDecrBrightness.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				if(wasLongClick) {
+					wasLongClick = false;
+					return;
+				}
+				decrBrightness();
+			}
+		});
+		// layoutButtons.addView(btnIncrBrightness);
+		buttons.add(btnDecrBrightness);
+		
+		btnIncrBrightness = new Button(context);
+//		btnIncrBrightness.setText("B+");
+		btnIncrBrightness.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				if(wasLongClick) {
+					wasLongClick = false;
+					return;
+				}
+				incrBrightness();
+			}
+		});
+		// layoutButtons.addView(btnIncrBrightness);
+		buttons.add(btnIncrBrightness);
 
 		int numRows = 2;
 		int numCols = 4;
@@ -308,7 +346,18 @@ public class Reader extends App {
 					Button btn = buttons.get(idxBtn);
 					btn.setLayoutParams(params);
 					btn.setBackgroundResource(imgBtn[idxBtn]);
+					htTooltips.put(btn, tooltips[idxBtn]);
 					tr.addView(btn, w, h);
+					
+					btn.setOnLongClickListener(new View.OnLongClickListener() {
+						
+						@Override
+						public boolean onLongClick(View view) {
+							wasLongClick = true;
+							ReaderManager.showTooltip(htTooltips.get((Button)view));
+							return false;
+						}
+					});
 				}
 			}
 			layoutButtons.addView(tr, new TableLayout.LayoutParams(
@@ -362,7 +411,7 @@ public class Reader extends App {
 						resId = R.drawable.right_inner_wrist;
 						break;
 					}
-					LauncherManager.showNotificationOnUnockedPhone(resId);
+					LauncherManager.showNotificationOnUnlockedPhone(resId);
 				}
 			}
 			break;
@@ -441,6 +490,7 @@ public class Reader extends App {
 		case MotionEvent.ACTION_DOWN:
 
 			timeTouchDown = curTime;
+			bufCan.clearRects();
 			handedness = xacHandSenseFeatureMaker.UNKNOWN;
 			appLayout.removeView(layoutButtons);
 			if (selectedText.length() > 0) {
@@ -573,10 +623,24 @@ public class Reader extends App {
 				case xacTouchSenseFeatureMaker.KNUCKLE:
 					int start = Math.min(firstOffset, prevOffset);
 					int end = Math.max(firstOffset, prevOffset);
+					while(start > 0 && !text.substring(start - 1, start).equals(" ")) {
+						start--;
+					}
+					
+					while(end < text.length() && !text.substring(end, end + 1).equals(" ")) {
+						end++;
+					}
+					
+					if(text.substring(end - 1, end).equals(",") ||
+							text.substring(end - 1, end).equals(".") ) {
+						end--;
+					}
+					
+//					selectedText = smartTextSelection(start, end, text);
 					selectedText = text.substring(start, end);
 					selectText(textView, start, end);
-
-					updateCursor(0, 0, 0, 0);
+					ReaderManager.showTextOption(selectedText);
+					bufCan.clearRects();
 					break;
 				}
 			}
@@ -637,7 +701,7 @@ public class Reader extends App {
 		Spannable textSpannable = new SpannableStringBuilder(tv.getText());
 		textSpannable.setSpan(new BackgroundColorSpan(Color.TRANSPARENT), 0,
 				start - 1, 0);
-		textSpannable.setSpan(new BackgroundColorSpan(0x881ABCBD), start, end,
+		textSpannable.setSpan(new BackgroundColorSpan(xacInteractiveCanvas.bgColorWood), start, end,
 				0);
 		textSpannable.setSpan(new BackgroundColorSpan(Color.TRANSPARENT),
 				end + 1, text.length() - 1, 0);
@@ -675,14 +739,14 @@ public class Reader extends App {
 	public void incrBrightness() {
 		brightness += STEPBRIGHTNESS;
 		brightness = Math.min(brightness, MAXBRIGHTNESS);
-		textView.setBackgroundColor(Color.argb((int) (255 * brightness), 255,
-				255, 255));
+		textView.setBackgroundColor(Color.argb(bgAlpha, (int)(255 * brightness),
+				(int)(255 * brightness), (int)(255 * brightness)));
 	}
 
 	public void decrBrightness() {
 		brightness -= STEPBRIGHTNESS;
 		brightness = Math.max(brightness, MINBRIGHTNESS);
-		textView.setBackgroundColor(Color.argb((int) (255 * brightness), 255,
-				255, 255));
+		textView.setBackgroundColor(Color.argb(bgAlpha, (int)(255 * brightness),
+				(int)(255 * brightness), (int)(255 * brightness)));
 	}
 }

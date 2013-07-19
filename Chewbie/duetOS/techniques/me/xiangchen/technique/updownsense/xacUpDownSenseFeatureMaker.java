@@ -9,7 +9,7 @@ public class xacUpDownSenseFeatureMaker {
 	public final static int DOWN = 0;
 	public final static int UP = 1;
 	
-	static final int MAXNUMROW = 2048;
+	static final int MAXNUMROW = 256;
 	static final int NUMSOURCES = 2;
 	
 	static final int NUMTOSEND = LauncherExtension.WATCHACCELFPS;

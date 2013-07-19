@@ -6,6 +6,7 @@ import java.util.Date;
 import me.xiangchen.app.duetapp.AppExtension;
 import me.xiangchen.app.duetapp.email.EmailManager;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
+import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
 import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -86,14 +87,17 @@ public class LauncherExtension extends ControlExtension {
 
 				if (appExt == null) {
 					appExt = LauncherManager.getAppExtension();
+					
+					xacHandSenseFeatureMaker.updateWatchAccel(values);
+					xacHandSenseFeatureMaker.addWatchFeatureEntry();
+					
+					xacTouchSenseFeatureMaker.updateWatchAccel(values);
+					xacTouchSenseFeatureMaker.addWatchFeatureEntry();
+					
+					xacAuthenticSenseFeatureMaker.updateWatchAccel(values);
+					xacAuthenticSenseFeatureMaker.addWatchFeatureEntry();
 				}
 
-				xacTouchSenseFeatureMaker.updateWatchAccel(values);
-				xacTouchSenseFeatureMaker.addWatchFeatureEntry();
-				
-				xacAuthenticSenseFeatureMaker.updateWatchAccel(values);
-				xacAuthenticSenseFeatureMaker.addWatchFeatureEntry();
-				
 				if (appExt != null) {
 					appExt.doAccelerometer(values);
 				}
@@ -127,7 +131,7 @@ public class LauncherExtension extends ControlExtension {
 	}
 
 	public void showText(String text) {
-		textView.setTextSize(text.length() > 0 ? (int)(5f + 50.0f / text.length()) : 0);
+		textView.setTextSize(text.length() > 0 ? (int)(5f + 70.0f / Math.max(10, text.length())) : 0);
 		textView.setText(text);
 		updateVisual();
 	}

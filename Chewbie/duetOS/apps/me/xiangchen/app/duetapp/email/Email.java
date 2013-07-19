@@ -9,6 +9,8 @@ import me.xiangchen.app.duetapp.App;
 import me.xiangchen.app.duetos.Launcher;
 import me.xiangchen.app.duetos.LauncherManager;
 import me.xiangchen.app.duetos.R;
+import me.xiangchen.lib.xacPhoneGesture;
+import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
 import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
 import me.xiangchen.technique.sharesense.xacShareSenseFeatureMaker;
@@ -19,7 +21,7 @@ import me.xiangchen.ui.xacShape;
 import me.xiangchen.ui.xacToast;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
+import android.graphics.Color;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.View;
@@ -108,6 +110,11 @@ public class Email extends App {
 			"Facebook - You have a new message from someone you don't know" };
 	Hashtable<xacShape, String> htEmailText;
 
+	xacPhoneGesture pressAndHold;
+	int isHold;
+	
+	int handedness = xacHandSenseFeatureMaker.UNKNOWN;
+
 	public Email(Context context) {
 		super(context);
 		color = xacInteractiveCanvas.fgColorRed;
@@ -126,7 +133,7 @@ public class Email extends App {
 		textViewEmail = new TextView(context);
 		textViewEmail.setTextSize(24);
 		textViewEmail.setTextColor(xacInteractiveCanvas.bgColorDark);
-//		openedEmailLayout.addView(textViewEmail);
+		// openedEmailLayout.addView(textViewEmail);
 		paramsOpened = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.MATCH_PARENT);
@@ -158,14 +165,15 @@ public class Email extends App {
 			updateInboxVisual();
 		}
 
-		
 		random = new Random();
 		toast = new xacToast(context);
 		toast.setImgSrc(R.drawable.email);
 
 		dispatchButtons(context);
 		selectedEmails = new ArrayList<xacShape>();
-		
+
+		pressAndHold = new xacPhoneGesture(xacPhoneGesture.PRESSANDHOLD);
+
 	}
 
 	@Override
@@ -173,16 +181,18 @@ public class Email extends App {
 		int watchMode = xacShareSenseFeatureMaker.doClassification();
 		if ((random.nextInt() + 97) % (Launcher.TIMERFPS * EMAILFREQUENCY) == 0
 				&& cntEmail <= 40) {
-//			addEmail();
-//			updateInboxVisual();
+			// addEmail();
+			// updateInboxVisual();
 
 			LauncherManager.showNotificationOnLockedPhone(R.drawable.email);
 
-			if (watchMode == xacShareSenseFeatureMaker.PRIVATE) {
-				LauncherManager.showNotificationOnWatch(R.drawable.email_small,
-						true);
-			} else {
-				LauncherManager.buzz();
+			if (LauncherManager.isPhoneLocked()) {
+				if (watchMode == xacShareSenseFeatureMaker.PRIVATE) {
+					LauncherManager.showNotificationOnWatch(
+							R.drawable.email_small, true);
+				} else {
+					LauncherManager.buzz(100);
+				}
 			}
 			numUnnotifiedEmail++;
 			canvas.invalidate();
@@ -203,8 +213,10 @@ public class Email extends App {
 			@Override
 			public void onClick(View arg0) {
 				for (xacShape email : selectedEmails) {
-					email.setTypeface(LauncherManager
-							.getTypeface(LauncherManager.NORMAL));
+//					email.setTypeface(LauncherManager
+//							.getTypeface(LauncherManager.NORMAL));
+//					email.setColor(Color.argb(256, 256, 256, 256));
+					email.setAlpha(200);
 				}
 				canvas.invalidate();
 			}
@@ -255,8 +267,9 @@ public class Email extends App {
 		layoutButtons.setId(1027);
 		for (Button btn : buttons) {
 			btn.setId(1027 + idBtn);
-			btn.setBackgroundColor(0x88000000);
-			btn.setTextColor(0xDDFFFFFF);
+			btn.setBackgroundColor(xacInteractiveCanvas.fgColorRed);
+			btn.setTextColor(0xFFFFFFFF);
+			btn.setAlpha(0.85f);
 			btn.setTypeface(LauncherManager.getTypeface(LauncherManager.NORMAL));
 			btn.setTextSize(20);
 			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -275,20 +288,21 @@ public class Email extends App {
 
 	public void addEmail() {
 
-		xacShape emailEntry = canvas.addShape(xacShape.BITMAP, WIDTHEMAIL,
+		xacShape emailEntry = canvas.addShape(xacShape.ITEM, WIDTHEMAIL,
 				HEIGHTEMAIL, 0, 0, 0xFFFFFFFF);
-		emailEntry.setBitmap(LauncherManager.getBitmap(R.drawable.email_snapshot_1));
-//		emailEntry.setStrokeColor(xacInteractiveCanvas.fgColorRed);
+		emailEntry.setBitmap(LauncherManager
+				.getBitmap(R.drawable.email_snapshot_1));
+		// emailEntry.setStrokeColor(xacInteractiveCanvas.fgColorRed);
 
 		emailEntry.setTypeface(LauncherManager
 				.getTypeface(LauncherManager.BOLD));
 		allEmails.add(emailEntry);
 		unreadEmails.add(emailEntry);
-//		String titleEmail = ;
-	
+		// String titleEmail = ;
+
 		htEmails.put(emailEntry, emailTitles[idxEmailText]);
 		htEmailText.put(emailEntry, emailTexts[idxEmailText]);
-		
+
 		idxEmailText = (idxEmailText + 1) % emailTitles.length;
 		cntEmail++;
 	}
@@ -320,6 +334,9 @@ public class Email extends App {
 
 		xacFlipSenseFeatureMaker.updatePhoneAccel(values);
 		xacFlipSenseFeatureMaker.addPhoneFeatureEntry();
+
+		xacAuthenticSenseFeatureMaker.updatePhoneAccel(values);
+		xacAuthenticSenseFeatureMaker.addPhoneFeatureEntry();
 	}
 
 	@SuppressLint("NewApi")
@@ -336,6 +353,9 @@ public class Email extends App {
 
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
+			isHold = xacPhoneGesture.NO;
+			isHold = pressAndHold.update(event);
+
 			appLayout.removeView(openedEmailLayout);
 			hitEmails = canvas.getTouchedShapes(xCur, yCur);
 			dTouchX = 0;
@@ -345,9 +365,19 @@ public class Email extends App {
 
 			xTouchDown = coords.x;
 			yTouchDown = coords.y;
+			
+			handedness = xacHandSenseFeatureMaker.UNKNOWN;
 
 			break;
 		case MotionEvent.ACTION_MOVE:
+			if (isHold != xacPhoneGesture.YES) {
+				isHold = pressAndHold.update(event);
+			}
+			
+			if (handedness == xacHandSenseFeatureMaker.UNKNOWN) {
+				handedness = xacHandSenseFeatureMaker.calculateHandedness();
+			}
+
 			switch (handPart) {
 			case xacTouchSenseFeatureMaker.KNUCKLE:
 				break;
@@ -380,38 +410,68 @@ public class Email extends App {
 
 			break;
 		case MotionEvent.ACTION_UP:
+			if (isHold == xacPhoneGesture.YES) {
+				int watchConfig = xacAuthenticSenseFeatureMaker
+						.calculateAuthentication();
+				LauncherManager.setWatchConfig(watchConfig);
+				if (watchConfig != xacAuthenticSenseFeatureMaker.INTHEWILD) {
+					int resId = -1;
+					switch (watchConfig) {
+					case xacAuthenticSenseFeatureMaker.LEFTBACKWRIST:
+						resId = R.drawable.left_back_wrist;
+						break;
+					case xacAuthenticSenseFeatureMaker.LEFTINNERWRIST:
+						resId = R.drawable.left_inner_wrist;
+						break;
+					case xacAuthenticSenseFeatureMaker.RIGHTBACKWRIST:
+						resId = R.drawable.right_back_wrist;
+						break;
+					case xacAuthenticSenseFeatureMaker.RIGHTINNERWRIST:
+						resId = R.drawable.right_inner_wrist;
+						break;
+					}
+					LauncherManager.showNotificationOnUnlockedPhone(resId);
+
+				}
+				break;
+			}
+
 			if (Math.abs(dTouchX) < TAPOFFSETTHRES
 					&& Math.abs(dTouchY) < TAPOFFSETTHRES) {
 				for (xacShape hitEmail : hitEmails) {
 					// hitEmail.toggleStroke();
 					switch (handPart) {
 					case xacTouchSenseFeatureMaker.KNUCKLE:
-						if (selectedEmails.contains(hitEmail)) {
-							selectedEmails.remove(hitEmail);
-							if (selectedEmails.size() <= 0) {
-								appLayout.removeView(layoutButtons);
+						if (handedness == xacHandSenseFeatureMaker.WATCH && 
+						LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST) {
+							if (selectedEmails.contains(hitEmail)) {
+								selectedEmails.remove(hitEmail);
+								if (selectedEmails.size() <= 0) {
+									appLayout.removeView(layoutButtons);
+								}
+							} else {
+								if (selectedEmails.size() <= 0) {
+									appLayout.addView(layoutButtons);
+								}
+								selectedEmails.add(hitEmail);
 							}
-						} else {
-							if (selectedEmails.size() <= 0) {
-								appLayout.addView(layoutButtons);
-							}
-							selectedEmails.add(hitEmail);
+							hitEmail.setStrokeColor(xacInteractiveCanvas.fgColorRed);
+							hitEmail.toggleStroke(20);
+							canvas.invalidate();
+							break;
 						}
-						hitEmail.toggleStroke(20);
-
-						canvas.invalidate();
-						break;
 					case xacTouchSenseFeatureMaker.PAD:
 					case xacTouchSenseFeatureMaker.SIDE:
 					default:
 						String titleEmail = htEmails.get(hitEmail);
 						String textEmail = htEmailText.get(hitEmail);
-//						textViewEmail.setTypeface(LauncherManager.getTypeface(LauncherManager.BOLD));
+						// textViewEmail.setTypeface(LauncherManager.getTypeface(LauncherManager.BOLD));
 						textViewEmail.setText(titleEmail + "\n" + textEmail);
 						appLayout.addView(openedEmailLayout, paramsOpened);
 						unreadEmails.remove(hitEmail);
-						hitEmail.setTypeface(LauncherManager
-								.getTypeface(LauncherManager.NORMAL));
+//						hitEmail.setTypeface(LauncherManager
+//								.getTypeface(LauncherManager.NORMAL));
+						hitEmail.setAlpha(200);
 						openedEmail = hitEmail;
 
 						break;
@@ -467,14 +527,14 @@ public class Email extends App {
 		return label;
 	}
 
-	 @Override
-	 public String getSup() {
-		 int cntUnread = unreadEmails.size();
-		 if(cntUnread > 0) {
-			 sup = htEmailText.get(unreadEmails.get(cntUnread - 1));
-		 } else {
-			 sup = "Inbox zero :)";
-		 }
-		 return sup;
-	 }
+	@Override
+	public String getSup() {
+		int cntUnread = unreadEmails.size();
+		if (cntUnread > 0) {
+			sup = htEmailText.get(unreadEmails.get(cntUnread - 1));
+		} else {
+			sup = "Inbox zero :)";
+		}
+		return sup;
+	}
 }

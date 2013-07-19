@@ -1,5 +1,7 @@
 package me.xiangchen.app.duetos;
 
+import java.util.Calendar;
+
 import me.xiangchen.app.duetapp.AppExtension;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.ui.xacToast;
@@ -49,6 +51,7 @@ public class LauncherManager {
 	
 	public final static int NORMAL = 0;
 	public final static int BOLD = 1;
+	public final static int READ = 2;
 	
 	public final static int LOCAL = 0;
 	public final static int GLOBAL = 1;
@@ -157,7 +160,7 @@ public class LauncherManager {
 		}
 	}
 	
-	public static void showNotificationOnUnockedPhone(int resId) {
+	public static void showNotificationOnUnlockedPhone(int resId) {
 		if (!isPhoneMuted) {
 			toastPhone.setImage(resId);
 			toastPhone.kill(phone.getLayout());
@@ -228,18 +231,28 @@ public class LauncherManager {
 		if (watchGesture.gesture == SWIPEOPEN
 				&& phoneGesture.gesture == SWIPEOPEN) {
 			Log.d(LOGTAG, "swipe open");
+			vibrate(500);
+			buzz(500);
 			updateOnCrossGesture(PINCHOPEN);
 		} else if (watchGesture.gesture == SWIPECLOSE
 				&& phoneGesture.gesture == SWIPECLOSE) {
 			Log.d(LOGTAG, "swipe close");
+			vibrate(100);
+			buzz(100);
 			updateOnCrossGesture(PINCHCLOSE);
 		} else if (watchGesture.gesture == SWIPEOPEN
 				&& phoneGesture.gesture == SWIPECLOSE) {
 			Log.d(LOGTAG, "phone->watch");
+			vibrate(200);
+			wait(500);
+			buzz(200);
 			updateOnCrossGesture(PHONETOWATCH);
 		} else if (watchGesture.gesture == SWIPECLOSE
 				&& phoneGesture.gesture == SWIPEOPEN) {
 			Log.d(LOGTAG, "watch->phone");
+			buzz(200);
+			wait(500);
+			vibrate(200);
 			updateOnCrossGesture(WATCHTOPHONE);
 		}
 
@@ -320,6 +333,10 @@ public class LauncherManager {
 			break;
 		case BOLD:
 			typeface = Typeface.createFromAsset(phone.getAssets(), "fonts/HelveticaBQ-Medium.otf");
+			break;
+		case READ:
+			typeface = Typeface.createFromAsset(phone.getAssets(), "fonts/GEORGIA.TTF");
+			break;
 		}
 		return typeface;
 	}
@@ -346,9 +363,9 @@ public class LauncherManager {
 		vibrator.vibrate(duration);
 	}
 	
-	public static void buzz() {
+	public static void buzz(int duration) {
 		if(watch != null) {
-			watch.buzz(100);
+			watch.buzz(duration);
 		}
 	}
 	
@@ -384,5 +401,14 @@ public class LauncherManager {
 	
 	public static boolean isPhoneLocked() {
 		return phone.isLocked;
+	}
+	
+	public static void wait(int dt) {
+		Calendar calendar = Calendar.getInstance();
+		long curTime = calendar.getTimeInMillis();
+		
+		while(calendar.getTimeInMillis() - curTime < dt) {
+			calendar = Calendar.getInstance();
+		}
 	}
 }

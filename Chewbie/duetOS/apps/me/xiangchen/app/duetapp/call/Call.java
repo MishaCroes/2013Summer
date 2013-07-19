@@ -49,8 +49,8 @@ public class Call extends App {
 	int posture =xacPostureSenseFeatureMaker.NONE; 
 	
 	int idxVoiceMail = -1;
-	int[] voiceMails = {R.raw.ground_rules, R.raw.no_annoying_sounds, R.raw.listen_up,
-			R.raw.so_fluffy, R.raw.bedtime_story, R.raw.stuffed_crust};
+	int[] voiceMails = {R.raw.no_annoying_sounds, R.raw.listen_up,
+			R.raw.so_fluffy};
 
 	float xTouchDown;
 	float yTouchDown;
@@ -65,7 +65,7 @@ public class Call extends App {
 		CallManager.setPhone(this);
 
 		appLayout = new RelativeLayout(context);
-		appLayout.setBackgroundColor(0xFFFFFFFF);
+		appLayout.setBackgroundColor(xacInteractiveCanvas.bgColorGreen);
 
 //		dispatchButtons(context);
 		layoutViews = new RelativeLayout(context);
@@ -112,7 +112,7 @@ public class Call extends App {
 	private void dispatchViews(Context context) {
 
 		layoutCall = new RelativeLayout(context);
-		layoutCall.setBackgroundColor(0xFF000000);
+		layoutCall.setBackgroundColor(0xAA000000);
 //		layoutCall.setBackgroundColor(xacInteractiveCanvas.bgColorGreen);
 		makeNumPad(context);
 
@@ -205,6 +205,7 @@ public class Call extends App {
 			btn.setTextColor(0xFFFFFFFF);
 			btn.setTypeface(LauncherManager.getTypeface(LauncherManager.NORMAL));
 			btn.setTextSize(20);
+			
 			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
 					w, h);
 			if (idBtn > 1) {
@@ -221,6 +222,7 @@ public class Call extends App {
 
 	private void makeNumPad(Context context) {
 		textView = new TextView(context);
+		textView.setBackgroundColor(0x00000000);
 		TableLayout tableLayout = new TableLayout(context);
 
 		tableLayout.setId(41);
@@ -248,6 +250,7 @@ public class Call extends App {
 				Button btn = new Button(context);
 				btn.setBackgroundResource(bgRscs[cntKey]);
 				btn.setLayoutParams(params);
+				btn.setAlpha(0.60f);
 
 				if (i < numRows - 1) {
 					if (i == 0 && j == 0) {
@@ -373,7 +376,7 @@ public class Call extends App {
 		paramsKeys.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		layoutCall.addView(tableLayout, paramsKeys);
 
-		textView.setBackgroundColor(0xFF000000);
+//		textView.setBackgroundColor(0xFF000000);
 		textView.setText("");
 		textView.setTextColor(0xFFFFFFFF);
 		textView.setTextSize(60);
