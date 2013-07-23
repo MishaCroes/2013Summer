@@ -1,7 +1,8 @@
 package me.xiangchen.app.duetapp.reader;
 
+import java.util.ArrayList;
+
 import me.xiangchen.app.duetapp.AppExtension;
-import me.xiangchen.app.duetapp.call.CallManager;
 import me.xiangchen.app.duetos.LauncherManager;
 import me.xiangchen.app.duetos.R;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
@@ -9,7 +10,6 @@ import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
 import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
 import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
 import me.xiangchen.ui.xacSketchCanvas;
-import android.util.Log;
 
 import com.sonyericsson.extras.liveware.aef.control.Control;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlTouchEvent;
@@ -18,16 +18,28 @@ public class ReaderExtenstion extends AppExtension {
 
 	public final static String LOGTAG = "DuetOS";
 	public final static int NUMTOOLPALLETES = 2;
+	public final static int CLIPBOARD = 0;
+	public final static int MAINSCREEN = 1;
+	public final static int SHARESCREEN = 2;
+	public final static int NUMTEXTPERSCREEN = 3;
 
 	int idxToolPallete = 0;
 	int[] bmpToolPallets = { R.drawable.tool_pallete_1,
 			R.drawable.tool_pallete_2 };
-	
+
 	int idxTextOptionScreen = 1;
 	String selectedText = "";
+
+	String textToClip = "";
+	ArrayList<String> clipboard;
+	int idxClipboard = 0;
+
+	boolean isQuasiMode = false;
+	int savedTool = xacSketchCanvas.NONE;
 	
 	public ReaderExtenstion() {
 		ReaderManager.setWatch(this);
+		clipboard = new ArrayList<String>();
 	}
 
 	@Override
@@ -37,13 +49,15 @@ public class ReaderExtenstion extends AppExtension {
 
 	@Override
 	public void doTouch(ControlTouchEvent event) {
+		int action = event.getAction();
 		if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTINNERWRIST) {
-			if (event.getAction() == Control.Intents.TOUCH_ACTION_PRESS) {
+			switch (action) {
+			case Control.Intents.TOUCH_ACTION_PRESS:
 				int width = getWidth();
 				int height = getHeight();
 				float x = event.getX();
 				float y = event.getY();
-
+				savedTool = ReaderManager.getTool();
 				switch (idxToolPallete) {
 				case 0:
 					if (x < width / 2 && y < height / 2) {
@@ -68,7 +82,18 @@ public class ReaderExtenstion extends AppExtension {
 					}
 					break;
 				}
+				break;
+			case Control.Intents.TOUCH_ACTION_LONGPRESS:
+				isQuasiMode = true;
+				break;
+			case Control.Intents.TOUCH_ACTION_RELEASE:
+				if(isQuasiMode) {
+					ReaderManager.setTool(savedTool);
+				}
+				isQuasiMode = false;
+				break;
 			}
+			
 		}
 	}
 
@@ -92,35 +117,49 @@ public class ReaderExtenstion extends AppExtension {
 						true);
 				break;
 			}
-		} else if(LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST) {
+		} else if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST) {
 			switch (direction) {
 			case Control.Intents.SWIPE_DIRECTION_LEFT:
 				idxTextOptionScreen++;
 				idxTextOptionScreen = Math.max(0, idxTextOptionScreen);
-				
+				updateTextOptionScreen(idxTextOptionScreen);
 				break;
 			case Control.Intents.SWIPE_DIRECTION_RIGHT:
 				idxTextOptionScreen--;
 				idxTextOptionScreen = Math.min(3, idxTextOptionScreen);
+				updateTextOptionScreen(idxTextOptionScreen);
+				break;
+			case Control.Intents.SWIPE_DIRECTION_UP:
+				if (idxTextOptionScreen == CLIPBOARD) {
+					idxClipboard -= NUMTEXTPERSCREEN;
+					showClipboard();
+				}
+				break;
+			case Control.Intents.SWIPE_DIRECTION_DOWN:
+				if (idxTextOptionScreen == CLIPBOARD) {
+					idxClipboard += NUMTEXTPERSCREEN;
+					showClipboard();
+				}
 				break;
 			}
-			updateTextOptionScreen(idxTextOptionScreen);
+
 		}
 	}
-	
+
 	private void updateTextOptionScreen(int idx) {
 		switch (idx) {
-		case 0:
-			showDictionary();
+		case CLIPBOARD:
+			if (textToClip != null) {
+				clipboard.add(textToClip);
+				textToClip = null;
+			}
+			showClipboard();
 			break;
-		case 1:
+		case MAINSCREEN:
 			showTextOption();
 			break;
-		case 2:
-			updateWatchVisual(
-					LauncherManager
-							.getBitmap(R.drawable.share),
-					true);
+		case SHARESCREEN:
+			updateWatchVisual(LauncherManager.getBitmap(R.drawable.share), true);
 			break;
 		}
 	}
@@ -140,32 +179,48 @@ public class ReaderExtenstion extends AppExtension {
 
 		xacFlipSenseFeatureMaker.updateWatchAccel(values);
 		xacFlipSenseFeatureMaker.addWatchFeatureEntry();
-		
+
 		xacAuthenticSenseFeatureMaker.updateWatchAccel(values);
 		xacAuthenticSenseFeatureMaker.addWatchFeatureEntry();
+	}
+
+	private void showClipboard() {
+		String shownText = "";
+		for (int i = 0; i < NUMTEXTPERSCREEN; i++) {
+			String clippedText = "          ";
+			if (idxClipboard + i >= 0 && idxClipboard + i < clipboard.size()) {
+				clippedText = clipboard.get(idxClipboard + i);
+			}
+			
+			int lengthSubText = Math.min(clippedText.length(), 10);
+			shownText += (i + idxClipboard) + ". "
+					+ clippedText.substring(0, lengthSubText) + "... \n";
+		}
+		showText(shownText);
 	}
 
 	private void showDictionary() {
 		int lengthSubText = Math.min(selectedText.length(), 15);
 		String subText = selectedText.substring(0, lengthSubText)
 				+ (selectedText.length() == lengthSubText ? "" : "...");
-		String dicEntry = "Dictionary explanation of this word or sentence." +
-				"Blah blah blah";
+		String dicEntry = "Dictionary explanation of this word or sentence."
+				+ "Blah blah blah";
 		showText(subText + "\n\n" + dicEntry);
 	}
-	
+
 	private void showTextOption() {
 		int lengthSubText = Math.min(selectedText.length(), 15);
 		String subText = selectedText.substring(0, lengthSubText)
 				+ (selectedText.length() == lengthSubText ? "" : "...");
-		String option1 = ">> Check dictionary";
+		String option1 = ">> Add to clipboard";
 		String option2 = "<< Share this text";
 
 		showText(subText + "\n\n" + option1 + "\n" + option2);
 	}
-	
+
 	public void showTextOption(String text) {
 		selectedText = text;
+		textToClip = selectedText;
 		showTextOption();
 	}
 }

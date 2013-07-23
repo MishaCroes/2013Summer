@@ -314,8 +314,6 @@ public class Launcher extends Activity implements SensorEventListener {
 		int action = event.getAction();
 		PointerCoords curCoord = new PointerCoords();
 		event.getPointerCoords(0, curCoord);
-
-		
 		
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:

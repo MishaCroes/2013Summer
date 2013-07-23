@@ -113,7 +113,7 @@ public class Reader extends App {
 	
 	boolean wasLongClick = false;
 	
-	int bgAlpha = 96;
+	int bgAlpha = 256;
 	
 	int imgBtn[] = {R.drawable.pencil, R.drawable.highlighter, R.drawable.undo, R.drawable.redo,
 			R.drawable.font_decr, R.drawable.font_incr, R.drawable.sun_small, R.drawable.sun_big};
@@ -183,6 +183,7 @@ public class Reader extends App {
 
 		scrollView.addView(scrollLayout);
 		appLayout.addView(scrollView);
+		appLayout.setBackgroundColor(0xFFFFFFFF);
 
 		// menu
 		// menu = new xacInteractiveCanvas(context);
@@ -748,5 +749,9 @@ public class Reader extends App {
 		brightness = Math.max(brightness, MINBRIGHTNESS);
 		textView.setBackgroundColor(Color.argb(bgAlpha, (int)(255 * brightness),
 				(int)(255 * brightness), (int)(255 * brightness)));
+	}
+	
+	public int getTool() {
+		return canvas.getTool();
 	}
 }

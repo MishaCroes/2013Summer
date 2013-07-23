@@ -228,9 +228,12 @@ public class LauncherExtension extends ControlExtension {
 
 	@Override
 	public void onTouch(final ControlTouchEvent event) {
-
+		
 		if (LauncherManager.getWatchPerspective() == LauncherManager.LOCAL) {
-			if (event.getAction() == Control.Intents.TOUCH_ACTION_LONGPRESS) {
+			int x = event.getX();
+			int y = event.getY();
+			if (event.getAction() == Control.Intents.TOUCH_ACTION_LONGPRESS && 
+					width/3 < x && x < width*2/3 && height/3 < y && y < height*2/3) {
 				if (!wasALongPress) {
 					wasALongPress = true;
 //					Log.d(LOGTAG, "do app switching!");

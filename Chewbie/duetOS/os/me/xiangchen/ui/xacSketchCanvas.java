@@ -19,6 +19,7 @@ import android.view.View;
 public class xacSketchCanvas extends SurfaceView implements
 		SurfaceHolder.Callback {
 
+	public static final int NONE = -1;
 	public static final int PEN = 0;
 	public static final int HIGHLIGHTER = 1;
 	public static final int ERASER = 2;
@@ -185,6 +186,10 @@ public class xacSketchCanvas extends SurfaceView implements
 		}
 	}
 
+	public int getTool() {
+		return tool;
+	}
+	
 	public void setIsStroking(boolean flag) {
 		isStroking = flag;
 	}

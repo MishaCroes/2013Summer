@@ -225,11 +225,11 @@ public class xacAuthenticSenseFeatureMaker {
 			 Log.d(LOGTAG, "left inner wrist");
 			break;
 		case 2:
-			label = RIGHTBACKWRIST;
+			label = LEFTBACKWRIST;	// now only left
 			 Log.d(LOGTAG, "right back wrist");
 			break;
 		case 3:
-			label = RIGHTINNERWRIST;
+			label = LEFTINNERWRIST; // now only left
 			 Log.d(LOGTAG, "right inner wrist");
 			break;
 		case 4:

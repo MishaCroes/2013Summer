@@ -44,27 +44,33 @@ public class MapExtension extends AppExtension {
 
 	@Override
 	public void doSwipe(int direction) {
-		buzz(100);
+		
 		int pointing = xacUpDownSenseFeatureMaker.doClassification();
 
 		if (pointing == xacUpDownSenseFeatureMaker.DOWN) {
+			buzz(500);
 			Log.d(LOGTAG, "down swipe");
 			MapManager.switchMapViews();
 		} else {
+			buzz(100);
 			float xStep = getWidth() / 10;
 			float yStep = getHeight() / 10;
 			switch (direction) {
 			case Control.Intents.SWIPE_DIRECTION_LEFT:
-				MapManager.doTranslation(-xStep, 0);
+//				MapManager.doTranslation(-xStep, 0);
+				MapManager.offsetShiftFrame(xStep, 0);
 				break;
 			case Control.Intents.SWIPE_DIRECTION_UP:
-				MapManager.doTranslation(0, -yStep);
+//				MapManager.doTranslation(0, -yStep);
+				MapManager.offsetShiftFrame(0, yStep);
 				break;
 			case Control.Intents.SWIPE_DIRECTION_RIGHT:
-				MapManager.doTranslation(xStep, 0);
+//				MapManager.doTranslation(xStep, 0);
+				MapManager.offsetShiftFrame(-xStep, 0);
 				break;
 			case Control.Intents.SWIPE_DIRECTION_DOWN:
-				MapManager.doTranslation(0, yStep);
+//				MapManager.doTranslation(0, yStep);
+				MapManager.offsetShiftFrame(0, -yStep);
 				break;
 			}
 		}

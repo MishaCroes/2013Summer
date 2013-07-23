@@ -31,6 +31,8 @@ public class xacPhoneGesture {
 	
 	long timeTouchDown;
 	
+	int result;
+	
 	public xacPhoneGesture(int type) {
 		this.type = type;
 	}
@@ -47,21 +49,22 @@ public class xacPhoneGesture {
 	}
 	
 	private int updateDoubleTap(MotionEvent event) {
+		result = NO;
 		if(event.getAction() != MotionEvent.ACTION_UP)
-			return NO;
+			return result;
 		
 		if(event.getPointerCount() > 1) {
-			return NO;
+			return result;
 		}
 		
-		int val = NO;
+//		int val = NO;
 		
 		Calendar lCDateTime = Calendar.getInstance();
 		long curTime = lCDateTime.getTimeInMillis();
 		
 		Log.d(LOGTAG, curTime - lastUpdateTime + "");
 		if(curTime - lastUpdateTime < INTRVLDOUBLETAP) {
-			val = YES;
+			result = YES;
 			lastUpdateTime = 0;
 		} else {
 			Log.d(LOGTAG, "interval: "+(curTime-lastUpdateTime));
@@ -69,12 +72,12 @@ public class xacPhoneGesture {
 		
 		lastUpdateTime = curTime;
 		
-		return val;
+		return result;
 	}
 	
 	@SuppressLint("NewApi")
 	private int updatePressAndHold(MotionEvent event) {
-		int result = NO;
+		result = NO;
 		int action = event.getAction();
 		
 		PointerCoords tchPnt1 = new PointerCoords();
@@ -113,6 +116,10 @@ public class xacPhoneGesture {
 			break;
 		}
 		
+		return result;
+	}
+	
+	public int getResult() {
 		return result;
 	}
 }

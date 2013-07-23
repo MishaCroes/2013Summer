@@ -170,7 +170,7 @@ public class xacTiltSenseFeatureMaker {
 	}
 	
 	public static int calculateTilting() {
-		int idxClass = 0;
+		int idxClass = 2;
 		Object[] features = getFlattenedData(LauncherExtension.WATCHACCELFPS);
 		if (features != null) {
 			try {

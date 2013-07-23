@@ -28,24 +28,27 @@ public class MapManager extends AppManager {
 		if (watch != null) {
 			
 			view.setDrawingCacheEnabled(true);
-			int cx = (int) (x - cropWidth * HORISHIFT);
-			int cy = (int) (y - cropHeight * VERTSHIFT);
-			cx = Math.max(cx, 0);
-			cx = Math.min(cx, view.getWidth());
-			cy = Math.max(cy, 0);
-			cy = Math.min(cy, view.getHeight());
+			int left = (int) (x - cropWidth * HORISHIFT);
+			int top = (int) (y - cropHeight * VERTSHIFT);
+			left = Math.max(left, 0);
+			left = Math.min(left, view.getWidth());
+			top = Math.max(top, 0);
+			top = Math.min(top, view.getHeight());
 
 			try {
-				Bitmap croppedBitmap = Bitmap.createBitmap(view.getDrawingCache(), cx, cy,
+				Bitmap croppedBitmap = Bitmap.createBitmap(view.getDrawingCache(), left, top,
 						cropWidth, cropHeight);
 
 				updateWatchVisual(croppedBitmap, true);
+				croppedBitmap.recycle();
 			} catch (Exception e) {
 				Log.d(LOGTAG, "bitmap exception!");
 			}
 			
 			view.setDrawingCacheEnabled(false);
 			view.destroyDrawingCache();
+			
+			phone.setShiftFrame(left, top, cropWidth, cropHeight);
 		}
 	}
 
@@ -81,5 +84,9 @@ public class MapManager extends AppManager {
 	
 	public static void switchMapViews() {
 		phone.swtichMapView();
+	}
+	
+	public static void offsetShiftFrame(float dx, float dy) {
+		phone.offsetShiftFrame(dx, dy);
 	}
 }

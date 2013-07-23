@@ -17,6 +17,7 @@ public class xacShape {
 	final public static int TEXTBOX = 2;
 	final public static int ICON = 3;
 	final public static int ITEM = 4;
+	final public static int FRAME = 5;
 
 	final static int DEFAULTALPHA = 192;
 
@@ -104,6 +105,10 @@ public class xacShape {
 	public void setStrokeColor(int color) {
 		colorStroke = color;
 	}
+	
+	public void setStrokeWidth(int w) {
+		strokePaint.setStrokeWidth(w);
+	}
 
 	public void toggleAlpha() {
 		alpha = 255 - alpha;
@@ -150,8 +155,6 @@ public class xacShape {
 						+ marginHeight + i * heightLine, textPaint);
 				start += numCharPerLine + 1;
 			}
-			// canvas.drawText(text, rectF.left + marginWidth, rectF.top +
-			// marginHeight, textPaint);
 
 			break;
 		case ICON:
@@ -173,6 +176,10 @@ public class xacShape {
 			float marginHeightItem = dimItem * 0.05f;
 			canvas.drawBitmap(bitmap, rectF.left + marginWidthItem, rectF.top
 					+ marginHeightItem, new Paint());
+			break;
+		case FRAME:
+			strokePaint.setColor(colorStroke);
+			canvas.drawRect(rectF, strokePaint);
 			break;
 		}
 	}

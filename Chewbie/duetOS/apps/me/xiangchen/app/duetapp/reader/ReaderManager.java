@@ -1,6 +1,7 @@
 package me.xiangchen.app.duetapp.reader;
 
 import me.xiangchen.app.duetapp.AppManager;
+import me.xiangchen.ui.xacSketchCanvas;
 
 public class ReaderManager extends AppManager {
 
@@ -72,5 +73,14 @@ public class ReaderManager extends AppManager {
 			ReaderExtenstion readerExtension = (ReaderExtenstion) watch;
 			readerExtension.showText(text);
 		}
+	}
+	
+	public static int getTool() {
+		int tool = xacSketchCanvas.NONE;
+		if (phone != null) {
+			Reader reader = (Reader) phone;
+			tool = reader.getTool();
+		}
+		return tool;
 	}
 }

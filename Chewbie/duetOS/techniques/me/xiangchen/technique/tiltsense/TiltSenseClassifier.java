@@ -6,39 +6,17 @@ public class TiltSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = TiltSenseClassifier.N2a7883150(i);
+	    p = TiltSenseClassifier.N6f526c5f244(i);
 	    return p;
 	  }
-	  static double N2a7883150(Object []i) {
+	  static double N6f526c5f244(Object []i) {
 	    double p = Double.NaN;
 	    if (i[26] == null) {
 	      p = 0;
-	    } else if (((Double) i[26]).doubleValue() <= -7.81) {
+	    } else if (((Double) i[26]).doubleValue() <= -3.06) {
 	      p = 0;
-	    } else if (((Double) i[26]).doubleValue() > -7.81) {
-	    p = TiltSenseClassifier.N4de5ed7b1(i);
-	    } 
-	    return p;
-	  }
-	  static double N4de5ed7b1(Object []i) {
-	    double p = Double.NaN;
-	    if (i[25] == null) {
-	      p = 2;
-	    } else if (((Double) i[25]).doubleValue() <= 4.44) {
-	      p = 2;
-	    } else if (((Double) i[25]).doubleValue() > 4.44) {
-	    p = TiltSenseClassifier.N324a4e312(i);
-	    } 
-	    return p;
-	  }
-	  static double N324a4e312(Object []i) {
-	    double p = Double.NaN;
-	    if (i[27] == null) {
+	    } else if (((Double) i[26]).doubleValue() > -3.06) {
 	      p = 1;
-	    } else if (((Double) i[27]).doubleValue() <= -0.46) {
-	      p = 1;
-	    } else if (((Double) i[27]).doubleValue() > -0.46) {
-	      p = 2;
 	    } 
 	    return p;
 	  }
