@@ -113,7 +113,7 @@ public class Reader extends App {
 	
 	boolean wasLongClick = false;
 	
-	int bgAlpha = 256;
+	int bgAlpha = 192;
 	
 	int imgBtn[] = {R.drawable.pencil, R.drawable.highlighter, R.drawable.undo, R.drawable.redo,
 			R.drawable.font_decr, R.drawable.font_incr, R.drawable.sun_small, R.drawable.sun_big};
@@ -131,7 +131,8 @@ public class Reader extends App {
 		ReaderManager.setPhone(this);
 
 		appLayout = new RelativeLayout(context);
-		appLayout.setBackgroundColor(xacInteractiveCanvas.bgColorWood);
+//		appLayout.setBackgroundColor(xacInteractiveCanvas.bgColorWood);
+		appLayout.setBackgroundColor(0xFF000000);
 		scrollLayout = new RelativeLayout(context);
 
 		// scroll view
@@ -144,7 +145,8 @@ public class Reader extends App {
 
 				if (xacAuthenticSenseFeatureMaker.getConfigStatus() != xacAuthenticSenseFeatureMaker.DOING
 						|| event.getAction() == MotionEvent.ACTION_DOWN) {
-					if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST) {
+					if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST ||
+							LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRISTNOPHONE) {
 						doTouchWatchOnWristBack(event);
 					} else if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTINNERWRIST) {
 						doTouchWatchOnInnerWrist(event);
@@ -183,7 +185,6 @@ public class Reader extends App {
 
 		scrollView.addView(scrollLayout);
 		appLayout.addView(scrollView);
-		appLayout.setBackgroundColor(0xFFFFFFFF);
 
 		// menu
 		// menu = new xacInteractiveCanvas(context);
@@ -394,26 +395,7 @@ public class Reader extends App {
 			if (xacAuthenticSenseFeatureMaker.getConfigStatus() == xacAuthenticSenseFeatureMaker.DOING) {
 				int watchConfig = xacAuthenticSenseFeatureMaker
 						.calculateAuthentication();
-				LauncherManager.setWatchConfig(watchConfig);
-				if (watchConfig != xacAuthenticSenseFeatureMaker.INTHEWILD) {
-					int resId = -1;
-					switch (watchConfig) {
-					case xacAuthenticSenseFeatureMaker.LEFTBACKWRIST:
-						resId = R.drawable.left_back_wrist;
-						break;
-					case xacAuthenticSenseFeatureMaker.LEFTINNERWRIST:
-						resId = R.drawable.left_inner_wrist;
-						ReaderManager.showToolPallete();
-						break;
-					case xacAuthenticSenseFeatureMaker.RIGHTBACKWRIST:
-						resId = R.drawable.right_back_wrist;
-						break;
-					case xacAuthenticSenseFeatureMaker.RIGHTINNERWRIST:
-						resId = R.drawable.right_inner_wrist;
-						break;
-					}
-					LauncherManager.showNotificationOnUnlockedPhone(resId);
-				}
+				LauncherManager.updateWatchConfig(watchConfig);
 			}
 			break;
 		}
@@ -501,6 +483,7 @@ public class Reader extends App {
 
 			// is there a flip?
 			isFlipped = xacFlipSenseFeatureMaker.calculateFlipGesture();
+			xacFlipSenseFeatureMaker.clearData();
 			switch (isFlipped) {
 			case xacFlipSenseFeatureMaker.FLIP:
 				// show menu
@@ -544,7 +527,7 @@ public class Reader extends App {
 				handedness = xacHandSenseFeatureMaker.calculateHandedness();
 			}
 
-			if (handedness == xacHandSenseFeatureMaker.NOWATCH) {
+			if (handedness == xacHandSenseFeatureMaker.NOWATCH && handPart != xacTouchSenseFeatureMaker.PAD) {
 				float speedRatio = 0.75f;
 				int dx = 0;
 				int dy = (int) ((yPrev - yCur) * speedRatio);
@@ -613,7 +596,7 @@ public class Reader extends App {
 				break;
 			}
 
-			if (handedness == xacHandSenseFeatureMaker.WATCH) {
+			if (handedness == xacHandSenseFeatureMaker.WATCH || handPart == xacTouchSenseFeatureMaker.PAD) {
 				switch (handPart) {
 				case xacTouchSenseFeatureMaker.PAD:
 					canvas.doTouch(event);
@@ -740,15 +723,15 @@ public class Reader extends App {
 	public void incrBrightness() {
 		brightness += STEPBRIGHTNESS;
 		brightness = Math.min(brightness, MAXBRIGHTNESS);
-		textView.setBackgroundColor(Color.argb(bgAlpha, (int)(255 * brightness),
-				(int)(255 * brightness), (int)(255 * brightness)));
+		textView.setBackgroundColor(Color.argb((int)(bgAlpha * brightness), 255,
+				255, 255));
 	}
 
 	public void decrBrightness() {
 		brightness -= STEPBRIGHTNESS;
 		brightness = Math.max(brightness, MINBRIGHTNESS);
-		textView.setBackgroundColor(Color.argb(bgAlpha, (int)(255 * brightness),
-				(int)(255 * brightness), (int)(255 * brightness)));
+		textView.setBackgroundColor(Color.argb((int)(bgAlpha * brightness), 255,
+				255, 255));
 	}
 	
 	public int getTool() {

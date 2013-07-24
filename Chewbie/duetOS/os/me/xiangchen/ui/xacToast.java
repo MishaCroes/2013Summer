@@ -1,5 +1,6 @@
 package me.xiangchen.ui;
 
+import me.xiangchen.app.duetos.LauncherManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -21,11 +22,13 @@ public class xacToast extends ViewGroup {
 	public xacToast(Context context) {
 		super(context);
 		imageView = new ImageView(context);
+//		imageView.setimageb
 		this.addView(imageView);
 	}
 
 	public void setImage(int resId) {
 		imageView.setImageResource(resId);
+//		imageView.setImageBitmap(LauncherManager.getBitmap(resId));
 	}
 	
 	public void setImage() {

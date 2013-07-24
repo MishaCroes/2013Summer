@@ -21,6 +21,7 @@ public class xacAuthenticSenseFeatureMaker {
 	public final static int LEFTINNERWRIST = 2;
 	public final static int RIGHTBACKWRIST = 3;
 	public final static int RIGHTINNERWRIST = 4;
+	public final static int LEFTBACKWRISTNOPHONE = 5;
 	
 	public final static float TAPTHRS = 200;
 	public final static int  HOLDTIMEOUT = 750; // ms
@@ -217,26 +218,45 @@ public class xacAuthenticSenseFeatureMaker {
 
 		switch (idxClass) {
 		case 0:
-			label = LEFTBACKWRIST;
+			label = INTHEWILD;
 			 Log.d(LOGTAG, "left back wrist");
 			break;
 		case 1:
-			label = LEFTINNERWRIST;
+			label = LEFTBACKWRIST;
 			 Log.d(LOGTAG, "left inner wrist");
 			break;
 		case 2:
-			label = LEFTBACKWRIST;	// now only left
+			label = LEFTBACKWRISTNOPHONE;	// now only left
 			 Log.d(LOGTAG, "right back wrist");
 			break;
 		case 3:
 			label = LEFTINNERWRIST; // now only left
 			 Log.d(LOGTAG, "right inner wrist");
 			break;
-		case 4:
-			label = INTHEWILD;
-			 Log.d(LOGTAG, "in the wild");
-			break;
 		}
+		
+//		switch (idxClass) {
+//		case 0:
+//			label = LEFTBACKWRIST;
+//			 Log.d(LOGTAG, "left back wrist");
+//			break;
+//		case 1:
+//			label = LEFTINNERWRIST;
+//			 Log.d(LOGTAG, "left inner wrist");
+//			break;
+//		case 2:
+//			label = LEFTBACKWRIST;	// now only left
+//			 Log.d(LOGTAG, "right back wrist");
+//			break;
+//		case 3:
+//			label = LEFTINNERWRIST; // now only left
+//			 Log.d(LOGTAG, "right inner wrist");
+//			break;
+//		case 4:
+//			label = INTHEWILD;
+//			 Log.d(LOGTAG, "in the wild");
+//			break;
+//		}
 
 		xacFlipSenseFeatureMaker.clearData();
 		return label;

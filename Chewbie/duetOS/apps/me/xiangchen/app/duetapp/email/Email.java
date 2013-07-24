@@ -413,26 +413,7 @@ public class Email extends App {
 			if (isHold == xacPhoneGesture.YES) {
 				int watchConfig = xacAuthenticSenseFeatureMaker
 						.calculateAuthentication();
-				LauncherManager.setWatchConfig(watchConfig);
-				if (watchConfig != xacAuthenticSenseFeatureMaker.INTHEWILD) {
-					int resId = -1;
-					switch (watchConfig) {
-					case xacAuthenticSenseFeatureMaker.LEFTBACKWRIST:
-						resId = R.drawable.left_back_wrist;
-						break;
-					case xacAuthenticSenseFeatureMaker.LEFTINNERWRIST:
-						resId = R.drawable.left_inner_wrist;
-						break;
-					case xacAuthenticSenseFeatureMaker.RIGHTBACKWRIST:
-						resId = R.drawable.right_back_wrist;
-						break;
-					case xacAuthenticSenseFeatureMaker.RIGHTINNERWRIST:
-						resId = R.drawable.right_inner_wrist;
-						break;
-					}
-					LauncherManager.showNotificationOnUnlockedPhone(resId);
-
-				}
+				LauncherManager.updateWatchConfig(watchConfig);
 				break;
 			}
 

@@ -115,7 +115,8 @@ public class LauncherExtension extends ControlExtension {
 				sensor.registerFixedRateListener(listener,
 						Sensor.SensorRates.SENSOR_DELAY_FASTEST);
 			} catch (AccessorySensorException e) {
-				Log.d(LOGTAG, "Failed to register listener");
+//				Log.d(LOGTAG, "Failed to register listener");
+//				LauncherManager.doAndriodToast("Failed to register listener");
 			}
 		}
 
@@ -131,7 +132,7 @@ public class LauncherExtension extends ControlExtension {
 	}
 
 	public void showText(String text) {
-		textView.setTextSize(text.length() > 0 ? (int)(5f + 70.0f / Math.max(10, text.length())) : 0);
+		textView.setTextSize(text.length() > 0 ? (int)(5f + 70.0f / Math.max(12, text.length())) : 0);
 		textView.setText(text);
 		updateVisual();
 	}

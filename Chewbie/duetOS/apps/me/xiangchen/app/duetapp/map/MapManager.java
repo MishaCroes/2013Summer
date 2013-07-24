@@ -26,7 +26,6 @@ public class MapManager extends AppManager {
 	public static void shift(View view, float x, float y, int cropWidth,
 			int cropHeight) {
 		if (watch != null) {
-			
 			view.setDrawingCacheEnabled(true);
 			int left = (int) (x - cropWidth * HORISHIFT);
 			int top = (int) (y - cropHeight * VERTSHIFT);
@@ -39,7 +38,7 @@ public class MapManager extends AppManager {
 				Bitmap croppedBitmap = Bitmap.createBitmap(view.getDrawingCache(), left, top,
 						cropWidth, cropHeight);
 
-				updateWatchVisual(croppedBitmap, true);
+				updateWatchVisual(croppedBitmap, false);
 				croppedBitmap.recycle();
 			} catch (Exception e) {
 				Log.d(LOGTAG, "bitmap exception!");
@@ -49,6 +48,12 @@ public class MapManager extends AppManager {
 			view.destroyDrawingCache();
 			
 			phone.setShiftFrame(left, top, cropWidth, cropHeight);
+		}
+	}
+	
+	public static void unshift() {
+		if (watch != null) {
+			updateWatchVisual(null, false);
 		}
 	}
 
