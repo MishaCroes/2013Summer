@@ -14,11 +14,11 @@ int numWords = 100;
 //int idxSubString = -1;
 //NSString* lastInput = 0;
 float breakTime = BREAKTIME; // sec
-float timerRate = 10.0f;
+float timerRate = 1.0f;
 
-NSString* attrNames = @"participant_id,technique,section_id,block_id,trial_id,phrase,time_to_start,time_to_finish,errors";
+NSString* attrNames = @"log_type,participant_id,technique,section_id,block_id,trial_id,phrase_or_char,time_to_start,time_to_finish,errors";
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame :(int)technique
 {
     self = [super initWithFrame:frame];
     if (self) {
@@ -38,11 +38,14 @@ NSString* attrNames = @"participant_id,technique,section_id,block_id,trial_id,ph
         
         _isBlockEnded = false;
         
-        [NSTimer scheduledTimerWithTimeInterval:1 / timerRate
-                                         target:self
-                                       selector:@selector(showBreakTimer)
-                                       userInfo:nil
-                                        repeats:YES];
+        _technique = technique;
+        if(_technique == CONDITION) {
+            [NSTimer scheduledTimerWithTimeInterval:1 / timerRate
+                                             target:self
+                                           selector:@selector(showBreakTimer)
+                                           userInfo:nil
+                                            repeats:YES];
+        }
         
     }
     return self;
@@ -99,6 +102,47 @@ NSString* attrNames = @"participant_id,technique,section_id,block_id,trial_id,ph
 //    NSString* subCurWord = [_curWord substringWithRange:(NSRange){idxSubStr, MIN(_curWord.length - idxSubStr, MIN(_curWord.length, TEXTLENGTH * 3))}];
     [_textField setText:_curWord];
     
+    
+    NSMutableAttributedString* attString = [[NSMutableAttributedString alloc]initWithString:_curWord];
+    int numCorrectCharNew = 0;
+    for (int i=0; i<_curWord.length; i++) {
+        if(i >= input.length) {
+            break;
+        }
+        unichar charTest = [_curWord characterAtIndex:i];
+        unichar charInput = [input characterAtIndex:i];
+        
+        if(charTest != charInput) {
+//            [self setColorOfSubstring:_textField :(NSRange){i, 1} :[UIColor redColor]];
+            [attString addAttribute:(NSString*)NSForegroundColorAttributeName
+                              value:[UIColor redColor]
+                              range:(NSRange){i, 1}];
+
+        } else {
+//            [self setColorOfSubstring:_textField :(NSRange){i, 1} :[UIColor greenColor]];
+            [attString addAttribute:(NSString*)NSForegroundColorAttributeName
+                              value:[UIColor greenColor]
+                              range:(NSRange){i, 1}];
+            numCorrectCharNew++;
+        }
+    }
+    
+    if([input characterAtIndex:input.length-1] != [_curWord characterAtIndex:input.length-1]) {
+        _errors++;
+        _errorsPerChar++;
+    }
+    
+    if(numCorrectCharNew > _numCorrectChar) {
+        _finishTimePerChar = [self getTime];
+        [self addLogEntryPerChar:[input characterAtIndex:input.length-1]];
+        _startTimePerChar = [self getTime];
+        _errorsPerChar = 0;
+        
+    } else {
+        
+    }
+    _numCorrectChar = numCorrectCharNew;
+    
     if([_curWord isEqualToString:input]) {
         struct timeval time;
         gettimeofday(&time, NULL);
@@ -113,35 +157,9 @@ NSString* attrNames = @"participant_id,technique,section_id,block_id,trial_id,ph
             [_textField setText:@"Press Start to continue..."];
         }
         ++_trial;
+        _numCorrectChar = 0;
         _curWord = @"";
         return true;
-    }
-    
-    
-    NSMutableAttributedString* attString = [[NSMutableAttributedString alloc]initWithString:_curWord];
-    
-    for (int i=0; i<_curWord.length; i++) {
-        if(i >= input.length) {
-            break;
-        }
-        unichar charTest = [_curWord characterAtIndex:i];
-        unichar charInput = [input characterAtIndex:i];
-        
-        if(charTest != charInput) {
-//            [self setColorOfSubstring:_textField :(NSRange){i, 1} :[UIColor redColor]];
-            [attString addAttribute:(NSString*)NSForegroundColorAttributeName
-                              value:[UIColor redColor]
-                              range:(NSRange){i, 1}];
-        } else {
-//            [self setColorOfSubstring:_textField :(NSRange){i, 1} :[UIColor greenColor]];
-            [attString addAttribute:(NSString*)NSForegroundColorAttributeName
-                              value:[UIColor greenColor]
-                              range:(NSRange){i, 1}];
-        }
-    }
-    
-    if([input characterAtIndex:input.length-1] != [_curWord characterAtIndex:input.length-1]) {
-        _errors++;
     }
     
     _textField.attributedText = attString;
@@ -248,6 +266,13 @@ NSString* attrNames = @"participant_id,technique,section_id,block_id,trial_id,ph
     struct timeval time;
     gettimeofday(&time, NULL);
     _startTime = (time.tv_sec * 1000) + (time.tv_usec / 1000);
+    _startTimePerChar = _startTime;
+}
+
+- (long) getTime {
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    return (time.tv_sec * 1000) + (time.tv_usec / 1000);
 }
 
 - (void) setColorOfSubstring :(UITextField*) tv :(NSRange) range :(UIColor*) color {
@@ -261,9 +286,14 @@ NSString* attrNames = @"participant_id,technique,section_id,block_id,trial_id,ph
 
 - (void) addLogEntry
 {
-//    NSString* attrNames = @"participant_id,technique,section_id,block_id,trial_id,switch_to_time,start_time,end_time,errors";
+//    @"participant_id,technique,section_id,block_id,trial_id,phrase_or_char,time_to_start,time_to_finish,errors";
     
-    [_featureTable addLine: [NSString stringWithFormat:@"%d,%d,%d,%d,%d,%@,%.4f,%.4f,%d", PARTICIPANT,_technique,SECTION,_block,_trial,_curWord,(_startTime - _switchToTime)/1000.0f,(_finishTime-_startTime)/1000.0f,_errors]];
+    [_featureTable addLine: [NSString stringWithFormat:@"%d,%d,%d,%d,%d,%d,%@,%.4f,%.4f,%d", SUMMARIZATION, PARTICIPANT,_technique,SECTION,_block,_trial,_curWord,(_startTime - _switchToTime)/1000.0f,(_finishTime-_startTime)/1000.0f,_errors]];
+}
+
+- (void) addLogEntryPerChar :(char)character
+{
+    [_featureTable addLine: [NSString stringWithFormat:@"%d, %d,%d,%d,%d,%d,%c,%.4f,%.4f,%d", PERENTRY, PARTICIPANT,_technique,SECTION,_block,_trial,character,-1.0f,(_finishTimePerChar-_startTimePerChar)/1000.0f,_errorsPerChar]];
 }
 
 @end

@@ -19,5 +19,6 @@
 
 @property bool readyToType;
 @property NSString *typedChar;
+@property BOOL isZoomed;
 
 @end

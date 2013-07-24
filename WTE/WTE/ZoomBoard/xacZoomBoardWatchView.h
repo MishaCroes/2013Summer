@@ -16,7 +16,6 @@
 @property xacTestText* testText;
 @property UITextField* textField;
 @property BOOL trialFinished;
-
 - (void) startSession;
 - (void) getWord :(int)sign;
 
