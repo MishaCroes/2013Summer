@@ -47,13 +47,13 @@ UIButton* btnLast;
 //    [btnLast addTarget:self action:@selector(lastWord) forControlEvents:UIControlEventTouchUpInside];
 //    [_mainView addSubview:btnLast];
 
-    _watchView.textEntry.testText = [[xacTestText alloc] initWithFrame:CGRectMake(oriX - WATCHWIDTH * 2 / 3, oriY - WATCHHEIGHT / 6, WATCHWIDTH * 4, WATCHHEIGHT / 6)];
+    _watchView.textEntry.testText = [[xacTestText alloc] initWithFrame:CGRectMake(oriX - WATCHWIDTH * 2 / 3, oriY - WATCHHEIGHT / 6, WATCHWIDTH * 4, WATCHHEIGHT / 6) :SWIPEBOARD];
     [_mainView addSubview:_watchView.textEntry.testText];
     [_watchView.textEntry.testText loadWords];
     [_watchView.textEntry.testText setBackgroundColor:[UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:0.75f]];
     [_watchView.textEntry readConfig];
 //    _watchView.textEntry.testText = _testText;
-    _watchView.textEntry.testText.technique = SWIPEBOARD;
+//    _watchView.textEntry.testText.technique = SWIPEBOARD;
     
     _watchView.textEntry.textField = [[UITextField alloc] initWithFrame:CGRectMake(oriX - WATCHWIDTH * 2 / 3, oriY, WATCHWIDTH * 4, WATCHHEIGHT / 6)];
     _watchView.textEntry.textField.textAlignment = NSTextAlignmentLeft;

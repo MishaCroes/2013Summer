@@ -22,18 +22,25 @@
 @property int idxWord;
 @property NSString* curWord;
 
+@property int condition;
 @property int technique;
 @property int participantId;
 @property int section;
 @property int block;
 @property int trial;
+@property int phrase;
 @property long switchToTime;
 @property long startTime;
 @property long finishTime;
+@property long startTimePerChar;
+@property long finishTimePerChar;
+@property int numCorrectChar;
 @property int errors;
+@property int errorsPerChar;
 @property xacFeatureTable* featureTable;
 @property BOOL isBlockEnded;
 
+- (id)initWithFrame:(CGRect)frame :(int)technique;
 - (void) loadWords;
 - (BOOL) loadWord :(int)sign;
 - (BOOL) update :(NSString*) input :(int) idxSubStr;

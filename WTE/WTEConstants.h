@@ -30,14 +30,18 @@
 #define FONTSIZE 15
 #define TEXTLENGTH 36
 
-#define NUMSECTIONS 3 // first one is training
+#define NUMSECTIONS 1 // first one is training
 #define NUMBLOCKS 5
 #define NUMTRIALS 10
 
 #define BREAKTIME 180
 
-#define PARTICIPANT 2
+#define CONDITION SWIPEBOARD
+#define PARTICIPANT 4
 #define SECTION EVALUATIONONE
+
+#define SUMMARIZATION 0
+#define PERENTRY 1
 
 #endif
 

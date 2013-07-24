@@ -58,10 +58,14 @@ float centerY;
 - (void) zoomIn:(float)x :(float)y :(float)zoomFactor{
     zoomedFactor = zoomFactor;
     [self zoom :x :y :zoomFactor];
+    _isZoomed = true;
 }
 
 - (void) zoomOut:(float)zoomFactor {
-    [self zoom:centerX :centerY : 1 / zoomFactor];
+    if(_isZoomed) {
+        [self zoom:centerX :centerY : 1 / zoomFactor];
+        _isZoomed = false;
+    }
 }
 
 - (void) zoom :(float)x :(float)y :(float)factor {
