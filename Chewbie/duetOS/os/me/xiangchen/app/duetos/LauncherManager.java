@@ -1,6 +1,9 @@
 package me.xiangchen.app.duetos;
 
+import java.util.Calendar;
+
 import me.xiangchen.app.duetapp.AppExtension;
+import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.ui.xacToast;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -48,6 +51,7 @@ public class LauncherManager {
 	
 	public final static int NORMAL = 0;
 	public final static int BOLD = 1;
+	public final static int READ = 2;
 	
 	public final static int LOCAL = 0;
 	public final static int GLOBAL = 1;
@@ -97,11 +101,11 @@ public class LauncherManager {
 		toastPhone = new xacToast(phone);
 		toastWatch = new xacToast(phone);
 		
-		AudioManager audioManager = (AudioManager)phone.getSystemService(Context.AUDIO_SERVICE);
-		audioManager.setSpeakerphoneOn(false);
-		audioManager.setRouting(AudioManager.MODE_NORMAL, AudioManager.ROUTE_EARPIECE, AudioManager.ROUTE_ALL);
-		phone.setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
-		audioManager.setMode(AudioManager.MODE_IN_CALL);
+//		AudioManager audioManager = (AudioManager)phone.getSystemService(Context.AUDIO_SERVICE);
+//		audioManager.setSpeakerphoneOn(false);
+//		audioManager.setRouting(AudioManager.MODE_NORMAL, AudioManager.ROUTE_EARPIECE, AudioManager.ROUTE_ALL);
+//		phone.setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+//		audioManager.setMode(AudioManager.MODE_IN_CALL);
 	}
 
 	public static void setWatch(LauncherExtension w) {
@@ -139,11 +143,25 @@ public class LauncherManager {
 	}
 
 	public static void setWatchConfig(int wc) {
-		watchConfig = wc;
+		if(wc != xacAuthenticSenseFeatureMaker.INTHEWILD) {
+			watchConfig = wc;
+		}
+	}
+	
+	public static int getWatchConfig() {
+		return watchConfig;
 	}
 
-	public static void showNotificationOnPhone(int resId) {
+	public static void showNotificationOnLockedPhone(int resId) {
 		if (phone.isLocked && !isPhoneMuted) {
+			toastPhone.setImage(resId);
+			toastPhone.kill(phone.getLayout());
+			toastPhone.fadeIn(phone.getLayout());
+		}
+	}
+	
+	public static void showNotificationOnUnlockedPhone(int resId) {
+		if (!isPhoneMuted) {
 			toastPhone.setImage(resId);
 			toastPhone.kill(phone.getLayout());
 			toastPhone.fadeIn(phone.getLayout());
@@ -213,18 +231,28 @@ public class LauncherManager {
 		if (watchGesture.gesture == SWIPEOPEN
 				&& phoneGesture.gesture == SWIPEOPEN) {
 			Log.d(LOGTAG, "swipe open");
+			vibrate(500);
+			buzz(500);
 			updateOnCrossGesture(PINCHOPEN);
 		} else if (watchGesture.gesture == SWIPECLOSE
 				&& phoneGesture.gesture == SWIPECLOSE) {
 			Log.d(LOGTAG, "swipe close");
+			vibrate(100);
+			buzz(100);
 			updateOnCrossGesture(PINCHCLOSE);
 		} else if (watchGesture.gesture == SWIPEOPEN
 				&& phoneGesture.gesture == SWIPECLOSE) {
 			Log.d(LOGTAG, "phone->watch");
+			vibrate(200);
+			wait(500);
+			buzz(200);
 			updateOnCrossGesture(PHONETOWATCH);
 		} else if (watchGesture.gesture == SWIPECLOSE
 				&& phoneGesture.gesture == SWIPEOPEN) {
 			Log.d(LOGTAG, "watch->phone");
+			buzz(200);
+			wait(500);
+			vibrate(200);
 			updateOnCrossGesture(WATCHTOPHONE);
 		}
 
@@ -261,9 +289,9 @@ public class LauncherManager {
 		}
 
 		if(isPhoneToBeMuted) {
-			showNotificationOnPhone(R.drawable.mute);
+			showNotificationOnLockedPhone(R.drawable.mute);
 		} else {
-			showNotificationOnPhone(R.drawable.unmute);
+			showNotificationOnLockedPhone(R.drawable.unmute);
 		}
 		
 		if(isWatchToBeMuted) {
@@ -304,7 +332,11 @@ public class LauncherManager {
 			typeface = Typeface.createFromAsset(phone.getAssets(), "fonts/HelveticaBQ-Light.otf");
 			break;
 		case BOLD:
-			typeface = Typeface.createFromAsset(phone.getAssets(), "fonts/HelveticaBQ-Bold.otf");
+			typeface = Typeface.createFromAsset(phone.getAssets(), "fonts/HelveticaBQ-Medium.otf");
+			break;
+		case READ:
+			typeface = Typeface.createFromAsset(phone.getAssets(), "fonts/GEORGIA.TTF");
+			break;
 		}
 		return typeface;
 	}
@@ -331,9 +363,9 @@ public class LauncherManager {
 		vibrator.vibrate(duration);
 	}
 	
-	public static void buzz() {
+	public static void buzz(int duration) {
 		if(watch != null) {
-			watch.buzz(100);
+			watch.buzz(duration);
 		}
 	}
 	
@@ -364,6 +396,19 @@ public class LauncherManager {
 	public static void watchUp(String sup) {
 		if(watch != null) {
 			watch.showText(sup);
+		}
+	}
+	
+	public static boolean isPhoneLocked() {
+		return phone.isLocked;
+	}
+	
+	public static void wait(int dt) {
+		Calendar calendar = Calendar.getInstance();
+		long curTime = calendar.getTimeInMillis();
+		
+		while(calendar.getTimeInMillis() - curTime < dt) {
+			calendar = Calendar.getInstance();
 		}
 	}
 }

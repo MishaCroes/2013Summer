@@ -5,6 +5,7 @@ import java.util.Calendar;
 import me.xiangchen.app.duetapp.AppExtension;
 import me.xiangchen.app.duetos.LauncherManager;
 import me.xiangchen.app.duetos.R;
+import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
 import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
 import me.xiangchen.technique.sharesense.xacShareSenseFeatureMaker;
@@ -22,9 +23,6 @@ public class EmailExtension extends AppExtension {
 	
 	public EmailExtension(Context context) {
 		EmailManager.setWatch(this);
-		
-		xacShareSenseFeatureMaker.createFeatureTable();
-		xacShareSenseFeatureMaker.setLabel(xacShareSenseFeatureMaker.PUBLIC);
 		
 		toast = new xacToast(context);
 		toast.setImage(R.drawable.email_small);
@@ -48,6 +46,9 @@ public class EmailExtension extends AppExtension {
 		
 		xacShareSenseFeatureMaker.updateWatchAccel(values);
 		xacShareSenseFeatureMaker.addWatchFeatureEntry();
+		
+		xacAuthenticSenseFeatureMaker.updateWatchAccel(values);
+		xacAuthenticSenseFeatureMaker.addWatchFeatureEntry();
 	}
 	
 	@Override
@@ -57,7 +58,10 @@ public class EmailExtension extends AppExtension {
 
 		switch (action) {
 		case Control.Intents.TOUCH_ACTION_PRESS:
-
+			int watchMode = xacShareSenseFeatureMaker.doClassification();
+			if (watchMode == xacShareSenseFeatureMaker.PRIVATE) {
+				LauncherManager.showText(EmailManager.getNumUnnotifiedEmails() + " new email(s)");
+			}
 			break;
 		case Control.Intents.TOUCH_ACTION_RELEASE:
 			

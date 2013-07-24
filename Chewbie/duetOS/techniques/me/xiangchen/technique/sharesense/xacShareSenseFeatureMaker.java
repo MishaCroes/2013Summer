@@ -9,7 +9,7 @@ public class xacShareSenseFeatureMaker {
 	public final static int PRIVATE = 0;
 	public final static int PUBLIC = 1;
 	
-	static final int MAXNUMROW = 2048;
+	static final int MAXNUMROW = 256;
 	static final int NUMSOURCES = 2;
 	
 	static final int NUMTOSEND = LauncherExtension.WATCHACCELFPS;

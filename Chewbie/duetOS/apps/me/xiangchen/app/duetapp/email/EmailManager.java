@@ -123,6 +123,10 @@ public class EmailManager extends AppManager {
 		watchGesture.gesture = NONE;
 	}
 	
+	public static int getNumUnnotifiedEmails() {
+		return phone.numUnnotifiedEmail;
+	}
+	
 	private static void updateOnCrossGesture(int crossGesture) {
 		switch (crossGesture) {
 		case PINCHOPEN:

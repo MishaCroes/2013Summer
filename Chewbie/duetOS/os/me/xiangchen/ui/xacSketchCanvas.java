@@ -19,6 +19,11 @@ import android.view.View;
 public class xacSketchCanvas extends SurfaceView implements
 		SurfaceHolder.Callback {
 
+	public static final int NONE = -1;
+	public static final int PEN = 0;
+	public static final int HIGHLIGHTER = 1;
+	public static final int ERASER = 2;
+	
 	public static final String LOGTAG = "DuetOS";
 	SketchThread thread;
 	Path path;
@@ -31,6 +36,8 @@ public class xacSketchCanvas extends SurfaceView implements
 
 	float dx = 0;
 	float dy = 0;
+	
+	int tool;
 
 	public xacSketchCanvas(Context context) {
 		super(context);
@@ -135,7 +142,7 @@ public class xacSketchCanvas extends SurfaceView implements
 				// not updating until now
 				paths.add(path);
 				if (clientCanvas != null) {
-					clientCanvas.addPath(pathOffSet);
+					clientCanvas.addPath(pathOffSet, paint);
 					clientCanvas.invalidate();
 				}
 				isStroking = false;
@@ -148,13 +155,41 @@ public class xacSketchCanvas extends SurfaceView implements
 	private void setDefaultPaint() {
 		paint = new Paint();
 		paint.setDither(true);
-		paint.setColor(0xAAFF0000);
-		paint.setStyle(Paint.Style.STROKE);
-		paint.setStrokeJoin(Paint.Join.ROUND);
-		paint.setStrokeCap(Paint.Cap.ROUND);
-		paint.setStrokeWidth(10);
+		setTool(PEN);
+	}
+	
+	public void setTool(int t) {
+		tool = t;
+		
+		switch(tool) {
+		case PEN:
+			paint.setColor(0xAAFF0000);
+			paint.setStyle(Paint.Style.STROKE);
+			paint.setStrokeJoin(Paint.Join.ROUND);
+			paint.setStrokeCap(Paint.Cap.ROUND);
+			paint.setStrokeWidth(15);
+			break;
+		case HIGHLIGHTER:
+			paint.setColor(0x44FFFF00);
+			paint.setStyle(Paint.Style.STROKE);
+			paint.setStrokeJoin(Paint.Join.BEVEL);
+			paint.setStrokeCap(Paint.Cap.SQUARE);
+			paint.setStrokeWidth(75);
+			break;
+		case ERASER:
+			paint.setColor(0x00000000);
+			paint.setStyle(Paint.Style.STROKE);
+			paint.setStrokeJoin(Paint.Join.ROUND);
+			paint.setStrokeCap(Paint.Cap.ROUND);
+			paint.setStrokeWidth(100);
+			break;
+		}
 	}
 
+	public int getTool() {
+		return tool;
+	}
+	
 	public void setIsStroking(boolean flag) {
 		isStroking = flag;
 	}
@@ -204,4 +239,5 @@ public class xacSketchCanvas extends SurfaceView implements
 		}
 	}
 
+	
 }

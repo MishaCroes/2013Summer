@@ -6,10 +6,10 @@ import android.graphics.Bitmap;
 
 import com.sonyericsson.extras.liveware.extension.util.control.ControlTouchEvent;
 
-public class AppExtension {
-
+public class AppExtension { 
+	
 	public void doResume() {
-
+		
 	}
 
 	public void doAccelerometer(float[] values) {
@@ -24,7 +24,7 @@ public class AppExtension {
 
 	}
 
-	protected void showText(String text) {
+	public void showText(String text) {
 		LauncherExtension watch = LauncherManager.getWatch();
 		if(watch != null) {
 			watch.showText(text);
