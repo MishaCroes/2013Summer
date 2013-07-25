@@ -33,11 +33,11 @@ public final class R {
 	}
 	public static final class drawable {
 		public static final int badge_counter = 0x7f020001;
-		public static final int headset_pro_cancel_icn = 0x7f020025;
-		public static final int headset_pro_focus_xs_icn = 0x7f020026;
-		public static final int headset_pro_ok_icn = 0x7f020027;
-		public static final int text_bg = 0x7f02004a;
-		public static final int widget_frame = 0x7f020050;
+		public static final int headset_pro_cancel_icn = 0x7f020035;
+		public static final int headset_pro_focus_xs_icn = 0x7f020036;
+		public static final int headset_pro_ok_icn = 0x7f020037;
+		public static final int text_bg = 0x7f02005a;
+		public static final int widget_frame = 0x7f020060;
 	}
 	public static final class id {
 		public static final int smart_watch_notification_widget_background = 0x7f060009;

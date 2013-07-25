@@ -172,10 +172,12 @@ public class xacShape {
 			float dimItem = Math.min(rectF.width(), rectF.height());
 			canvas.drawRect(rectF, fillPaint);
 			canvas.drawRect(rectF, strokePaint);
-			float marginWidthItem = dimItem * 0.05f;
-			float marginHeightItem = dimItem * 0.05f;
+			float marginWidthItem = dimItem * 0.02f;
+			float marginHeightItem = dimItem * 0.02f;
+			Paint tmpPaint = new Paint();
+			tmpPaint.setAlpha(fillPaint.getAlpha());
 			canvas.drawBitmap(bitmap, rectF.left + marginWidthItem, rectF.top
-					+ marginHeightItem, new Paint());
+					+ marginHeightItem, tmpPaint);
 			break;
 		case FRAME:
 			strokePaint.setColor(colorStroke);

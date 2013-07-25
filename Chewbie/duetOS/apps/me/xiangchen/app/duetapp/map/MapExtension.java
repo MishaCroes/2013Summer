@@ -49,7 +49,8 @@ public class MapExtension extends AppExtension {
 		
 //		int pointing = xacUpDownSenseFeatureMaker.doClassification();
 
-		if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST) {
+		if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST ||
+				LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRISTNOPHONE) {
 			buzz(500);
 			Log.d(LOGTAG, "down swipe");
 //			if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST) {

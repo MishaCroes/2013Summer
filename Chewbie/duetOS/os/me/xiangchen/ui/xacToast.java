@@ -27,7 +27,11 @@ public class xacToast extends ViewGroup {
 	}
 
 	public void setImage(int resId) {
-		imageView.setImageResource(resId);
+		try {
+			imageView.setImageResource(resId);
+		} catch(Exception e) {
+			LauncherManager.doAndriodToast("wait...");
+		}
 //		imageView.setImageBitmap(LauncherManager.getBitmap(resId));
 	}
 	

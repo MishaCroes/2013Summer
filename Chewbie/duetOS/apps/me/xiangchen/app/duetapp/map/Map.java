@@ -9,15 +9,11 @@ import me.xiangchen.app.duetos.LauncherManager;
 import me.xiangchen.app.duetos.R;
 import me.xiangchen.lib.xacPhoneGesture;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
-import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
-import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
 import me.xiangchen.technique.tiltsense.xacTiltSenseFeatureMaker;
-import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
 import me.xiangchen.ui.xacInteractiveCanvas;
 import me.xiangchen.ui.xacShape;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.View;
@@ -126,7 +122,7 @@ public class Map extends App {
 					: xacInteractiveCanvas.fgColorRed;
 			xacShape marker = canvas.addShape(xacShape.OVAL, DIMTARGET,
 					DIMTARGET, cx, cy, color);
-			marker.setStrokeColor(0xFFFF8800);
+			marker.setStrokeColor(0xFF88FF00);
 			marker.setStrokeWidth(7);
 		}
 
@@ -162,12 +158,15 @@ public class Map extends App {
 
 				}
 
-				isTiltInputOn = false;
+				boolean isTiltInputOnNew = false;
 				if (pressAndHold.update(event) == xacPhoneGesture.YES) {
 					isHold = true;
-					if (LauncherManager.getWatchConfig() != xacAuthenticSenseFeatureMaker.LEFTBACKWRIST) {
-						isTiltInputOn = true;
-						LauncherManager.buzz(250);
+					if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRISTNOPHONE) {
+						isTiltInputOnNew = true;
+						if(isTiltInputOnNew != isTiltInputOn) {
+							LauncherManager.buzz(250);
+							isTiltInputOn = isTiltInputOnNew;
+						}
 					}
 				}
 
@@ -311,7 +310,7 @@ public class Map extends App {
 			}
 
 			if (event.getPointerCount() > 1 && dist * pinchDist > 0
-					&& Math.abs(dist - pinchDist) > 100) {
+					&& Math.abs(dist - pinchDist) > 150) {
 
 				// float adjustRate = 0.9f;
 				// zoomCenterX = zoomCenterX * adjustRate + ((x0 + x1) / 2)
@@ -350,7 +349,7 @@ public class Map extends App {
 				int watchConfig = xacAuthenticSenseFeatureMaker
 						.calculateAuthentication();
 
-				if (watchConfig != LauncherManager.getWatchConfig()) {
+				if (watchConfig != xacAuthenticSenseFeatureMaker.INTHEWILD && watchConfig != LauncherManager.getWatchConfig()) {
 					LauncherManager.updateWatchConfig(watchConfig);
 					break;
 				}

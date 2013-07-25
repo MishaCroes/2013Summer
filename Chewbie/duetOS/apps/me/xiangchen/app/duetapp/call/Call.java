@@ -87,7 +87,7 @@ public class Call extends App {
 		
 		layoutCallScreen = new RelativeLayout(context);
 		layoutCallScreen.setBackgroundColor(0xDD000000);
-//		layoutCallScreen.setBackgroundResource(R.drawable.call_out);
+		layoutCallScreen.setBackgroundResource(R.drawable.call_out);
 		layoutCallScreen.setOnTouchListener(new View.OnTouchListener() {
 			
 			@Override
@@ -318,7 +318,7 @@ public class Call extends App {
 								if(isCalling) {
 									return;
 								}
-								layoutCallScreen.setBackgroundResource(R.drawable.call_out);
+//								layoutCallScreen.setBackgroundResource(R.drawable.call_out);
 								RelativeLayout.LayoutParams paramsCallScreen = new RelativeLayout.LayoutParams(
 										RelativeLayout.LayoutParams.MATCH_PARENT,
 										RelativeLayout.LayoutParams.MATCH_PARENT);

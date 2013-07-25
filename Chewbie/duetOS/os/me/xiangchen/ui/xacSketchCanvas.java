@@ -23,7 +23,7 @@ public class xacSketchCanvas extends SurfaceView implements
 	public static final int PEN = 0;
 	public static final int HIGHLIGHTER = 1;
 	public static final int ERASER = 2;
-	
+
 	public static final String LOGTAG = "DuetOS";
 	SketchThread thread;
 	Path path;
@@ -36,7 +36,7 @@ public class xacSketchCanvas extends SurfaceView implements
 
 	float dx = 0;
 	float dy = 0;
-	
+
 	int tool;
 
 	public xacSketchCanvas(Context context) {
@@ -98,9 +98,9 @@ public class xacSketchCanvas extends SurfaceView implements
 		canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
 		// draw those updated and stored
-//		for (Path path : paths) {
-//			canvas.drawPath(path, paint);
-//		}
+		// for (Path path : paths) {
+		// canvas.drawPath(path, paint);
+		// }
 
 		// draw those that are not
 		if (isStroking) {
@@ -119,7 +119,7 @@ public class xacSketchCanvas extends SurfaceView implements
 		synchronized (thread.getSurfaceHolder()) {
 			float x = event.getX();
 			float y = event.getY();
-			
+
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
 			} else if (event.getAction() == MotionEvent.ACTION_MOVE) {
@@ -137,15 +137,17 @@ public class xacSketchCanvas extends SurfaceView implements
 				pathOffSet.lineTo(x - dx, y - dy);
 			} else if (event.getAction() == MotionEvent.ACTION_UP) {
 				// last drawing
-				path.lineTo(x, y);
-				pathOffSet.lineTo(x - dx, y - dy);
-				// not updating until now
-				paths.add(path);
-				if (clientCanvas != null) {
-					clientCanvas.addPath(pathOffSet, paint);
-					clientCanvas.invalidate();
+				if (path != null) {
+//					path.lineTo(x, y);
+//					pathOffSet.lineTo(x - dx, y - dy);
+					// not updating until now
+					paths.add(path);
+					if (clientCanvas != null) {
+						clientCanvas.addPath(pathOffSet, paint);
+						clientCanvas.invalidate();
+					}
+					isStroking = false;
 				}
-				isStroking = false;
 			}
 
 			return true;
@@ -157,11 +159,11 @@ public class xacSketchCanvas extends SurfaceView implements
 		paint.setDither(true);
 		setTool(PEN);
 	}
-	
+
 	public void setTool(int t) {
 		tool = t;
-		
-		switch(tool) {
+
+		switch (tool) {
 		case PEN:
 			paint.setColor(0xAAFF0000);
 			paint.setStyle(Paint.Style.STROKE);
@@ -189,7 +191,7 @@ public class xacSketchCanvas extends SurfaceView implements
 	public int getTool() {
 		return tool;
 	}
-	
+
 	public void setIsStroking(boolean flag) {
 		isStroking = flag;
 	}
@@ -239,5 +241,4 @@ public class xacSketchCanvas extends SurfaceView implements
 		}
 	}
 
-	
 }

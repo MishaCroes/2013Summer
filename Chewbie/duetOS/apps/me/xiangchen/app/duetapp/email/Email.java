@@ -21,7 +21,7 @@ import me.xiangchen.ui.xacShape;
 import me.xiangchen.ui.xacToast;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.View;
@@ -38,8 +38,8 @@ public class Email extends App {
 	public final static int WIDTHEMAIL = 1024;
 	public final static int DIMMARGIN = (WIDTHAPP - WIDTHEMAIL) / 2;
 	public final static int HEIGHTEMAIL = 320;
-	public final static int NUMSTARTINGEMAILS = 8;
-	public final static int TAPOFFSETTHRES = 50;
+	public final static int NUMSTARTINGEMAILS = 9;
+	public final static int TAPOFFSETTHRES = 25;
 
 	final static int NUMROWSHANDPARTS = LauncherManager.PHONEACCELFPSGAME
 			* xacTouchSenseFeatureMaker.TOUCHTIMEOUT / 1000;
@@ -95,24 +95,46 @@ public class Email extends App {
 	int prevWatchMode = xacShareSenseFeatureMaker.PUBLIC;
 	int prevNumUnnotified = 0;
 
-	int idxEmailText = 0;
+	int idxEmail = 0;
 	String[] emailTitles = {
-			"My Starbucks Rewards Treat yourself. Treat Receipt is back.",
-			"Jane Skout - FMS \n Peak Demand Electricity Management Event – July 16, 2046",
-			"Google Calendar \n Reminder: meeting @ Tue Jul 16, 2046 11:30am - 1pm (Wang)",
-			"ACM Learning Center \n Register for Tomorrow's ACM-SIGHPC Webcast - Changing How Programmers Think about Parallel Programming",
-			"Facebook \n You have a new message from someone you don't know" };
+			"Super Villian Gru - Next project: stealing the Great Wall",
+			"McKinsey & Company - Game changes: Five opportunities for US growth",
+			"The Minions Mailing List - Gelato!",
+			"The Rolling Stones - Wait for our '60 and counting'",
+			"Marshall Eriksen - A video of the AWESOME night!",
+			"Denny Crane - Denny Crane. Lock and load.",
+			"Chan Wing Yan - Guo zuo tan yai zao mou si la",
+			"Stephen Chow - Actually, my flims are all tragedies",
+			"Nobita Nobi - I need a new tool ... " };
+
 	String[] emailTexts = {
-			"My Starbucks Rewards - Treat yourself. Treat Receipt is back.",
-			"Jane Skout - FMS -- Peak Demand Electricity Management Event – July 16, 2046",
-			"Google Calendar - Reminder: meeting @ Tue Jul 16, 2046 11:30am - 1pm (Wang)",
-			"ACM Learning Center - Register for Tomorrow's ACM-SIGHPC Webcast - Changing How Programmers Think about Parallel Programming",
-			"Facebook - You have a new message from someone you don't know" };
+			"Super Villian Gru - Next project: stealing the Great Wall\nMy Fellow Minions! I have come to realize that we haven’t done a project for a while. I suggest our next goal is to steal the Great Wall from China!",
+			"McKinsey & Company - Game changes: Five opportunities for US growth\nThe US economy is struggling to find a new formula for vigorous growth. But all growth opportunities are not created equal.",
+			"The Minions Mailing List - Gelato!\nPello, geto gelato. wako lato pero no rah do. Yibalajema! Gelato gapple, gelato banana, gelato chocolato.",
+			"The Rolling Stones - Wait for our '60 and counting'\nDear supporters, I hope you had a good time enjoying our “50 and counting” concert series. We just want you know that this is not the finishing line.",
+			"Marshall Eriksen - A video of the AWESOME night!\nHi guys, I thought I’d share this piece of incredible video of our last night’s double date. Check out how Lily is making a face!",
+			"Denny Crane - Denny Crane. Lock and load.\nDenny Crane. Denny Crane. Denny Crane. Denny Crane. Denny Crane. Denny Crane. Denny Crane. Denny Crane. Denny Crane",
+			"Chan Wing Yan - Guo zuo tan yai zao mou si la\nDan o, sam yi!",
+			"Stephen Chow - Actually, my flims are all tragedies\nDear Anthony, I know you’ve been seeing my films. Just want to point out that actually they are all tragedies, not commedies.",
+			"Nobita Nobi - I need a new tool ... \nHey, Doraemon, I need a new tool to help me finish my summer internship project. I need something to help me automatically write application on a" };
+	
+	int[] emailSnapshots = { R.drawable.email_snapshot_0,
+			R.drawable.email_snapshot_1, R.drawable.email_snapshot_2,
+			R.drawable.email_snapshot_3, R.drawable.email_snapshot_4,
+			R.drawable.email_snapshot_5, R.drawable.email_snapshot_6,
+			R.drawable.email_snapshot_7, R.drawable.email_snapshot_8 };
+	
+	int[] emailBodies = { R.drawable.email_body_0,
+			R.drawable.email_body_1, R.drawable.email_body_2,
+			R.drawable.email_body_3, R.drawable.email_body_4,
+			R.drawable.email_body_5, R.drawable.email_body_6,
+			R.drawable.email_body_7, R.drawable.email_body_8 };
+	
 	Hashtable<xacShape, String> htEmailText;
 
 	xacPhoneGesture pressAndHold;
 	int isHold;
-	
+
 	int handedness = xacHandSenseFeatureMaker.UNKNOWN;
 
 	public Email(Context context) {
@@ -129,7 +151,7 @@ public class Email extends App {
 
 		openedEmailLayout = new LinearLayout(context);
 		openedEmailLayout.setBackgroundColor(xacInteractiveCanvas.fgColorCream);
-		openedEmailLayout.setBackgroundResource(R.drawable.email_body_1);
+//		openedEmailLayout.setBackgroundResource(R.drawable.email_body_1);
 		textViewEmail = new TextView(context);
 		textViewEmail.setTextSize(24);
 		textViewEmail.setTextColor(xacInteractiveCanvas.bgColorDark);
@@ -155,6 +177,7 @@ public class Email extends App {
 				return true;
 			}
 		});
+		appLayout.setBackgroundColor(0xFFFFFFFF);
 
 		htEmails = new Hashtable<xacShape, String>();
 		htEmailText = new Hashtable<xacShape, String>();
@@ -213,9 +236,9 @@ public class Email extends App {
 			@Override
 			public void onClick(View arg0) {
 				for (xacShape email : selectedEmails) {
-//					email.setTypeface(LauncherManager
-//							.getTypeface(LauncherManager.NORMAL));
-//					email.setColor(Color.argb(256, 256, 256, 256));
+					// email.setTypeface(LauncherManager
+					// .getTypeface(LauncherManager.NORMAL));
+					// email.setColor(Color.argb(256, 256, 256, 256));
 					email.setAlpha(200);
 				}
 				canvas.invalidate();
@@ -291,7 +314,7 @@ public class Email extends App {
 		xacShape emailEntry = canvas.addShape(xacShape.ITEM, WIDTHEMAIL,
 				HEIGHTEMAIL, 0, 0, 0xFFFFFFFF);
 		emailEntry.setBitmap(LauncherManager
-				.getBitmap(R.drawable.email_snapshot_1));
+				.getBitmap(emailSnapshots[idxEmail]));
 		// emailEntry.setStrokeColor(xacInteractiveCanvas.fgColorRed);
 
 		emailEntry.setTypeface(LauncherManager
@@ -300,10 +323,10 @@ public class Email extends App {
 		unreadEmails.add(emailEntry);
 		// String titleEmail = ;
 
-		htEmails.put(emailEntry, emailTitles[idxEmailText]);
-		htEmailText.put(emailEntry, emailTexts[idxEmailText]);
+		htEmails.put(emailEntry, emailTitles[idxEmail]);
+		htEmailText.put(emailEntry, emailTexts[idxEmail]);
 
-		idxEmailText = (idxEmailText + 1) % emailTitles.length;
+		idxEmail = (idxEmail + 1) % emailTitles.length;
 		cntEmail++;
 	}
 
@@ -365,17 +388,23 @@ public class Email extends App {
 
 			xTouchDown = coords.x;
 			yTouchDown = coords.y;
-			
+
 			handedness = xacHandSenseFeatureMaker.UNKNOWN;
+//			if (handedness == xacHandSenseFeatureMaker.UNKNOWN) {
+//				handedness = xacHandSenseFeatureMaker.calculateHandedness();
+//				Log.d(LOGTAG, handedness == xacHandSenseFeatureMaker.NOWATCH ? "no watch" : "watch");
+//			}
 
 			break;
 		case MotionEvent.ACTION_MOVE:
 			if (isHold != xacPhoneGesture.YES) {
 				isHold = pressAndHold.update(event);
 			}
-			
+
 			if (handedness == xacHandSenseFeatureMaker.UNKNOWN) {
 				handedness = xacHandSenseFeatureMaker.calculateHandedness();
+				xacHandSenseFeatureMaker.clearData();
+				Log.d(LOGTAG, handedness == xacHandSenseFeatureMaker.NOWATCH ? "no watch" : "watch");
 			}
 
 			switch (handPart) {
@@ -423,8 +452,9 @@ public class Email extends App {
 					// hitEmail.toggleStroke();
 					switch (handPart) {
 					case xacTouchSenseFeatureMaker.KNUCKLE:
-						if (handedness == xacHandSenseFeatureMaker.WATCH && 
-						LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST) {
+						if (handedness != xacHandSenseFeatureMaker.NOWATCH
+								&& LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST
+								|| LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRISTNOPHONE) {
 							if (selectedEmails.contains(hitEmail)) {
 								selectedEmails.remove(hitEmail);
 								if (selectedEmails.size() <= 0) {
@@ -441,6 +471,9 @@ public class Email extends App {
 							canvas.invalidate();
 							break;
 						}
+						else {
+							LauncherManager.doAndriodToast("no watch"); 
+						}
 					case xacTouchSenseFeatureMaker.PAD:
 					case xacTouchSenseFeatureMaker.SIDE:
 					default:
@@ -449,10 +482,16 @@ public class Email extends App {
 						// textViewEmail.setTypeface(LauncherManager.getTypeface(LauncherManager.BOLD));
 						textViewEmail.setText(titleEmail + "\n" + textEmail);
 						appLayout.addView(openedEmailLayout, paramsOpened);
+						int idxOpenedEmail = allEmails.indexOf(hitEmail);
+						try {
+							openedEmailLayout.setBackgroundResource(emailBodies[idxOpenedEmail]);
+						} catch(Exception e) {
+							LauncherManager.doAndriodToast("your email cannot be loaded.");
+						}
 						unreadEmails.remove(hitEmail);
-//						hitEmail.setTypeface(LauncherManager
-//								.getTypeface(LauncherManager.NORMAL));
-						hitEmail.setAlpha(200);
+						// hitEmail.setTypeface(LauncherManager
+						// .getTypeface(LauncherManager.NORMAL));
+						hitEmail.setAlpha(180);
 						openedEmail = hitEmail;
 
 						break;
@@ -470,6 +509,7 @@ public class Email extends App {
 				}
 				canvas.setOffsets(0, 0);
 			}
+			
 			break;
 		}
 
@@ -512,7 +552,7 @@ public class Email extends App {
 	public String getSup() {
 		int cntUnread = unreadEmails.size();
 		if (cntUnread > 0) {
-			sup = htEmailText.get(unreadEmails.get(cntUnread - 1));
+			sup =htEmailText.get(unreadEmails.get(cntUnread - 1));
 		} else {
 			sup = "Inbox zero :)";
 		}

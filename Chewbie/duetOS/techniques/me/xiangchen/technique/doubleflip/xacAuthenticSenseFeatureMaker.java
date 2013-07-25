@@ -214,6 +214,7 @@ public class xacAuthenticSenseFeatureMaker {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			LauncherManager.doAndriodToast("cannot get features");
 		}
 
 		switch (idxClass) {

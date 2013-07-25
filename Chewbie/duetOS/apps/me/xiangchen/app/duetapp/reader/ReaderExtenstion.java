@@ -165,7 +165,7 @@ public class ReaderExtenstion extends AppExtension {
 
 	public void showToolPallete() {
 		updateWatchVisual(
-				LauncherManager.getBitmap(bmpToolPallets[idxToolPallete]), true);
+				LauncherManager.getBitmap(bmpToolPallets[idxToolPallete]), false);
 	}
 
 	@Override
@@ -192,7 +192,7 @@ public class ReaderExtenstion extends AppExtension {
 			}
 			
 			int lengthSubText = Math.min(clippedText.length(), 10);
-			shownText += (i + idxClipboard) + ". "
+			shownText += (i + idxClipboard + 1) + ". "
 					+ clippedText.substring(0, lengthSubText) + "...\n";
 		}
 		showText(shownText);

@@ -115,6 +115,8 @@ public class Reader extends App {
 	
 	int bgAlpha = 192;
 	
+	boolean isFlipMenuOn = false;
+	
 	int imgBtn[] = {R.drawable.pencil, R.drawable.highlighter, R.drawable.undo, R.drawable.redo,
 			R.drawable.font_decr, R.drawable.font_incr, R.drawable.sun_small, R.drawable.sun_big};
 	
@@ -418,6 +420,7 @@ public class Reader extends App {
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			timeTouchDown = curTime;
+			appLayout.removeView(layoutButtons);
 			break;
 		case MotionEvent.ACTION_MOVE:
 			if (curTime - timeTouchDown < NUMTOUCHESTIMEOUT) {
@@ -507,7 +510,7 @@ public class Reader extends App {
 				case xacTouchSenseFeatureMaker.KNUCKLE:
 					firstLine = -1;
 					prevLine = -1;
-					bufCan.clearRects();
+//					bufCan.clearRects();
 					break;
 				}
 				break;
