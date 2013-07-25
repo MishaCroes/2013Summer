@@ -21,7 +21,7 @@ public class ReaderExtenstion extends AppExtension {
 	public final static int CLIPBOARD = 0;
 	public final static int MAINSCREEN = 1;
 	public final static int SHARESCREEN = 2;
-	public final static int NUMTEXTPERSCREEN = 3;
+	public final static int NUMTEXTPERSCREEN = 5;
 
 	int idxToolPallete = 0;
 	int[] bmpToolPallets = { R.drawable.tool_pallete_1,
@@ -121,12 +121,12 @@ public class ReaderExtenstion extends AppExtension {
 			switch (direction) {
 			case Control.Intents.SWIPE_DIRECTION_LEFT:
 				idxTextOptionScreen++;
-				idxTextOptionScreen = Math.max(0, idxTextOptionScreen);
+				idxTextOptionScreen = Math.min(3, idxTextOptionScreen);
 				updateTextOptionScreen(idxTextOptionScreen);
 				break;
 			case Control.Intents.SWIPE_DIRECTION_RIGHT:
 				idxTextOptionScreen--;
-				idxTextOptionScreen = Math.min(3, idxTextOptionScreen);
+				idxTextOptionScreen = Math.max(0, idxTextOptionScreen);
 				updateTextOptionScreen(idxTextOptionScreen);
 				break;
 			case Control.Intents.SWIPE_DIRECTION_UP:
@@ -142,7 +142,6 @@ public class ReaderExtenstion extends AppExtension {
 				}
 				break;
 			}
-
 		}
 	}
 
@@ -166,7 +165,7 @@ public class ReaderExtenstion extends AppExtension {
 
 	public void showToolPallete() {
 		updateWatchVisual(
-				LauncherManager.getBitmap(bmpToolPallets[idxToolPallete]), true);
+				LauncherManager.getBitmap(bmpToolPallets[idxToolPallete]), false);
 	}
 
 	@Override
@@ -193,8 +192,8 @@ public class ReaderExtenstion extends AppExtension {
 			}
 			
 			int lengthSubText = Math.min(clippedText.length(), 10);
-			shownText += (i + idxClipboard) + ". "
-					+ clippedText.substring(0, lengthSubText) + "... \n";
+			shownText += (i + idxClipboard + 1) + ". "
+					+ clippedText.substring(0, lengthSubText) + "...\n";
 		}
 		showText(shownText);
 	}
@@ -209,7 +208,7 @@ public class ReaderExtenstion extends AppExtension {
 	}
 
 	private void showTextOption() {
-		int lengthSubText = Math.min(selectedText.length(), 15);
+		int lengthSubText = Math.min(selectedText.length(), 10);
 		String subText = selectedText.substring(0, lengthSubText)
 				+ (selectedText.length() == lengthSubText ? "" : "...");
 		String option1 = ">> Add to clipboard";

@@ -50,7 +50,7 @@ public class xacPhoneGesture {
 	
 	private int updateDoubleTap(MotionEvent event) {
 		result = NO;
-		if(event.getAction() != MotionEvent.ACTION_UP)
+		if(event.getAction() != MotionEvent.ACTION_DOWN)
 			return result;
 		
 		if(event.getPointerCount() > 1) {

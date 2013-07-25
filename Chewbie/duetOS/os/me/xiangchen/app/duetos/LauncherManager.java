@@ -3,6 +3,7 @@ package me.xiangchen.app.duetos;
 import java.util.Calendar;
 
 import me.xiangchen.app.duetapp.AppExtension;
+import me.xiangchen.app.duetapp.reader.ReaderManager;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.ui.xacToast;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Vibrator;
 import android.util.Log;
+import android.widget.Toast;
 
 public class LauncherManager {
 	public final static String LOGTAG = "DuetOS";
@@ -142,9 +144,25 @@ public class LauncherManager {
 			return null;
 	}
 
-	public static void setWatchConfig(int wc) {
+	public static void updateWatchConfig(int wc) {
 		if(wc != xacAuthenticSenseFeatureMaker.INTHEWILD) {
 			watchConfig = wc;
+		}
+		if (watchConfig != xacAuthenticSenseFeatureMaker.INTHEWILD) {
+			int resId = -1;
+			switch (watchConfig) {
+			case xacAuthenticSenseFeatureMaker.LEFTBACKWRIST:
+				resId = R.drawable.left_back_wrist;
+				break;
+			case xacAuthenticSenseFeatureMaker.LEFTINNERWRIST:
+				resId = R.drawable.left_inner_wrist;
+				ReaderManager.showToolPallete();
+				break;
+			case xacAuthenticSenseFeatureMaker.LEFTBACKWRISTNOPHONE:
+				resId = R.drawable.left_back_wrist_no_phone;
+				break;
+			}
+			showNotificationOnUnlockedPhone(resId);
 		}
 	}
 	
@@ -411,4 +429,50 @@ public class LauncherManager {
 			calendar = Calendar.getInstance();
 		}
 	}
+	
+	public static void doAndriodToast(String text) {
+		Toast.makeText(phone, text, Toast.LENGTH_LONG).show();
+	}
+	
+	public static Bitmap getBitmapFromResource(int resId) {
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeResource(phone.getResources(), resId, options);
+		int imageHeight = options.outHeight;
+		int imageWidth = options.outWidth;
+		String imageType = options.outMimeType;
+		
+//		final BitmapFactory.Options options = new BitmapFactory.Options();
+	    options.inJustDecodeBounds = true;
+	    BitmapFactory.decodeResource(phone.getResources(), resId, options);
+
+	    // Calculate inSampleSize
+	    options.inSampleSize = calculateInSampleSize(options, imageWidth, imageHeight);
+
+	    // Decode bitmap with inSampleSize set
+	    options.inJustDecodeBounds = false;
+	    return BitmapFactory.decodeResource(phone.getResources(), resId, options);
+	}
+	
+	public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    // Raw height and width of image
+    final int height = options.outHeight;
+    final int width = options.outWidth;
+    int inSampleSize = 1;
+
+    if (height > reqHeight || width > reqWidth) {
+
+        // Calculate ratios of height and width to requested height and width
+        final int heightRatio = Math.round((float) height / (float) reqHeight);
+        final int widthRatio = Math.round((float) width / (float) reqWidth);
+
+        // Choose the smallest ratio as inSampleSize value, this will guarantee
+        // a final image with both dimensions larger than or equal to the
+        // requested height and width.
+        inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+    }
+
+    return inSampleSize;
+}
 }

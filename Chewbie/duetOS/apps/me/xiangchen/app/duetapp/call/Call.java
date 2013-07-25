@@ -23,7 +23,7 @@ import android.widget.TextView;
 @SuppressLint("NewApi")
 public class Call extends App {
 
-	public final static int TAPTHRS = 100;
+	public final static int TAPTHRS = 200;
 	public final static String LOGTAG = "DuetOS";
 	public final static int APPWIDTH = 1080;
 	public final static int CALLTAB = 0;
@@ -87,6 +87,7 @@ public class Call extends App {
 		
 		layoutCallScreen = new RelativeLayout(context);
 		layoutCallScreen.setBackgroundColor(0xDD000000);
+		layoutCallScreen.setBackgroundResource(R.drawable.call_out);
 		layoutCallScreen.setOnTouchListener(new View.OnTouchListener() {
 			
 			@Override
@@ -95,6 +96,7 @@ public class Call extends App {
 				posture = xacPostureSenseFeatureMaker.calculatePosture();
 				if(posture == xacPostureSenseFeatureMaker.NONE) {
 					if(event.getAction() == MotionEvent.ACTION_UP) {
+						layoutCallScreen.setBackgroundColor(0xDD000000);
 						appLayout.removeView(layoutCallScreen);
 						isCalling = false;
 					}
@@ -316,7 +318,7 @@ public class Call extends App {
 								if(isCalling) {
 									return;
 								}
-								
+//								layoutCallScreen.setBackgroundResource(R.drawable.call_out);
 								RelativeLayout.LayoutParams paramsCallScreen = new RelativeLayout.LayoutParams(
 										RelativeLayout.LayoutParams.MATCH_PARENT,
 										RelativeLayout.LayoutParams.MATCH_PARENT);

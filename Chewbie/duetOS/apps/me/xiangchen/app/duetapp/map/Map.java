@@ -5,14 +5,15 @@ import java.util.Calendar;
 import java.util.Random;
 
 import me.xiangchen.app.duetapp.App;
+import me.xiangchen.app.duetos.LauncherManager;
 import me.xiangchen.app.duetos.R;
 import me.xiangchen.lib.xacPhoneGesture;
+import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.technique.tiltsense.xacTiltSenseFeatureMaker;
 import me.xiangchen.ui.xacInteractiveCanvas;
 import me.xiangchen.ui.xacShape;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.View;
@@ -78,6 +79,7 @@ public class Map extends App {
 
 	xacPhoneGesture doubleTap;
 	xacPhoneGesture pressAndHold;
+	boolean isHold = false;
 
 	boolean isTiltInputOn = false;
 
@@ -108,7 +110,7 @@ public class Map extends App {
 		mapViewSatellite.setImageResource(mapViews[1]);
 		mapViewSatellite.setAlpha(0.65f);
 
-		mapView = mapViewSatellite;
+		mapView = mapViewNormal;
 		mapView.setId(1026);
 
 		canvas = new xacInteractiveCanvas(context);
@@ -120,7 +122,8 @@ public class Map extends App {
 					: xacInteractiveCanvas.fgColorRed;
 			xacShape marker = canvas.addShape(xacShape.OVAL, DIMTARGET,
 					DIMTARGET, cx, cy, color);
-			marker.setStrokeColor(0xFFFFFFFF);
+			marker.setStrokeColor(0xFF88FF00);
+			marker.setStrokeWidth(7);
 		}
 
 		canvas.setId(1025);
@@ -142,7 +145,7 @@ public class Map extends App {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (numTouches == 1
+				if (numTouches < 2
 						&& doubleTap.update(event) == xacPhoneGesture.YES) {
 					zoomCenterX = mapView.getWidth() / 2;
 					zoomCenterY = mapView.getHeight() / 2;
@@ -155,9 +158,16 @@ public class Map extends App {
 
 				}
 
-				isTiltInputOn = false;
+				boolean isTiltInputOnNew = false;
 				if (pressAndHold.update(event) == xacPhoneGesture.YES) {
-					isTiltInputOn = true;
+					isHold = true;
+					if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRISTNOPHONE) {
+						isTiltInputOnNew = true;
+						if(isTiltInputOnNew != isTiltInputOn) {
+							LauncherManager.buzz(250);
+							isTiltInputOn = isTiltInputOnNew;
+						}
+					}
 				}
 
 				doTouch(event);
@@ -174,7 +184,7 @@ public class Map extends App {
 		shiftFrame = new xacShape(xacShape.FRAME);
 		shiftFrame.setStrokeWidth(10);
 		shiftFrame.setStrokeColor(0xFFFFFFFF);
-		canvas.addShape(shiftFrame);
+		// canvas.addShape(shiftFrame);
 	}
 
 	@Override
@@ -184,8 +194,8 @@ public class Map extends App {
 			if (tilt == xacTiltSenseFeatureMaker.TILTOUT) {
 				mapLayout.setPivotX(xTouchDown);
 				mapLayout.setPivotY(yTouchDown + yTouchDown2);
-				
-				zoomFactor += -0.05 * SCALERATE;
+
+				zoomFactor += -0.01 * SCALERATE;
 				zoomFactor = Math.max(1.0f, zoomFactor);
 
 				mapLayout.setScaleX(zoomFactor);
@@ -239,6 +249,8 @@ public class Map extends App {
 
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
+			isHold = false;
+
 			xTouchDown = x0;
 			yTouchDown = y0;
 			xTouchDown2 = -1;
@@ -259,7 +271,7 @@ public class Map extends App {
 
 			timeTouchDown = curTime;
 			isShifted = false;
-			
+
 			shiftFrame.setStrokeColor(0x000000);
 
 			break;
@@ -281,22 +293,24 @@ public class Map extends App {
 			}
 
 			if (numTouches == 1) {
-				float dx = (x0 - xTouchDown) * TRANSLATERATE;
-				float dy = (y0 - yTouchDown) * TRANSLATERATE;
-				xOffset += dx;
-				yOffset += dy;
-				mapLayout.setTranslationX(xOffset);
-				mapLayout.setTranslationY(yOffset);
 
-				xPivot -= dx;
-				yPivot -= dy;
+				if (Math.max(distX, distY) > 50) {
+					float dx = (x0 - xTouchDown) * TRANSLATERATE;
+					float dy = (y0 - yTouchDown) * TRANSLATERATE;
+					xOffset += dx;
+					yOffset += dy;
+					mapLayout.setTranslationX(xOffset);
+					mapLayout.setTranslationY(yOffset);
+				}
+				// xPivot -= dx;
+				// yPivot -= dy;
 
 				distX += Math.abs(x0 - xPrev);
 				distY += Math.abs(y0 - yPrev);
 			}
 
 			if (event.getPointerCount() > 1 && dist * pinchDist > 0
-					&& Math.abs(dist - pinchDist) > 100) {
+					&& Math.abs(dist - pinchDist) > 150) {
 
 				// float adjustRate = 0.9f;
 				// zoomCenterX = zoomCenterX * adjustRate + ((x0 + x1) / 2)
@@ -331,13 +345,24 @@ public class Map extends App {
 			// pinchDist = dist;
 			break;
 		case MotionEvent.ACTION_UP:
-			if (numTouches == 1 && Math.max(distX, distY) < TAPTHRS && !isShifted) {
+			if (isHold) {
+				int watchConfig = xacAuthenticSenseFeatureMaker
+						.calculateAuthentication();
+
+				if (watchConfig != xacAuthenticSenseFeatureMaker.INTHEWILD && watchConfig != LauncherManager.getWatchConfig()) {
+					LauncherManager.updateWatchConfig(watchConfig);
+					break;
+				}
+			}
+
+			if (numTouches == 1 && Math.max(distX, distY) < TAPTHRS
+					&& !isShifted) {
 				selectTarget(x0, y0);
 			}
 			canvas.setOffsets(0, 0);
 			numTouches = 0;
 			pinchDist = 0;
-			
+			MapManager.unshift();
 			canvas.invalidate();
 			break;
 		}
@@ -364,10 +389,10 @@ public class Map extends App {
 		mapLayout.removeView(mapView);
 
 		switch (idxMapViews) {
-		case 1:
+		case 0:
 			mapView = mapViewNormal;
 			break;
-		case 0:
+		case 1:
 			mapView = mapViewSatellite;
 			break;
 		}
@@ -398,5 +423,11 @@ public class Map extends App {
 		MapManager.shift(mapLayout, xShift, yShift, SHIFTWIDTH, SHIFTHEIGHT);
 		canvas.invalidate();
 	}
+	
+	@Override
+	public void doAccelerometer(float values[]) {
 
+		xacAuthenticSenseFeatureMaker.updatePhoneAccel(values);
+		xacAuthenticSenseFeatureMaker.addPhoneFeatureEntry();
+	}
 }

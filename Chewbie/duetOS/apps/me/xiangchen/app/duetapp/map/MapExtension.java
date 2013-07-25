@@ -1,6 +1,8 @@
 package me.xiangchen.app.duetapp.map;
 
 import me.xiangchen.app.duetapp.AppExtension;
+import me.xiangchen.app.duetos.LauncherManager;
+import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.technique.sharesense.xacShareSenseFeatureMaker;
 import me.xiangchen.technique.tiltsense.xacTiltSenseFeatureMaker;
 import me.xiangchen.technique.updownsense.xacUpDownSenseFeatureMaker;
@@ -45,12 +47,15 @@ public class MapExtension extends AppExtension {
 	@Override
 	public void doSwipe(int direction) {
 		
-		int pointing = xacUpDownSenseFeatureMaker.doClassification();
+//		int pointing = xacUpDownSenseFeatureMaker.doClassification();
 
-		if (pointing == xacUpDownSenseFeatureMaker.DOWN) {
+		if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST ||
+				LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRISTNOPHONE) {
 			buzz(500);
 			Log.d(LOGTAG, "down swipe");
-			MapManager.switchMapViews();
+//			if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST) {
+				MapManager.switchMapViews();
+//			}
 		} else {
 			buzz(100);
 			float xStep = getWidth() / 10;
@@ -78,10 +83,13 @@ public class MapExtension extends AppExtension {
 	
 	@Override
 	public void doAccelerometer(float[] values) {
-		xacUpDownSenseFeatureMaker.updateWatchAccel(values);
-		xacUpDownSenseFeatureMaker.addWatchFeatureEntry();
+//		xacUpDownSenseFeatureMaker.updateWatchAccel(values);
+//		xacUpDownSenseFeatureMaker.addWatchFeatureEntry();
 		
 		xacTiltSenseFeatureMaker.updateWatchAccel(values);
 		xacTiltSenseFeatureMaker.addWatchFeatureEntry();
+		
+		xacAuthenticSenseFeatureMaker.updateWatchAccel(values);
+		xacAuthenticSenseFeatureMaker.addWatchFeatureEntry();
 	}
 }

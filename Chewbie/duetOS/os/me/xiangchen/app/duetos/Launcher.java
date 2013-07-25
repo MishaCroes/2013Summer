@@ -102,11 +102,11 @@ public class Launcher extends Activity implements SensorEventListener {
 	float prevY;
 
 	int timerReconfig = 0;
-	
+
 	int handedness = xacHandSenseFeatureMaker.UNKNOWN;
-	
+
 	xacPhoneGesture pressAndHold;
-	
+
 	int isHold = xacPhoneGesture.NO;
 
 	@Override
@@ -204,7 +204,7 @@ public class Launcher extends Activity implements SensorEventListener {
 
 			}
 		}, new Date(), 1000 / TIMERFPS);
-		
+
 		pressAndHold = new xacPhoneGesture(xacPhoneGesture.PRESSANDHOLD);
 
 		// all the recognizers
@@ -314,7 +314,7 @@ public class Launcher extends Activity implements SensorEventListener {
 		int action = event.getAction();
 		PointerCoords curCoord = new PointerCoords();
 		event.getPointerCoords(0, curCoord);
-		
+
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			isHold = xacPhoneGesture.NO;
@@ -328,7 +328,7 @@ public class Launcher extends Activity implements SensorEventListener {
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if(isHold != xacPhoneGesture.YES) {
+			if (isHold != xacPhoneGesture.YES) {
 				isHold = pressAndHold.update(event);
 			}
 			if (curTime - timeTouchDown < xacHandSenseFeatureMaker.TOUCHONSETTIME) {
@@ -338,9 +338,9 @@ public class Launcher extends Activity implements SensorEventListener {
 			if (handedness == xacHandSenseFeatureMaker.UNKNOWN) {
 				handedness = xacHandSenseFeatureMaker.calculateHandedness();
 			}
-			
-			if (handedness == xacHandSenseFeatureMaker.WATCH && 
-					handpart == xacTouchSenseFeatureMaker.KNUCKLE) {
+
+			if (handedness == xacHandSenseFeatureMaker.WATCH
+					&& handpart == xacTouchSenseFeatureMaker.KNUCKLE) {
 				for (xacShape icon : hitIcons) {
 					icon.offset(curCoord.x - prevX, curCoord.y - prevY);
 				}
@@ -365,35 +365,16 @@ public class Launcher extends Activity implements SensorEventListener {
 			}
 			break;
 		case MotionEvent.ACTION_UP:
-			
-			if(isHold == xacPhoneGesture.YES) {
+
+			if (isHold == xacPhoneGesture.YES) {
 				int watchConfig = xacAuthenticSenseFeatureMaker
 						.calculateAuthentication();
-				LauncherManager.setWatchConfig(watchConfig);
-				if (watchConfig != xacAuthenticSenseFeatureMaker.INTHEWILD) {
-					int resId = -1;
-					switch (watchConfig) {
-					case xacAuthenticSenseFeatureMaker.LEFTBACKWRIST:
-						resId = R.drawable.left_back_wrist;
-						break;
-					case xacAuthenticSenseFeatureMaker.LEFTINNERWRIST:
-						resId = R.drawable.left_inner_wrist;
-						break;
-					case xacAuthenticSenseFeatureMaker.RIGHTBACKWRIST:
-						resId = R.drawable.right_back_wrist;
-						break;
-					case xacAuthenticSenseFeatureMaker.RIGHTINNERWRIST:
-						resId = R.drawable.right_inner_wrist;
-						break;
-					}
-					LauncherManager.showNotificationOnUnlockedPhone(resId);
-
-				}
+				LauncherManager.updateWatchConfig(watchConfig);
 				break;
 			}
-			
-			if (handedness == xacHandSenseFeatureMaker.WATCH &&
-			handpart == xacTouchSenseFeatureMaker.KNUCKLE) {
+
+			if (handedness == xacHandSenseFeatureMaker.WATCH
+					&& handpart == xacTouchSenseFeatureMaker.KNUCKLE) {
 				for (xacShape icon : hitIcons) {
 					int numCols = Math.max(0,
 							(int) (icon.getX() / icon.getW()) - 1);
@@ -437,8 +418,8 @@ public class Launcher extends Activity implements SensorEventListener {
 						activeApp = null;
 						sup = "";
 					}
-				} 
-				
+				}
+
 			}
 			break;
 		}
@@ -473,25 +454,8 @@ public class Launcher extends Activity implements SensorEventListener {
 			if (Math.max(distX, distY) < TAPTHRS) {
 				int watchConfig = xacAuthenticSenseFeatureMaker
 						.calculateAuthentication();
-				LauncherManager.setWatchConfig(watchConfig);
+				LauncherManager.updateWatchConfig(watchConfig);
 				if (watchConfig != xacAuthenticSenseFeatureMaker.INTHEWILD) {
-					int resId = -1;
-					switch (watchConfig) {
-					case xacAuthenticSenseFeatureMaker.LEFTBACKWRIST:
-						resId = R.drawable.left_back_wrist;
-						break;
-					case xacAuthenticSenseFeatureMaker.LEFTINNERWRIST:
-						resId = R.drawable.left_inner_wrist;
-						break;
-					case xacAuthenticSenseFeatureMaker.RIGHTBACKWRIST:
-						resId = R.drawable.right_back_wrist;
-						break;
-					case xacAuthenticSenseFeatureMaker.RIGHTINNERWRIST:
-						resId = R.drawable.right_inner_wrist;
-						break;
-					}
-					LauncherManager.showNotificationOnLockedPhone(resId);
-
 					layout.removeView(curtain);
 					isLocked = false;
 					lastUsageTime = curTime;
@@ -547,13 +511,13 @@ public class Launcher extends Activity implements SensorEventListener {
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		
+
 		if (activeApp != null) {
 			activeApp.doAccelerometer(event.values);
 		} else {
 			xacHandSenseFeatureMaker.updatePhoneAccel(event.values);
 			xacHandSenseFeatureMaker.addPhoneFeatureEntry();
-			
+
 			xacTouchSenseFeatureMaker.updatePhoneAccel(event.values);
 			xacTouchSenseFeatureMaker.addPhoneFeatureEntry();
 
