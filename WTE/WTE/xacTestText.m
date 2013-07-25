@@ -14,7 +14,7 @@ int numWords = 100;
 //int idxSubString = -1;
 //NSString* lastInput = 0;
 float breakTime = BREAKTIME; // sec
-float timerRate = 1.0f;
+float timerRate = 10.0f;
 
 NSString* attrNames = @"log_type,participant_id,technique,section_id,block_id,trial_id,phrase_or_char,time_to_start,time_to_finish,errors";
 
@@ -209,16 +209,18 @@ NSString* attrNames = @"log_type,participant_id,technique,section_id,block_id,tr
             [_textField setText:strTimeRemained];
             
             breakTime += 1.0f / timerRate;
-        }
-        else if((int)breakTime == BREAKTIME) {
+            
+            if((int)breakTime == BREAKTIME) {
                 _trial = 0;
-//            if(_trial < NUMTRIALS) {
-//                if(_curWord.length <= 0) {
-                    [_textField setText:@"Press Start to continue ..."];
-//                }
-            breakTime += 1.0f / timerRate;
-//            }
+                //            if(_trial < NUMTRIALS) {
+                //                if(_curWord.length <= 0) {
+                [_textField setText:@"Press Start to continue ..."];
+                //                }
+//                breakTime += 1.0f / timerRate;
+                //            }
+            }
         }
+//        else 
     }
 }
 
