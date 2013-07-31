@@ -77,7 +77,8 @@ bool isThereNewInput = false;
             break;
     }
     
-    [self printState];
+//    [self printState];
+    [self updateTextField];
 }
 
 - (xacSwipe*) getCopyOf :(xacSwipe*)theSwipe {
@@ -204,7 +205,7 @@ bool isThereNewInput = false;
 
 - (void) updatecursorEER {
     cursorEER = [cursorEER isEqualToString:@"_"] ? @" " : @"_";
-    [self updateTextField];
+
 }
 
 - (void) printState {

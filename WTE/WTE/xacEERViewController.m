@@ -35,7 +35,7 @@ UIButton* btnLast;
     canvas.frame = CGRectMake(0, 0, _mainView.frame.size.height, _mainView.frame.size.width);
     [_mainView addSubview:canvas];
     
-    btnNext = [[UIButton alloc] initWithFrame:CGRectMake(oriX + WATCHWIDTH, oriY + WATCHHEIGHT / 8, WATCHWIDTH * 2 / 3, WATCHHEIGHT / 2)];
+    btnNext = [[UIButton alloc] initWithFrame:CGRectMake(oriX + WATCHWIDTH, oriY + WATCHHEIGHT / 8, WATCHWIDTH * 3 / 4, WATCHHEIGHT / 2)];
     [btnNext setTitle:@"Start" forState:UIControlStateNormal];
     [btnNext setBackgroundColor:[UIColor blackColor]];
     [btnNext addTarget:self action:@selector(nextWord) forControlEvents:UIControlEventTouchUpInside];
@@ -47,7 +47,7 @@ UIButton* btnLast;
 //    [btnLast addTarget:self action:@selector(lastWord) forControlEvents:UIControlEventTouchUpInside];
 //    [_mainView addSubview:btnLast];
 
-    _watchView.textEntry.testText = [[xacTestText alloc] initWithFrame:CGRectMake(oriX - WATCHWIDTH * 2 / 3, oriY - WATCHHEIGHT / 6, WATCHWIDTH * 4, WATCHHEIGHT / 6) :SWIPEBOARD];
+    _watchView.textEntry.testText = [[xacTestText alloc] initWithFrame:CGRectMake(oriX - WATCHWIDTH , oriY - WATCHHEIGHT * 7 / 12, WATCHWIDTH * 8, WATCHHEIGHT / 3) :SWIPEBOARD];
     [_mainView addSubview:_watchView.textEntry.testText];
     [_watchView.textEntry.testText loadWords];
     [_watchView.textEntry.testText setBackgroundColor:[UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:0.75f]];
@@ -55,7 +55,7 @@ UIButton* btnLast;
 //    _watchView.textEntry.testText = _testText;
 //    _watchView.textEntry.testText.technique = SWIPEBOARD;
     
-    _watchView.textEntry.textField = [[UITextField alloc] initWithFrame:CGRectMake(oriX - WATCHWIDTH * 2 / 3, oriY, WATCHWIDTH * 4, WATCHHEIGHT / 6)];
+    _watchView.textEntry.textField = [[UITextField alloc] initWithFrame:CGRectMake(oriX - WATCHWIDTH , oriY - WATCHHEIGHT / 4, WATCHWIDTH * 8, WATCHHEIGHT / 3)];
     _watchView.textEntry.textField.textAlignment = NSTextAlignmentLeft;
     [_watchView.textEntry.textField setUserInteractionEnabled:NO];
     [_watchView.textEntry.textField setBackgroundColor:[UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:0.75f]];

@@ -296,6 +296,7 @@ NSString* attrNames = @"log_type,participant_id,technique,section_id,block_id,tr
 - (void) addLogEntryPerChar :(char)character
 {
     [_featureTable addLine: [NSString stringWithFormat:@"%d, %d,%d,%d,%d,%d,%c,%.4f,%.4f,%d", PERENTRY, PARTICIPANT,_technique,SECTION,_block,_trial,character,-1.0f,(_finishTimePerChar-_startTimePerChar)/1000.0f,_errorsPerChar]];
+    NSLog(@"%.4f", (_finishTimePerChar-_startTimePerChar)/1000.0f);
 }
 
 @end

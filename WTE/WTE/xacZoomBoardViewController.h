@@ -10,9 +10,6 @@
 #import "xacZoomBoardWatchView.h"
 #import "WTEConstants.h"
 
-#define WATCHWIDTH 128
-#define WATCHHEIGHT 128
-
 @interface xacZoomBoardViewController : UIViewController
 @property (strong, nonatomic) IBOutlet UIView *mainView;
 @property xacZoomBoardWatchView *watchView;

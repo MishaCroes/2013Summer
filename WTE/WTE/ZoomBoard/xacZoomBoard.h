@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WTEConstants.h"
 
 #define CURSORREFRESHRATE 3
 
