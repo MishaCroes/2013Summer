@@ -431,7 +431,7 @@ public class LauncherManager {
 	}
 	
 	public static void doAndriodToast(String text) {
-		Toast.makeText(phone, text, Toast.LENGTH_LONG).show();
+		Toast.makeText(phone, text, Toast.LENGTH_SHORT).show();
 	}
 	
 	public static Bitmap getBitmapFromResource(int resId) {

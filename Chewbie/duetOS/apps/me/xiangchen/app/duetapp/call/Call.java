@@ -49,14 +49,16 @@ public class Call extends App {
 	int posture =xacPostureSenseFeatureMaker.NONE; 
 	
 	int idxVoiceMail = -1;
-	int[] voiceMails = {R.raw.no_annoying_sounds, R.raw.listen_up,
-			R.raw.so_fluffy};
+	int[] voiceMails = {R.raw.voicemail1, R.raw.voicemail2,
+			R.raw.voicemail3, R.raw.nonewvoicemails};
 
 	float xTouchDown;
 	float yTouchDown;
 	
 	RelativeLayout layoutCallScreen;
 	boolean isCalling = false;
+	
+	boolean isInApp = false;
 	
 	public Call(Context context) {
 		super(context);
@@ -99,6 +101,7 @@ public class Call extends App {
 						layoutCallScreen.setBackgroundColor(0xDD000000);
 						appLayout.removeView(layoutCallScreen);
 						isCalling = false;
+						isInApp = false;
 					}
 				} else if(posture == xacPostureSenseFeatureMaker.NOWATCH) {
 					doTouch(event);
@@ -429,12 +432,29 @@ public class Call extends App {
 			float dx = coord.x - xTouchDown;
 			float dy = coord.y - yTouchDown;
 			if(Math.abs(dx) < TAPTHRS) {
-				if(dy > TAPTHRS) {
+				if(Math.abs(dx) < TAPTHRS && Math.abs(dy) < TAPTHRS) {
+					if(isInApp) {
+						CallManager.getOutOfApp();
+						isInApp = false;
+					}
+					else {
+						CallManager.getInApp();
+						isInApp = true;
+					}
+				} else if(dy > TAPTHRS) {
 //					Log.d(LOGTAG, "down");
-					CallManager.nextAppExtension();
+					if(isInApp) {
+						CallManager.scrollDownApp();
+					} else {
+						CallManager.nextAppExtension();
+					}
 				} else if(dy < -TAPTHRS){
 //					Log.d(LOGTAG, "up");
-					CallManager.lastAppExtension();
+					if(isInApp) {
+						CallManager.scrollUpApp();
+					} else {
+						CallManager.lastAppExtension();
+					}
 				}
 			} else if(Math.abs(dy) < TAPTHRS){
 				if(dx > TAPTHRS) {

@@ -309,9 +309,10 @@ containing a value of this type.
         public static final int launcher=0x7f0a0000;
     }
     public static final class raw {
-        public static final int listen_up=0x7f040000;
-        public static final int no_annoying_sounds=0x7f040001;
-        public static final int so_fluffy=0x7f040002;
+        public static final int nonewvoicemails=0x7f040000;
+        public static final int voicemail1=0x7f040001;
+        public static final int voicemail2=0x7f040002;
+        public static final int voicemail3=0x7f040003;
     }
     public static final class string {
         public static final int a_tale_of_two_cities=0x7f070028;

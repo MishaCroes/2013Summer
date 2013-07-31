@@ -4,16 +4,16 @@ public class HandSenseClassifier {
 
 	  public static double classify(Object[] i) throws Exception {
 	    double [] sums = new double [2];
-	    sums[(int) HandSenseClassifier_0.classify(i)] += 2.834682852035576;
-	    sums[(int) HandSenseClassifier_1.classify(i)] += 2.6246922149544325;
-	    sums[(int) HandSenseClassifier_2.classify(i)] += 2.557686960284126;
-	    sums[(int) HandSenseClassifier_3.classify(i)] += 3.241549253883647;
-	    sums[(int) HandSenseClassifier_4.classify(i)] += 2.638157691796589;
-	    sums[(int) HandSenseClassifier_5.classify(i)] += 3.1306206338170517;
-	    sums[(int) HandSenseClassifier_6.classify(i)] += 2.7783054156061806;
-	    sums[(int) HandSenseClassifier_7.classify(i)] += 2.425264768142218;
-	    sums[(int) HandSenseClassifier_8.classify(i)] += 2.804807128860358;
-	    sums[(int) HandSenseClassifier_9.classify(i)] += 2.379572115253225;
+	    sums[(int) HandSenseClassifier_0.classify(i)] += 2.5458752096989827;
+	    sums[(int) HandSenseClassifier_1.classify(i)] += 2.4617242964581343;
+	    sums[(int) HandSenseClassifier_2.classify(i)] += 3.06282713592571;
+	    sums[(int) HandSenseClassifier_3.classify(i)] += 3.060136497989769;
+	    sums[(int) HandSenseClassifier_4.classify(i)] += 2.925808867124537;
+	    sums[(int) HandSenseClassifier_5.classify(i)] += 2.670525593466822;
+	    sums[(int) HandSenseClassifier_6.classify(i)] += 2.8692947431355944;
+	    sums[(int) HandSenseClassifier_7.classify(i)] += 3.173668685552096;
+	    sums[(int) HandSenseClassifier_8.classify(i)] += 2.743473892128872;
+	    sums[(int) HandSenseClassifier_9.classify(i)] += 2.7444555324576587;
 	    double maxV = sums[0];
 	    int maxI = 0;
 	    for (int j = 1; j < 2; j++) {
@@ -28,61 +28,72 @@ public class HandSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = HandSenseClassifier_0.N12b4bc93703(i);
+	    p = HandSenseClassifier_0.N5795cad6910(i);
 	    return p;
 	  }
-	  static double N12b4bc93703(Object []i) {
+	  static double N5795cad6910(Object []i) {
 	    double p = Double.NaN;
 	    if (i[87] == null) {
 	      p = 0;
-	    } else if (((Double) i[87]).doubleValue() <= 0.58) {
-	    p = HandSenseClassifier_0.N17c8607d704(i);
-	    } else if (((Double) i[87]).doubleValue() > 0.58) {
+	    } else if (((Double) i[87]).doubleValue() <= 0.37) {
+	    p = HandSenseClassifier_0.N2b37d486911(i);
+	    } else if (((Double) i[87]).doubleValue() > 0.37) {
 	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double N17c8607d704(Object []i) {
+	  static double N2b37d486911(Object []i) {
 	    double p = Double.NaN;
 	    if (i[107] == null) {
 	      p = 1;
-	    } else if (((Double) i[107]).doubleValue() <= -8.12) {
-	      p = 1;
-	    } else if (((Double) i[107]).doubleValue() > -8.12) {
-	    p = HandSenseClassifier_0.N6436babd705(i);
+	    } else if (((Double) i[107]).doubleValue() <= -5.98) {
+	    p = HandSenseClassifier_0.N5e61bf94912(i);
+	    } else if (((Double) i[107]).doubleValue() > -5.98) {
+	    p = HandSenseClassifier_0.N718f1128914(i);
 	    } 
 	    return p;
 	  }
-	  static double N6436babd705(Object []i) {
+	  static double N5e61bf94912(Object []i) {
 	    double p = Double.NaN;
-	    if (i[96] == null) {
+	    if (i[88] == null) {
 	      p = 0;
-	    } else if (((Double) i[96]).doubleValue() <= 2.15) {
-	      p = 0;
-	    } else if (((Double) i[96]).doubleValue() > 2.15) {
-	    p = HandSenseClassifier_0.N451e01b1706(i);
+	    } else if (((Double) i[88]).doubleValue() <= 1.89) {
+	    p = HandSenseClassifier_0.N6368bdf4913(i);
+	    } else if (((Double) i[88]).doubleValue() > 1.89) {
+	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double N451e01b1706(Object []i) {
+	  static double N6368bdf4913(Object []i) {
 	    double p = Double.NaN;
-	    if (i[107] == null) {
+	    if (i[93] == null) {
 	      p = 1;
-	    } else if (((Double) i[107]).doubleValue() <= -3.37) {
+	    } else if (((Double) i[93]).doubleValue() <= 0.61) {
 	      p = 1;
-	    } else if (((Double) i[107]).doubleValue() > -3.37) {
-	    p = HandSenseClassifier_0.N35012eea707(i);
+	    } else if (((Double) i[93]).doubleValue() > 0.61) {
+	      p = 0;
 	    } 
 	    return p;
 	  }
-	  static double N35012eea707(Object []i) {
+	  static double N718f1128914(Object []i) {
 	    double p = Double.NaN;
-	    if (i[87] == null) {
+	    if (i[102] == null) {
 	      p = 0;
-	    } else if (((Double) i[87]).doubleValue() <= 0.13) {
+	    } else if (((Double) i[102]).doubleValue() <= 2.15) {
 	      p = 0;
-	    } else if (((Double) i[87]).doubleValue() > 0.13) {
+	    } else if (((Double) i[102]).doubleValue() > 2.15) {
+	    p = HandSenseClassifier_0.N67af9356915(i);
+	    } 
+	    return p;
+	  }
+	  static double N67af9356915(Object []i) {
+	    double p = Double.NaN;
+	    if (i[16] == null) {
 	      p = 1;
+	    } else if (((Double) i[16]).doubleValue() <= 5.38) {
+	      p = 1;
+	    } else if (((Double) i[16]).doubleValue() > 5.38) {
+	      p = 0;
 	    } 
 	    return p;
 	  }
@@ -93,60 +104,82 @@ public class HandSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = HandSenseClassifier_1.N60af1fd5708(i);
+	    p = HandSenseClassifier_1.N37f22848916(i);
 	    return p;
 	  }
-	  static double N60af1fd5708(Object []i) {
+	  static double N37f22848916(Object []i) {
 	    double p = Double.NaN;
-	    if (i[103] == null) {
+	    if (i[87] == null) {
 	      p = 0;
-	    } else if (((Double) i[103]).doubleValue() <= -7.97) {
-	      p = 0;
-	    } else if (((Double) i[103]).doubleValue() > -7.97) {
-	    p = HandSenseClassifier_1.N9530a8a709(i);
-	    } 
-	    return p;
-	  }
-	  static double N9530a8a709(Object []i) {
-	    double p = Double.NaN;
-	    if (i[11] == null) {
-	      p = 0;
-	    } else if (((Double) i[11]).doubleValue() <= 4.08) {
-	      p = 0;
-	    } else if (((Double) i[11]).doubleValue() > 4.08) {
-	    p = HandSenseClassifier_1.N2ad8eece710(i);
-	    } 
-	    return p;
-	  }
-	  static double N2ad8eece710(Object []i) {
-	    double p = Double.NaN;
-	    if (i[96] == null) {
+	    } else if (((Double) i[87]).doubleValue() <= 1.01) {
+	    p = HandSenseClassifier_1.N7b32aba9917(i);
+	    } else if (((Double) i[87]).doubleValue() > 1.01) {
 	      p = 1;
-	    } else if (((Double) i[96]).doubleValue() <= 5.82) {
-	    p = HandSenseClassifier_1.N8262c5c711(i);
-	    } else if (((Double) i[96]).doubleValue() > 5.82) {
+	    } 
+	    return p;
+	  }
+	  static double N7b32aba9917(Object []i) {
+	    double p = Double.NaN;
+	    if (i[89] == null) {
+	      p = 1;
+	    } else if (((Double) i[89]).doubleValue() <= 5.12) {
+	    p = HandSenseClassifier_1.N3ba4236f918(i);
+	    } else if (((Double) i[89]).doubleValue() > 5.12) {
+	    p = HandSenseClassifier_1.N15126b00919(i);
+	    } 
+	    return p;
+	  }
+	  static double N3ba4236f918(Object []i) {
+	    double p = Double.NaN;
+	    if (i[101] == null) {
+	      p = 1;
+	    } else if (((Double) i[101]).doubleValue() <= 6.28) {
+	      p = 1;
+	    } else if (((Double) i[101]).doubleValue() > 6.28) {
 	      p = 0;
 	    } 
 	    return p;
 	  }
-	  static double N8262c5c711(Object []i) {
+	  static double N15126b00919(Object []i) {
 	    double p = Double.NaN;
-	    if (i[0] == null) {
+	    if (i[107] == null) {
 	      p = 0;
-	    } else if (((Double) i[0]).doubleValue() <= -1.06) {
-	      p = 0;
-	    } else if (((Double) i[0]).doubleValue() > -1.06) {
-	    p = HandSenseClassifier_1.N22a5032712(i);
+	    } else if (((Double) i[107]).doubleValue() <= 7.51) {
+	    p = HandSenseClassifier_1.N6c2ed7ce920(i);
+	    } else if (((Double) i[107]).doubleValue() > 7.51) {
+	    p = HandSenseClassifier_1.N496cc009922(i);
 	    } 
 	    return p;
 	  }
-	  static double N22a5032712(Object []i) {
+	  static double N6c2ed7ce920(Object []i) {
 	    double p = Double.NaN;
-	    if (i[79] == null) {
+	    if (i[95] == null) {
 	      p = 0;
-	    } else if (((Double) i[79]).doubleValue() <= 0.79) {
+	    } else if (((Double) i[95]).doubleValue() <= -5.36) {
+	    p = HandSenseClassifier_1.N775a4cde921(i);
+	    } else if (((Double) i[95]).doubleValue() > -5.36) {
 	      p = 0;
-	    } else if (((Double) i[79]).doubleValue() > 0.79) {
+	    } 
+	    return p;
+	  }
+	  static double N775a4cde921(Object []i) {
+	    double p = Double.NaN;
+	    if (i[104] == null) {
+	      p = 0;
+	    } else if (((Double) i[104]).doubleValue() <= -6.44) {
+	      p = 0;
+	    } else if (((Double) i[104]).doubleValue() > -6.44) {
+	      p = 1;
+	    } 
+	    return p;
+	  }
+	  static double N496cc009922(Object []i) {
+	    double p = Double.NaN;
+	    if (i[44] == null) {
+	      p = 0;
+	    } else if (((Double) i[44]).doubleValue() <= 9.07) {
+	      p = 0;
+	    } else if (((Double) i[44]).doubleValue() > 9.07) {
 	      p = 1;
 	    } 
 	    return p;
@@ -158,72 +191,94 @@ public class HandSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = HandSenseClassifier_2.N27f703ba713(i);
+	    p = HandSenseClassifier_2.N2b3b488923(i);
 	    return p;
 	  }
-	  static double N27f703ba713(Object []i) {
+	  static double N2b3b488923(Object []i) {
 	    double p = Double.NaN;
-	    if (i[42] == null) {
+	    if (i[103] == null) {
 	      p = 0;
-	    } else if (((Double) i[42]).doubleValue() <= 0.7) {
-	    p = HandSenseClassifier_2.N4a15bcd5714(i);
-	    } else if (((Double) i[42]).doubleValue() > 0.7) {
+	    } else if (((Double) i[103]).doubleValue() <= -7.05) {
+	    p = HandSenseClassifier_2.N64114e1a924(i);
+	    } else if (((Double) i[103]).doubleValue() > -7.05) {
+	    p = HandSenseClassifier_2.N2c1ec049925(i);
+	    } 
+	    return p;
+	  }
+	  static double N64114e1a924(Object []i) {
+	    double p = Double.NaN;
+	    if (i[99] == null) {
+	      p = 0;
+	    } else if (((Double) i[99]).doubleValue() <= 2.45) {
+	      p = 0;
+	    } else if (((Double) i[99]).doubleValue() > 2.45) {
 	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double N4a15bcd5714(Object []i) {
+	  static double N2c1ec049925(Object []i) {
 	    double p = Double.NaN;
-	    if (i[89] == null) {
-	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() <= 2.6) {
-	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() > 2.6) {
-	    p = HandSenseClassifier_2.N592069f2715(i);
+	    if (i[102] == null) {
+	      p = 0;
+	    } else if (((Double) i[102]).doubleValue() <= -0.92) {
+	      p = 0;
+	    } else if (((Double) i[102]).doubleValue() > -0.92) {
+	    p = HandSenseClassifier_2.N16e20f40926(i);
 	    } 
 	    return p;
 	  }
-	  static double N592069f2715(Object []i) {
+	  static double N16e20f40926(Object []i) {
 	    double p = Double.NaN;
-	    if (i[107] == null) {
-	      p = 0;
-	    } else if (((Double) i[107]).doubleValue() <= 7.81) {
-	    p = HandSenseClassifier_2.N5f0bbc94716(i);
-	    } else if (((Double) i[107]).doubleValue() > 7.81) {
+	    if (i[93] == null) {
 	      p = 1;
-	    } 
-	    return p;
-	  }
-	  static double N5f0bbc94716(Object []i) {
-	    double p = Double.NaN;
-	    if (i[95] == null) {
-	      p = 0;
-	    } else if (((Double) i[95]).doubleValue() <= -5.21) {
-	    p = HandSenseClassifier_2.N7b89c94b717(i);
-	    } else if (((Double) i[95]).doubleValue() > -5.21) {
+	    } else if (((Double) i[93]).doubleValue() <= 6.28) {
+	    p = HandSenseClassifier_2.N53573e7c927(i);
+	    } else if (((Double) i[93]).doubleValue() > 6.28) {
 	      p = 0;
 	    } 
 	    return p;
 	  }
-	  static double N7b89c94b717(Object []i) {
+	  static double N53573e7c927(Object []i) {
 	    double p = Double.NaN;
-	    if (i[20] == null) {
+	    if (i[62] == null) {
 	      p = 1;
-	    } else if (((Double) i[20]).doubleValue() <= 9.1) {
-	      p = 1;
-	    } else if (((Double) i[20]).doubleValue() > 9.1) {
-	    p = HandSenseClassifier_2.N12fe9a4a718(i);
+	    } else if (((Double) i[62]).doubleValue() <= 8.28) {
+	    p = HandSenseClassifier_2.N4c769a3928(i);
+	    } else if (((Double) i[62]).doubleValue() > 8.28) {
+	    p = HandSenseClassifier_2.N3fe84ec8929(i);
 	    } 
 	    return p;
 	  }
-	  static double N12fe9a4a718(Object []i) {
+	  static double N4c769a3928(Object []i) {
 	    double p = Double.NaN;
-	    if (i[5] == null) {
-	      p = 1;
-	    } else if (((Double) i[5]).doubleValue() <= 8.89) {
-	      p = 1;
-	    } else if (((Double) i[5]).doubleValue() > 8.89) {
+	    if (i[99] == null) {
 	      p = 0;
+	    } else if (((Double) i[99]).doubleValue() <= 4.9) {
+	      p = 0;
+	    } else if (((Double) i[99]).doubleValue() > 4.9) {
+	      p = 1;
+	    } 
+	    return p;
+	  }
+	  static double N3fe84ec8929(Object []i) {
+	    double p = Double.NaN;
+	    if (i[36] == null) {
+	      p = 1;
+	    } else if (((Double) i[36]).doubleValue() <= 0.08) {
+	    p = HandSenseClassifier_2.N2c8c4d3f930(i);
+	    } else if (((Double) i[36]).doubleValue() > 0.08) {
+	      p = 1;
+	    } 
+	    return p;
+	  }
+	  static double N2c8c4d3f930(Object []i) {
+	    double p = Double.NaN;
+	    if (i[103] == null) {
+	      p = 0;
+	    } else if (((Double) i[103]).doubleValue() <= -5.82) {
+	      p = 0;
+	    } else if (((Double) i[103]).doubleValue() > -5.82) {
+	      p = 1;
 	    } 
 	    return p;
 	  }
@@ -234,83 +289,105 @@ public class HandSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = HandSenseClassifier_3.N9437a04719(i);
+	    p = HandSenseClassifier_3.N2f2379f2931(i);
 	    return p;
 	  }
-	  static double N9437a04719(Object []i) {
-	    double p = Double.NaN;
-	    if (i[63] == null) {
-	      p = 0;
-	    } else if (((Double) i[63]).doubleValue() <= 0.7) {
-	    p = HandSenseClassifier_3.N2cffa15c720(i);
-	    } else if (((Double) i[63]).doubleValue() > 0.7) {
-	      p = 1;
-	    } 
-	    return p;
-	  }
-	  static double N2cffa15c720(Object []i) {
-	    double p = Double.NaN;
-	    if (i[44] == null) {
-	      p = 0;
-	    } else if (((Double) i[44]).doubleValue() <= 9.6) {
-	    p = HandSenseClassifier_3.N42bab618721(i);
-	    } else if (((Double) i[44]).doubleValue() > 9.6) {
-	      p = 1;
-	    } 
-	    return p;
-	  }
-	  static double N42bab618721(Object []i) {
+	  static double N2f2379f2931(Object []i) {
 	    double p = Double.NaN;
 	    if (i[103] == null) {
 	      p = 0;
-	    } else if (((Double) i[103]).doubleValue() <= -6.13) {
-	    p = HandSenseClassifier_3.N700903e1722(i);
-	    } else if (((Double) i[103]).doubleValue() > -6.13) {
-	    p = HandSenseClassifier_3.N5fdde23d723(i);
+	    } else if (((Double) i[103]).doubleValue() <= -7.97) {
+	    p = HandSenseClassifier_3.N421b170b932(i);
+	    } else if (((Double) i[103]).doubleValue() > -7.97) {
+	    p = HandSenseClassifier_3.N85f515933(i);
 	    } 
 	    return p;
 	  }
-	  static double N700903e1722(Object []i) {
+	  static double N421b170b932(Object []i) {
 	    double p = Double.NaN;
-	    if (i[89] == null) {
+	    if (i[18] == null) {
+	      p = 0;
+	    } else if (((Double) i[18]).doubleValue() <= 0.69) {
+	      p = 0;
+	    } else if (((Double) i[18]).doubleValue() > 0.69) {
 	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() <= 5.42) {
+	    } 
+	    return p;
+	  }
+	  static double N85f515933(Object []i) {
+	    double p = Double.NaN;
+	    if (i[105] == null) {
 	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() > 5.42) {
+	    } else if (((Double) i[105]).doubleValue() <= 5.06) {
+	    p = HandSenseClassifier_3.N5a9d35f7934(i);
+	    } else if (((Double) i[105]).doubleValue() > 5.06) {
 	      p = 0;
 	    } 
 	    return p;
 	  }
-	  static double N5fdde23d723(Object []i) {
+	  static double N5a9d35f7934(Object []i) {
 	    double p = Double.NaN;
-	    if (i[91] == null) {
-	      p = 1;
-	    } else if (((Double) i[91]).doubleValue() <= -6.28) {
-	      p = 1;
-	    } else if (((Double) i[91]).doubleValue() > -6.28) {
-	    p = HandSenseClassifier_3.N603043f6724(i);
+	    if (i[33] == null) {
+	      p = 0;
+	    } else if (((Double) i[33]).doubleValue() <= -0.73) {
+	      p = 0;
+	    } else if (((Double) i[33]).doubleValue() > -0.73) {
+	    p = HandSenseClassifier_3.N742199b935(i);
 	    } 
 	    return p;
 	  }
-	  static double N603043f6724(Object []i) {
+	  static double N742199b935(Object []i) {
 	    double p = Double.NaN;
-	    if (i[5] == null) {
+	    if (i[96] == null) {
 	      p = 0;
-	    } else if (((Double) i[5]).doubleValue() <= 8.11) {
+	    } else if (((Double) i[96]).doubleValue() <= -0.92) {
 	      p = 0;
-	    } else if (((Double) i[5]).doubleValue() > 8.11) {
-	    p = HandSenseClassifier_3.Nbdfcd0725(i);
+	    } else if (((Double) i[96]).doubleValue() > -0.92) {
+	    p = HandSenseClassifier_3.N49f12d6936(i);
 	    } 
 	    return p;
 	  }
-	  static double Nbdfcd0725(Object []i) {
+	  static double N49f12d6936(Object []i) {
 	    double p = Double.NaN;
-	    if (i[44] == null) {
+	    if (i[106] == null) {
 	      p = 1;
-	    } else if (((Double) i[44]).doubleValue() <= 9.12) {
+	    } else if (((Double) i[106]).doubleValue() <= -5.82) {
+	    p = HandSenseClassifier_3.N678da1f8937(i);
+	    } else if (((Double) i[106]).doubleValue() > -5.82) {
 	      p = 1;
-	    } else if (((Double) i[44]).doubleValue() > 9.12) {
+	    } 
+	    return p;
+	  }
+	  static double N678da1f8937(Object []i) {
+	    double p = Double.NaN;
+	    if (i[101] == null) {
 	      p = 0;
+	    } else if (((Double) i[101]).doubleValue() <= -6.44) {
+	      p = 0;
+	    } else if (((Double) i[101]).doubleValue() > -6.44) {
+	    p = HandSenseClassifier_3.N384d5e5938(i);
+	    } 
+	    return p;
+	  }
+	  static double N384d5e5938(Object []i) {
+	    double p = Double.NaN;
+	    if (i[98] == null) {
+	      p = 1;
+	    } else if (((Double) i[98]).doubleValue() <= 4.9) {
+	      p = 1;
+	    } else if (((Double) i[98]).doubleValue() > 4.9) {
+	    p = HandSenseClassifier_3.N5f6af31939(i);
+	    } 
+	    return p;
+	  }
+	  static double N5f6af31939(Object []i) {
+	    double p = Double.NaN;
+	    if (i[92] == null) {
+	      p = 0;
+	    } else if (((Double) i[92]).doubleValue() <= 7.66) {
+	      p = 0;
+	    } else if (((Double) i[92]).doubleValue() > 7.66) {
+	      p = 1;
 	    } 
 	    return p;
 	  }
@@ -321,83 +398,83 @@ public class HandSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = HandSenseClassifier_4.N3920bc11726(i);
+	    p = HandSenseClassifier_4.N667bd06940(i);
 	    return p;
 	  }
-	  static double N3920bc11726(Object []i) {
+	  static double N667bd06940(Object []i) {
 	    double p = Double.NaN;
-	    if (i[87] == null) {
+	    if (i[103] == null) {
 	      p = 0;
-	    } else if (((Double) i[87]).doubleValue() <= -0.53) {
-	      p = 0;
-	    } else if (((Double) i[87]).doubleValue() > -0.53) {
-	    p = HandSenseClassifier_4.N141b1d64727(i);
+	    } else if (((Double) i[103]).doubleValue() <= -7.81) {
+	    p = HandSenseClassifier_4.N4aad833941(i);
+	    } else if (((Double) i[103]).doubleValue() > -7.81) {
+	    p = HandSenseClassifier_4.N6c57fea9942(i);
 	    } 
 	    return p;
 	  }
-	  static double N141b1d64727(Object []i) {
+	  static double N4aad833941(Object []i) {
 	    double p = Double.NaN;
-	    if (i[102] == null) {
+	    if (i[18] == null) {
 	      p = 0;
-	    } else if (((Double) i[102]).doubleValue() <= -0.92) {
+	    } else if (((Double) i[18]).doubleValue() <= 0.85) {
 	      p = 0;
-	    } else if (((Double) i[102]).doubleValue() > -0.92) {
-	    p = HandSenseClassifier_4.N269a8c728(i);
-	    } 
-	    return p;
-	  }
-	  static double N269a8c728(Object []i) {
-	    double p = Double.NaN;
-	    if (i[5] == null) {
-	      p = 0;
-	    } else if (((Double) i[5]).doubleValue() <= 7.86) {
-	      p = 0;
-	    } else if (((Double) i[5]).doubleValue() > 7.86) {
-	    p = HandSenseClassifier_4.N666c5d67729(i);
-	    } 
-	    return p;
-	  }
-	  static double N666c5d67729(Object []i) {
-	    double p = Double.NaN;
-	    if (i[97] == null) {
-	      p = 1;
-	    } else if (((Double) i[97]).doubleValue() <= -6.28) {
-	    p = HandSenseClassifier_4.N546849b9730(i);
-	    } else if (((Double) i[97]).doubleValue() > -6.28) {
+	    } else if (((Double) i[18]).doubleValue() > 0.85) {
 	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double N546849b9730(Object []i) {
+	  static double N6c57fea9942(Object []i) {
 	    double p = Double.NaN;
-	    if (i[0] == null) {
+	    if (i[62] == null) {
 	      p = 0;
-	    } else if (((Double) i[0]).doubleValue() <= 0.12) {
-	    p = HandSenseClassifier_4.Nac03bfa731(i);
-	    } else if (((Double) i[0]).doubleValue() > 0.12) {
-	    p = HandSenseClassifier_4.N52a19f99732(i);
+	    } else if (((Double) i[62]).doubleValue() <= 4.57) {
+	      p = 0;
+	    } else if (((Double) i[62]).doubleValue() > 4.57) {
+	    p = HandSenseClassifier_4.N51040d1943(i);
 	    } 
 	    return p;
 	  }
-	  static double Nac03bfa731(Object []i) {
+	  static double N51040d1943(Object []i) {
 	    double p = Double.NaN;
-	    if (i[61] == null) {
+	    if (i[99] == null) {
 	      p = 0;
-	    } else if (((Double) i[61]).doubleValue() <= 2.32) {
+	    } else if (((Double) i[99]).doubleValue() <= 1.23) {
+	    p = HandSenseClassifier_4.N6e0f5bef944(i);
+	    } else if (((Double) i[99]).doubleValue() > 1.23) {
+	    p = HandSenseClassifier_4.N6f8dd1d8946(i);
+	    } 
+	    return p;
+	  }
+	  static double N6e0f5bef944(Object []i) {
+	    double p = Double.NaN;
+	    if (i[4] == null) {
+	      p = 1;
+	    } else if (((Double) i[4]).doubleValue() <= 1.9) {
+	    p = HandSenseClassifier_4.N325ce05c945(i);
+	    } else if (((Double) i[4]).doubleValue() > 1.9) {
 	      p = 0;
-	    } else if (((Double) i[61]).doubleValue() > 2.32) {
+	    } 
+	    return p;
+	  }
+	  static double N325ce05c945(Object []i) {
+	    double p = Double.NaN;
+	    if (i[101] == null) {
+	      p = 0;
+	    } else if (((Double) i[101]).doubleValue() <= -7.51) {
+	      p = 0;
+	    } else if (((Double) i[101]).doubleValue() > -7.51) {
 	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double N52a19f99732(Object []i) {
+	  static double N6f8dd1d8946(Object []i) {
 	    double p = Double.NaN;
-	    if (i[89] == null) {
-	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() <= 8.95) {
-	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() > 8.95) {
+	    if (i[73] == null) {
 	      p = 0;
+	    } else if (((Double) i[73]).doubleValue() <= 2.09) {
+	      p = 0;
+	    } else if (((Double) i[73]).doubleValue() > 2.09) {
+	      p = 1;
 	    } 
 	    return p;
 	  }
@@ -408,116 +485,61 @@ public class HandSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = HandSenseClassifier_5.N70f52030733(i);
+	    p = HandSenseClassifier_5.N47cbf51f947(i);
 	    return p;
 	  }
-	  static double N70f52030733(Object []i) {
+	  static double N47cbf51f947(Object []i) {
 	    double p = Double.NaN;
-	    if (i[107] == null) {
-	      p = 1;
-	    } else if (((Double) i[107]).doubleValue() <= -7.66) {
-	      p = 1;
-	    } else if (((Double) i[107]).doubleValue() > -7.66) {
-	    p = HandSenseClassifier_5.N6d14693f734(i);
-	    } 
-	    return p;
-	  }
-	  static double N6d14693f734(Object []i) {
-	    double p = Double.NaN;
-	    if (i[7] == null) {
-	      p = 1;
-	    } else if (((Double) i[7]).doubleValue() <= 0.86) {
-	      p = 1;
-	    } else if (((Double) i[7]).doubleValue() > 0.86) {
-	    p = HandSenseClassifier_5.N5709df0b735(i);
-	    } 
-	    return p;
-	  }
-	  static double N5709df0b735(Object []i) {
-	    double p = Double.NaN;
-	    if (i[87] == null) {
+	    if (i[103] == null) {
 	      p = 0;
-	    } else if (((Double) i[87]).doubleValue() <= 0.92) {
-	    p = HandSenseClassifier_5.N491277d1736(i);
-	    } else if (((Double) i[87]).doubleValue() > 0.92) {
-	      p = 1;
+	    } else if (((Double) i[103]).doubleValue() <= -6.13) {
+	    p = HandSenseClassifier_5.N1f49eb0c948(i);
+	    } else if (((Double) i[103]).doubleValue() > -6.13) {
+	    p = HandSenseClassifier_5.N73fc99aa950(i);
 	    } 
 	    return p;
 	  }
-	  static double N491277d1736(Object []i) {
+	  static double N1f49eb0c948(Object []i) {
 	    double p = Double.NaN;
 	    if (i[89] == null) {
 	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() <= 5.57) {
-	    p = HandSenseClassifier_5.N5b785fd1737(i);
-	    } else if (((Double) i[89]).doubleValue() > 5.57) {
-	    p = HandSenseClassifier_5.N3bdac141738(i);
+	    } else if (((Double) i[89]).doubleValue() <= 4.47) {
+	      p = 1;
+	    } else if (((Double) i[89]).doubleValue() > 4.47) {
+	    p = HandSenseClassifier_5.N2de670e0949(i);
 	    } 
 	    return p;
 	  }
-	  static double N5b785fd1737(Object []i) {
+	  static double N2de670e0949(Object []i) {
 	    double p = Double.NaN;
-	    if (i[51] == null) {
+	    if (i[81] == null) {
 	      p = 0;
-	    } else if (((Double) i[51]).doubleValue() <= -0.13) {
+	    } else if (((Double) i[81]).doubleValue() <= 1.01) {
 	      p = 0;
-	    } else if (((Double) i[51]).doubleValue() > -0.13) {
+	    } else if (((Double) i[81]).doubleValue() > 1.01) {
 	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double N3bdac141738(Object []i) {
+	  static double N73fc99aa950(Object []i) {
 	    double p = Double.NaN;
-	    if (i[104] == null) {
+	    if (i[80] == null) {
 	      p = 0;
-	    } else if (((Double) i[104]).doubleValue() <= 7.81) {
-	    p = HandSenseClassifier_5.N16c5b11a739(i);
-	    } else if (((Double) i[104]).doubleValue() > 7.81) {
-	      p = 1;
+	    } else if (((Double) i[80]).doubleValue() <= 5.59) {
+	      p = 0;
+	    } else if (((Double) i[80]).doubleValue() > 5.59) {
+	    p = HandSenseClassifier_5.N4ccca363951(i);
 	    } 
 	    return p;
 	  }
-	  static double N16c5b11a739(Object []i) {
+	  static double N4ccca363951(Object []i) {
 	    double p = Double.NaN;
-	    if (i[72] == null) {
+	    if (i[93] == null) {
 	      p = 0;
-	    } else if (((Double) i[72]).doubleValue() <= 0.41) {
-	    p = HandSenseClassifier_5.Ncee2da4740(i);
-	    } else if (((Double) i[72]).doubleValue() > 0.41) {
-	    p = HandSenseClassifier_5.Nb5b8941742(i);
-	    } 
-	    return p;
-	  }
-	  static double Ncee2da4740(Object []i) {
-	    double p = Double.NaN;
-	    if (i[96] == null) {
+	    } else if (((Double) i[93]).doubleValue() <= -0.92) {
 	      p = 0;
-	    } else if (((Double) i[96]).doubleValue() <= 1.38) {
-	      p = 0;
-	    } else if (((Double) i[96]).doubleValue() > 1.38) {
-	    p = HandSenseClassifier_5.N68f6709d741(i);
-	    } 
-	    return p;
-	  }
-	  static double N68f6709d741(Object []i) {
-	    double p = Double.NaN;
-	    if (i[90] == null) {
+	    } else if (((Double) i[93]).doubleValue() > -0.92) {
 	      p = 1;
-	    } else if (((Double) i[90]).doubleValue() <= 3.52) {
-	      p = 1;
-	    } else if (((Double) i[90]).doubleValue() > 3.52) {
-	      p = 0;
-	    } 
-	    return p;
-	  }
-	  static double Nb5b8941742(Object []i) {
-	    double p = Double.NaN;
-	    if (i[14] == null) {
-	      p = 1;
-	    } else if (((Double) i[14]).doubleValue() <= 9.42) {
-	      p = 1;
-	    } else if (((Double) i[14]).doubleValue() > 9.42) {
-	      p = 0;
 	    } 
 	    return p;
 	  }
@@ -528,93 +550,93 @@ public class HandSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = HandSenseClassifier_6.N2690103a743(i);
+	    p = HandSenseClassifier_6.Nefadff9952(i);
 	    return p;
 	  }
-	  static double N2690103a743(Object []i) {
+	  static double Nefadff9952(Object []i) {
 	    double p = Double.NaN;
-	    if (i[107] == null) {
-	      p = 1;
-	    } else if (((Double) i[107]).doubleValue() <= -8.27) {
-	      p = 1;
-	    } else if (((Double) i[107]).doubleValue() > -8.27) {
-	    p = HandSenseClassifier_6.N3c19639d744(i);
-	    } 
-	    return p;
-	  }
-	  static double N3c19639d744(Object []i) {
-	    double p = Double.NaN;
-	    if (i[89] == null) {
-	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() <= 1.43) {
-	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() > 1.43) {
-	    p = HandSenseClassifier_6.N26daf73e745(i);
-	    } 
-	    return p;
-	  }
-	  static double N26daf73e745(Object []i) {
-	    double p = Double.NaN;
-	    if (i[3] == null) {
+	    if (i[103] == null) {
 	      p = 0;
-	    } else if (((Double) i[3]).doubleValue() <= 0.98) {
-	    p = HandSenseClassifier_6.N719e1b5f746(i);
-	    } else if (((Double) i[3]).doubleValue() > 0.98) {
-	      p = 1;
+	    } else if (((Double) i[103]).doubleValue() <= -7.35) {
+	    p = HandSenseClassifier_6.N78865c1d953(i);
+	    } else if (((Double) i[103]).doubleValue() > -7.35) {
+	    p = HandSenseClassifier_6.N3d09b1bc954(i);
 	    } 
 	    return p;
 	  }
-	  static double N719e1b5f746(Object []i) {
+	  static double N78865c1d953(Object []i) {
 	    double p = Double.NaN;
-	    if (i[44] == null) {
+	    if (i[97] == null) {
 	      p = 0;
-	    } else if (((Double) i[44]).doubleValue() <= 9.52) {
-	    p = HandSenseClassifier_6.N4317343f747(i);
-	    } else if (((Double) i[44]).doubleValue() > 9.52) {
+	    } else if (((Double) i[97]).doubleValue() <= -7.51) {
+	      p = 0;
+	    } else if (((Double) i[97]).doubleValue() > -7.51) {
 	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double N4317343f747(Object []i) {
+	  static double N3d09b1bc954(Object []i) {
+	    double p = Double.NaN;
+	    if (i[90] == null) {
+	      p = 1;
+	    } else if (((Double) i[90]).doubleValue() <= 6.74) {
+	    p = HandSenseClassifier_6.N4773ccf2955(i);
+	    } else if (((Double) i[90]).doubleValue() > 6.74) {
+	      p = 0;
+	    } 
+	    return p;
+	  }
+	  static double N4773ccf2955(Object []i) {
+	    double p = Double.NaN;
+	    if (i[98] == null) {
+	      p = 1;
+	    } else if (((Double) i[98]).doubleValue() <= 7.35) {
+	    p = HandSenseClassifier_6.N3944884956(i);
+	    } else if (((Double) i[98]).doubleValue() > 7.35) {
+	    p = HandSenseClassifier_6.N27a811c959(i);
+	    } 
+	    return p;
+	  }
+	  static double N3944884956(Object []i) {
+	    double p = Double.NaN;
+	    if (i[65] == null) {
+	      p = 0;
+	    } else if (((Double) i[65]).doubleValue() <= 4.58) {
+	      p = 0;
+	    } else if (((Double) i[65]).doubleValue() > 4.58) {
+	    p = HandSenseClassifier_6.N7c24d3f1957(i);
+	    } 
+	    return p;
+	  }
+	  static double N7c24d3f1957(Object []i) {
+	    double p = Double.NaN;
+	    if (i[26] == null) {
+	      p = 1;
+	    } else if (((Double) i[26]).doubleValue() <= 9.32) {
+	      p = 1;
+	    } else if (((Double) i[26]).doubleValue() > 9.32) {
+	    p = HandSenseClassifier_6.N55d6b2e3958(i);
+	    } 
+	    return p;
+	  }
+	  static double N55d6b2e3958(Object []i) {
+	    double p = Double.NaN;
+	    if (i[103] == null) {
+	      p = 0;
+	    } else if (((Double) i[103]).doubleValue() <= -6.28) {
+	      p = 0;
+	    } else if (((Double) i[103]).doubleValue() > -6.28) {
+	      p = 1;
+	    } 
+	    return p;
+	  }
+	  static double N27a811c959(Object []i) {
 	    double p = Double.NaN;
 	    if (i[96] == null) {
 	      p = 0;
-	    } else if (((Double) i[96]).doubleValue() <= 2.76) {
-	    p = HandSenseClassifier_6.N28673682748(i);
-	    } else if (((Double) i[96]).doubleValue() > 2.76) {
-	    p = HandSenseClassifier_6.N21804a5c750(i);
-	    } 
-	    return p;
-	  }
-	  static double N28673682748(Object []i) {
-	    double p = Double.NaN;
-	    if (i[47] == null) {
+	    } else if (((Double) i[96]).doubleValue() <= 1.07) {
 	      p = 0;
-	    } else if (((Double) i[47]).doubleValue() <= 9.37) {
-	      p = 0;
-	    } else if (((Double) i[47]).doubleValue() > 9.37) {
-	    p = HandSenseClassifier_6.N102ba587749(i);
-	    } 
-	    return p;
-	  }
-	  static double N102ba587749(Object []i) {
-	    double p = Double.NaN;
-	    if (i[13] == null) {
-	      p = 0;
-	    } else if (((Double) i[13]).doubleValue() <= 0.66) {
-	      p = 0;
-	    } else if (((Double) i[13]).doubleValue() > 0.66) {
-	      p = 1;
-	    } 
-	    return p;
-	  }
-	  static double N21804a5c750(Object []i) {
-	    double p = Double.NaN;
-	    if (i[75] == null) {
-	      p = 0;
-	    } else if (((Double) i[75]).doubleValue() <= 0.18) {
-	      p = 0;
-	    } else if (((Double) i[75]).doubleValue() > 0.18) {
+	    } else if (((Double) i[96]).doubleValue() > 1.07) {
 	      p = 1;
 	    } 
 	    return p;
@@ -626,93 +648,115 @@ public class HandSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = HandSenseClassifier_7.N6d91ef32751(i);
+	    p = HandSenseClassifier_7.N38b25689960(i);
 	    return p;
 	  }
-	  static double N6d91ef32751(Object []i) {
+	  static double N38b25689960(Object []i) {
 	    double p = Double.NaN;
-	    if (i[87] == null) {
+	    if (i[105] == null) {
+	      p = 1;
+	    } else if (((Double) i[105]).doubleValue() <= 5.82) {
+	    p = HandSenseClassifier_7.N444f5973961(i);
+	    } else if (((Double) i[105]).doubleValue() > 5.82) {
 	      p = 0;
-	    } else if (((Double) i[87]).doubleValue() <= 1.01) {
-	    p = HandSenseClassifier_7.N7eef3d1752(i);
-	    } else if (((Double) i[87]).doubleValue() > 1.01) {
-	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double N7eef3d1752(Object []i) {
+	  static double N444f5973961(Object []i) {
 	    double p = Double.NaN;
-	    if (i[89] == null) {
-	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() <= 7.29) {
-	    p = HandSenseClassifier_7.N58c92268753(i);
-	    } else if (((Double) i[89]).doubleValue() > 7.29) {
-	    p = HandSenseClassifier_7.N75c2b15c755(i);
+	    if (i[105] == null) {
+	      p = 0;
+	    } else if (((Double) i[105]).doubleValue() <= -0.92) {
+	      p = 0;
+	    } else if (((Double) i[105]).doubleValue() > -0.92) {
+	    p = HandSenseClassifier_7.N3579b00e962(i);
 	    } 
 	    return p;
 	  }
-	  static double N58c92268753(Object []i) {
+	  static double N3579b00e962(Object []i) {
+	    double p = Double.NaN;
+	    if (i[6] == null) {
+	      p = 0;
+	    } else if (((Double) i[6]).doubleValue() <= -1.06) {
+	      p = 0;
+	    } else if (((Double) i[6]).doubleValue() > -1.06) {
+	    p = HandSenseClassifier_7.N4815828f963(i);
+	    } 
+	    return p;
+	  }
+	  static double N4815828f963(Object []i) {
+	    double p = Double.NaN;
+	    if (i[78] == null) {
+	      p = 1;
+	    } else if (((Double) i[78]).doubleValue() <= 0.67) {
+	    p = HandSenseClassifier_7.N7c2e9f41964(i);
+	    } else if (((Double) i[78]).doubleValue() > 0.67) {
+	      p = 1;
+	    } 
+	    return p;
+	  }
+	  static double N7c2e9f41964(Object []i) {
 	    double p = Double.NaN;
 	    if (i[103] == null) {
 	      p = 0;
-	    } else if (((Double) i[103]).doubleValue() <= -8.27) {
+	    } else if (((Double) i[103]).doubleValue() <= -8.12) {
 	      p = 0;
-	    } else if (((Double) i[103]).doubleValue() > -8.27) {
-	    p = HandSenseClassifier_7.N7cf20761754(i);
+	    } else if (((Double) i[103]).doubleValue() > -8.12) {
+	    p = HandSenseClassifier_7.N58d9a418965(i);
 	    } 
 	    return p;
 	  }
-	  static double N7cf20761754(Object []i) {
+	  static double N58d9a418965(Object []i) {
+	    double p = Double.NaN;
+	    if (i[48] == null) {
+	      p = 1;
+	    } else if (((Double) i[48]).doubleValue() <= -0.27) {
+	      p = 1;
+	    } else if (((Double) i[48]).doubleValue() > -0.27) {
+	    p = HandSenseClassifier_7.N38a4513a966(i);
+	    } 
+	    return p;
+	  }
+	  static double N38a4513a966(Object []i) {
 	    double p = Double.NaN;
 	    if (i[94] == null) {
 	      p = 1;
-	    } else if (((Double) i[94]).doubleValue() <= -6.9) {
+	    } else if (((Double) i[94]).doubleValue() <= -7.51) {
 	      p = 1;
-	    } else if (((Double) i[94]).doubleValue() > -6.9) {
-	      p = 0;
+	    } else if (((Double) i[94]).doubleValue() > -7.51) {
+	    p = HandSenseClassifier_7.N2bd0d3e3967(i);
 	    } 
 	    return p;
 	  }
-	  static double N75c2b15c755(Object []i) {
+	  static double N2bd0d3e3967(Object []i) {
 	    double p = Double.NaN;
-	    if (i[5] == null) {
-	      p = 0;
-	    } else if (((Double) i[5]).doubleValue() <= 10.64) {
-	    p = HandSenseClassifier_7.N410a4b6a756(i);
-	    } else if (((Double) i[5]).doubleValue() > 10.64) {
+	    if (i[92] == null) {
 	      p = 1;
+	    } else if (((Double) i[92]).doubleValue() <= -7.51) {
+	      p = 1;
+	    } else if (((Double) i[92]).doubleValue() > -7.51) {
+	    p = HandSenseClassifier_7.N1b06f28e968(i);
 	    } 
 	    return p;
 	  }
-	  static double N410a4b6a756(Object []i) {
+	  static double N1b06f28e968(Object []i) {
+	    double p = Double.NaN;
+	    if (i[94] == null) {
+	      p = 0;
+	    } else if (((Double) i[94]).doubleValue() <= -6.13) {
+	      p = 0;
+	    } else if (((Double) i[94]).doubleValue() > -6.13) {
+	    p = HandSenseClassifier_7.N651e567e969(i);
+	    } 
+	    return p;
+	  }
+	  static double N651e567e969(Object []i) {
 	    double p = Double.NaN;
 	    if (i[17] == null) {
 	      p = 0;
-	    } else if (((Double) i[17]).doubleValue() <= 8.66) {
-	    p = HandSenseClassifier_7.Nadd3d82757(i);
-	    } else if (((Double) i[17]).doubleValue() > 8.66) {
+	    } else if (((Double) i[17]).doubleValue() <= 8.35) {
 	      p = 0;
-	    } 
-	    return p;
-	  }
-	  static double Nadd3d82757(Object []i) {
-	    double p = Double.NaN;
-	    if (i[90] == null) {
-	      p = 1;
-	    } else if (((Double) i[90]).doubleValue() <= -0.46) {
-	      p = 1;
-	    } else if (((Double) i[90]).doubleValue() > -0.46) {
-	    p = HandSenseClassifier_7.N42f12760758(i);
-	    } 
-	    return p;
-	  }
-	  static double N42f12760758(Object []i) {
-	    double p = Double.NaN;
-	    if (i[96] == null) {
-	      p = 0;
-	    } else if (((Double) i[96]).doubleValue() <= 2.6) {
-	      p = 0;
-	    } else if (((Double) i[96]).doubleValue() > 2.6) {
+	    } else if (((Double) i[17]).doubleValue() > 8.35) {
 	      p = 1;
 	    } 
 	    return p;
@@ -724,60 +768,60 @@ public class HandSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = HandSenseClassifier_8.N665031f5759(i);
+	    p = HandSenseClassifier_8.N2ac09e0f970(i);
 	    return p;
 	  }
-	  static double N665031f5759(Object []i) {
+	  static double N2ac09e0f970(Object []i) {
 	    double p = Double.NaN;
-	    if (i[96] == null) {
+	    if (i[87] == null) {
 	      p = 0;
-	    } else if (((Double) i[96]).doubleValue() <= -0.92) {
-	      p = 0;
-	    } else if (((Double) i[96]).doubleValue() > -0.92) {
-	    p = HandSenseClassifier_8.N1b00004d760(i);
-	    } 
-	    return p;
-	  }
-	  static double N1b00004d760(Object []i) {
-	    double p = Double.NaN;
-	    if (i[90] == null) {
-	      p = 1;
-	    } else if (((Double) i[90]).doubleValue() <= 5.21) {
-	    p = HandSenseClassifier_8.N1d13cd14761(i);
-	    } else if (((Double) i[90]).doubleValue() > 5.21) {
-	      p = 0;
-	    } 
-	    return p;
-	  }
-	  static double N1d13cd14761(Object []i) {
-	    double p = Double.NaN;
-	    if (i[103] == null) {
-	      p = 0;
-	    } else if (((Double) i[103]).doubleValue() <= -6.74) {
-	    p = HandSenseClassifier_8.N7efceaf5762(i);
-	    } else if (((Double) i[103]).doubleValue() > -6.74) {
-	    p = HandSenseClassifier_8.Nea5bbf5763(i);
-	    } 
-	    return p;
-	  }
-	  static double N7efceaf5762(Object []i) {
-	    double p = Double.NaN;
-	    if (i[105] == null) {
-	      p = 0;
-	    } else if (((Double) i[105]).doubleValue() <= 3.98) {
-	      p = 0;
-	    } else if (((Double) i[105]).doubleValue() > 3.98) {
+	    } else if (((Double) i[87]).doubleValue() <= 0.52) {
+	    p = HandSenseClassifier_8.N4bc900b6971(i);
+	    } else if (((Double) i[87]).doubleValue() > 0.52) {
 	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double Nea5bbf5763(Object []i) {
+	  static double N4bc900b6971(Object []i) {
 	    double p = Double.NaN;
-	    if (i[72] == null) {
+	    if (i[89] == null) {
+	      p = 1;
+	    } else if (((Double) i[89]).doubleValue() <= 2.65) {
+	      p = 1;
+	    } else if (((Double) i[89]).doubleValue() > 2.65) {
+	    p = HandSenseClassifier_8.N794dd398972(i);
+	    } 
+	    return p;
+	  }
+	  static double N794dd398972(Object []i) {
+	    double p = Double.NaN;
+	    if (i[50] == null) {
 	      p = 0;
-	    } else if (((Double) i[72]).doubleValue() <= -0.41) {
+	    } else if (((Double) i[50]).doubleValue() <= 9.68) {
+	    p = HandSenseClassifier_8.N647ede5f973(i);
+	    } else if (((Double) i[50]).doubleValue() > 9.68) {
+	      p = 1;
+	    } 
+	    return p;
+	  }
+	  static double N647ede5f973(Object []i) {
+	    double p = Double.NaN;
+	    if (i[92] == null) {
+	      p = 1;
+	    } else if (((Double) i[92]).doubleValue() <= -4.6) {
+	    p = HandSenseClassifier_8.N45396284974(i);
+	    } else if (((Double) i[92]).doubleValue() > -4.6) {
 	      p = 0;
-	    } else if (((Double) i[72]).doubleValue() > -0.41) {
+	    } 
+	    return p;
+	  }
+	  static double N45396284974(Object []i) {
+	    double p = Double.NaN;
+	    if (i[93] == null) {
+	      p = 0;
+	    } else if (((Double) i[93]).doubleValue() <= 1.69) {
+	      p = 0;
+	    } else if (((Double) i[93]).doubleValue() > 1.69) {
 	      p = 1;
 	    } 
 	    return p;
@@ -789,83 +833,94 @@ public class HandSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = HandSenseClassifier_9.N22d6d956764(i);
+	    p = HandSenseClassifier_9.N3a72eb9d975(i);
 	    return p;
 	  }
-	  static double N22d6d956764(Object []i) {
+	  static double N3a72eb9d975(Object []i) {
 	    double p = Double.NaN;
-	    if (i[92] == null) {
+	    if (i[107] == null) {
 	      p = 1;
-	    } else if (((Double) i[92]).doubleValue() <= -8.43) {
+	    } else if (((Double) i[107]).doubleValue() <= -8.12) {
 	      p = 1;
-	    } else if (((Double) i[92]).doubleValue() > -8.43) {
-	    p = HandSenseClassifier_9.N4756aef8765(i);
+	    } else if (((Double) i[107]).doubleValue() > -8.12) {
+	    p = HandSenseClassifier_9.N4ecaae65976(i);
 	    } 
 	    return p;
 	  }
-	  static double N4756aef8765(Object []i) {
+	  static double N4ecaae65976(Object []i) {
 	    double p = Double.NaN;
-	    if (i[87] == null) {
+	    if (i[44] == null) {
 	      p = 0;
-	    } else if (((Double) i[87]).doubleValue() <= 0.71) {
-	    p = HandSenseClassifier_9.Nbf9405f766(i);
-	    } else if (((Double) i[87]).doubleValue() > 0.71) {
-	      p = 1;
-	    } 
-	    return p;
-	  }
-	  static double Nbf9405f766(Object []i) {
-	    double p = Double.NaN;
-	    if (i[36] == null) {
-	      p = 1;
-	    } else if (((Double) i[36]).doubleValue() <= -0.16) {
-	    p = HandSenseClassifier_9.N18f1231d767(i);
-	    } else if (((Double) i[36]).doubleValue() > -0.16) {
-	    p = HandSenseClassifier_9.N4a7c8353769(i);
-	    } 
-	    return p;
-	  }
-	  static double N18f1231d767(Object []i) {
-	    double p = Double.NaN;
-	    if (i[85] == null) {
-	      p = 0;
-	    } else if (((Double) i[85]).doubleValue() <= 2.36) {
-	      p = 0;
-	    } else if (((Double) i[85]).doubleValue() > 2.36) {
-	    p = HandSenseClassifier_9.N7f3851b5768(i);
-	    } 
-	    return p;
-	  }
-	  static double N7f3851b5768(Object []i) {
-	    double p = Double.NaN;
-	    if (i[47] == null) {
-	      p = 0;
-	    } else if (((Double) i[47]).doubleValue() <= 8.71) {
-	      p = 0;
-	    } else if (((Double) i[47]).doubleValue() > 8.71) {
+	    } else if (((Double) i[44]).doubleValue() <= 9.6) {
+	    p = HandSenseClassifier_9.N5c7f914c977(i);
+	    } else if (((Double) i[44]).doubleValue() > 9.6) {
 	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double N4a7c8353769(Object []i) {
+	  static double N5c7f914c977(Object []i) {
 	    double p = Double.NaN;
-	    if (i[29] == null) {
+	    if (i[89] == null) {
+	      p = 1;
+	    } else if (((Double) i[89]).doubleValue() <= 5.24) {
+	    p = HandSenseClassifier_9.N3b1c4405978(i);
+	    } else if (((Double) i[89]).doubleValue() > 5.24) {
+	    p = HandSenseClassifier_9.N3cb5c294979(i);
+	    } 
+	    return p;
+	  }
+	  static double N3b1c4405978(Object []i) {
+	    double p = Double.NaN;
+	    if (i[22] == null) {
+	      p = 1;
+	    } else if (((Double) i[22]).doubleValue() <= 8.36) {
+	      p = 1;
+	    } else if (((Double) i[22]).doubleValue() > 8.36) {
 	      p = 0;
-	    } else if (((Double) i[29]).doubleValue() <= 9.6) {
-	    p = HandSenseClassifier_9.N3491e459770(i);
-	    } else if (((Double) i[29]).doubleValue() > 9.6) {
+	    } 
+	    return p;
+	  }
+	  static double N3cb5c294979(Object []i) {
+	    double p = Double.NaN;
+	    if (i[100] == null) {
+	      p = 0;
+	    } else if (((Double) i[100]).doubleValue() <= -3.68) {
+	    p = HandSenseClassifier_9.N40f9a1af980(i);
+	    } else if (((Double) i[100]).doubleValue() > -3.68) {
 	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double N3491e459770(Object []i) {
+	  static double N40f9a1af980(Object []i) {
 	    double p = Double.NaN;
-	    if (i[95] == null) {
+	    if (i[107] == null) {
 	      p = 0;
-	    } else if (((Double) i[95]).doubleValue() <= 8.12) {
-	      p = 0;
-	    } else if (((Double) i[95]).doubleValue() > 8.12) {
+	    } else if (((Double) i[107]).doubleValue() <= 7.51) {
+	    p = HandSenseClassifier_9.N44e6097c981(i);
+	    } else if (((Double) i[107]).doubleValue() > 7.51) {
 	      p = 1;
+	    } 
+	    return p;
+	  }
+	  static double N44e6097c981(Object []i) {
+	    double p = Double.NaN;
+	    if (i[24] == null) {
+	      p = 0;
+	    } else if (((Double) i[24]).doubleValue() <= 0.64) {
+	      p = 0;
+	    } else if (((Double) i[24]).doubleValue() > 0.64) {
+	    p = HandSenseClassifier_9.N5a78cf3a982(i);
+	    } 
+	    return p;
+	  }
+	  static double N5a78cf3a982(Object []i) {
+	    double p = Double.NaN;
+	    if (i[23] == null) {
+	      p = 1;
+	    } else if (((Double) i[23]).doubleValue() <= 9.31) {
+	      p = 1;
+	    } else if (((Double) i[23]).doubleValue() > 9.31) {
+	      p = 0;
 	    } 
 	    return p;
 	  }

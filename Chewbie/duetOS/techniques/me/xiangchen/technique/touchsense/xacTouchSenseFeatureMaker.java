@@ -13,7 +13,7 @@ public class xacTouchSenseFeatureMaker {
 	public final static int SIDE = 1;
 	public final static int KNUCKLE = 2;
 
-	static final int MAXNUMROW = 256;
+	static final int MAXNUMROW = 1024;
 	static final int NUMSOURCES = 2;
 
 	static String[] featureNames = null;

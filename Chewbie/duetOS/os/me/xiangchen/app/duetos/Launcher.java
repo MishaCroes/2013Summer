@@ -19,6 +19,7 @@ import me.xiangchen.app.duetapp.map.MapExtension;
 import me.xiangchen.app.duetapp.reader.Reader;
 import me.xiangchen.app.duetapp.reader.ReaderExtenstion;
 import me.xiangchen.lib.xacPhoneGesture;
+import me.xiangchen.technique.bumpsense.xacBumpSenseFeatureMaker;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
 import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
@@ -224,14 +225,17 @@ public class Launcher extends Activity implements SensorEventListener {
 		xacPostureSenseFeatureMaker.setLabel(xacPostureSenseFeatureMaker.NONE);
 		xacPostureSenseFeatureMaker.createFeatureTable();
 
-		xacUpDownSenseFeatureMaker.setLabel(xacUpDownSenseFeatureMaker.UP);
-		xacUpDownSenseFeatureMaker.createFeatureTable();
+//		xacUpDownSenseFeatureMaker.setLabel(xacUpDownSenseFeatureMaker.UP);
+//		xacUpDownSenseFeatureMaker.createFeatureTable();
 
 		xacShareSenseFeatureMaker.createFeatureTable();
 		xacShareSenseFeatureMaker.setLabel(xacShareSenseFeatureMaker.PUBLIC);
 
 		xacTiltSenseFeatureMaker.createFeatureTable();
 		xacTiltSenseFeatureMaker.setLabel(xacTiltSenseFeatureMaker.NONE);
+
+		xacBumpSenseFeatureMaker.createFeatureTable();
+		xacBumpSenseFeatureMaker.setLabel(xacBumpSenseFeatureMaker.NOBUMP);
 
 	}
 
