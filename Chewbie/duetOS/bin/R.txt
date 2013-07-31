@@ -170,9 +170,10 @@ int layout email 0x7f030001
 int layout smart_watch_notification_widget 0x7f030002
 int layout smart_watch_widget 0x7f030003
 int menu launcher 0x7f0a0000
-int raw listen_up 0x7f040000
-int raw no_annoying_sounds 0x7f040001
-int raw so_fluffy 0x7f040002
+int raw nonewvoicemails 0x7f040000
+int raw voicemail1 0x7f040001
+int raw voicemail2 0x7f040002
+int raw voicemail3 0x7f040003
 int string a_tale_of_two_cities 0x7f070028
 int string action_event_1 0x7f07001c
 int string action_settings 0x7f070016

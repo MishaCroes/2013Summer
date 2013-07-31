@@ -17,7 +17,7 @@ public class xacHandSenseFeatureMaker {
 	final static int NUMROWSHANDEDNESS = LauncherManager.PHONEACCELFPSGAME
 			* HANDTIMEOUT / 1000;
 	
-	static final int MAXNUMROW = 256;
+	static final int MAXNUMROW = 1024;
 	static final int NUMSOURCES = 2;
 	
 	static String[] featureNames = null;

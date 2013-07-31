@@ -259,7 +259,7 @@ public class xacAuthenticSenseFeatureMaker {
 //			break;
 //		}
 
-		xacFlipSenseFeatureMaker.clearData();
+//		clearData();
 		return label;
 	}
 	

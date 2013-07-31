@@ -2,6 +2,7 @@ package me.xiangchen.app.duetapp.map;
 
 import me.xiangchen.app.duetapp.AppExtension;
 import me.xiangchen.app.duetos.LauncherManager;
+import me.xiangchen.technique.bumpsense.xacBumpSenseFeatureMaker;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.technique.sharesense.xacShareSenseFeatureMaker;
 import me.xiangchen.technique.tiltsense.xacTiltSenseFeatureMaker;
@@ -91,5 +92,8 @@ public class MapExtension extends AppExtension {
 		
 		xacAuthenticSenseFeatureMaker.updateWatchAccel(values);
 		xacAuthenticSenseFeatureMaker.addWatchFeatureEntry();
+		
+		xacBumpSenseFeatureMaker.updateWatchAccel(values);
+		xacBumpSenseFeatureMaker.addWatchFeatureEntry();
 	}
 }

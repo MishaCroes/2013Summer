@@ -49,4 +49,30 @@ public class CallManager extends AppManager {
 			watch.lastItem();
 		}
 	}
+	
+	public static void scrollDownApp() {
+		if(watch != null) {
+			watch.scrollDownApp();
+		}
+	}
+	
+	public static void scrollUpApp() {
+		if(watch != null) {
+			watch.scrollUpApp();
+		}
+	}
+	
+	public static void getOutOfApp() {
+		if(watch != null) {
+			watch.getOutOfApp();
+		}
+	}
+	
+	public static void getInApp() {
+		if(watch != null) {
+			watch.getInApp();
+		}
+	}
+	
+	
 }

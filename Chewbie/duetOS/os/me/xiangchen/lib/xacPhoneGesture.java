@@ -17,7 +17,7 @@ public class xacPhoneGesture {
 	
 	public final static int INTRVLDOUBLETAP = 500; //ms
 	public final static int HOLDTIMEOUT = 500; //ms
-	public final static int HOLDTOUCHSIZE = 200; // px
+	public final static int HOLDTOUCHSIZE = 150; // px
 	
 	int type;
 	
@@ -77,6 +77,7 @@ public class xacPhoneGesture {
 	
 	@SuppressLint("NewApi")
 	private int updatePressAndHold(MotionEvent event) {
+		
 		result = NO;
 		int action = event.getAction();
 		
@@ -108,7 +109,7 @@ public class xacPhoneGesture {
 				break;
 			}
 			
-			if (Math.max(distX, distY) < HOLDTOUCHSIZE) {
+			if (Math.max(distX, distY) < HOLDTOUCHSIZE && event.getPointerCount() == 1) {
 				result = YES;
 			} else {
 				result = NO;
