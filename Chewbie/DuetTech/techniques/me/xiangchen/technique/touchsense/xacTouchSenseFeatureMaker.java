@@ -13,7 +13,7 @@ public class xacTouchSenseFeatureMaker {
 	public final static int SIDE = 1;
 	public final static int KNUCKLE = 2;
 
-	static final int MAXNUMROW = 256;
+	static final int MAXNUMROW = 1024;
 	static final int NUMSOURCES = 2;
 
 	static String[] featureNames = null;
@@ -23,14 +23,16 @@ public class xacTouchSenseFeatureMaker {
 	static int pntrEntryWatch = 0;
 	static int numFeatures = 0;
 	static String tag = "FeatureMaker";
-	static int label = -1;
 
 	static xacAccelerometer accelWatch;
 	static xacAccelerometer accelPhone;
 	static xacAccelerometer[] accels;
-	
+
 	final static int NUMROWSHANDPARTS = DuetTech.PHONEACCELFPSGAME
 			* TOUCHTIMEOUT / 1000;
+
+	static int was = -1;
+	static int recognizedAs = -1;
 
 	/**
 	 * create a table of features, including the first row (the names of the
@@ -90,8 +92,9 @@ public class xacTouchSenseFeatureMaker {
 		pntrEntryWatch++;
 	}
 
-	public static void setLabel(int lb) {
-		label = lb;
+	public static void setLabels(int lb, int ras) {
+		was = lb;
+		recognizedAs = ras;
 	}
 
 	public static void updateWatchAccel(float[] values) {
@@ -106,14 +109,28 @@ public class xacTouchSenseFeatureMaker {
 		accelPhone.update(values[0], values[1], values[2]);
 	}
 
-	public static void sendOffData(int numToSend, String[] classLabels) {
+	public static boolean isDataReady() {
 		int lockedPntrEntryPhone = pntrEntryPhone;
 		int lockedPntrEntryWatch = pntrEntryWatch;
-		int numToSendPhone = numToSend;
+		int numToSendPhone = NUMROWSHANDPARTS;
 		int numToSendWatch = numToSendPhone * DuetTechExtension.WATCHACCELFPS
 				/ DuetTech.PHONEACCELFPSGAME;
 
-		if (label < 0 || numToSendPhone > lockedPntrEntryPhone
+		if (numToSendPhone > lockedPntrEntryPhone
+				|| numToSendWatch > lockedPntrEntryWatch)
+			return false;
+
+		return true;
+	}
+
+	public static void sendOffData(float[] extras) {
+		int lockedPntrEntryPhone = pntrEntryPhone;
+		int lockedPntrEntryWatch = pntrEntryWatch;
+		int numToSendPhone = NUMROWSHANDPARTS;
+		int numToSendWatch = numToSendPhone * DuetTechExtension.WATCHACCELFPS
+				/ DuetTech.PHONEACCELFPSGAME;
+
+		if (was < 0 || numToSendPhone > lockedPntrEntryPhone
 				|| numToSendWatch > lockedPntrEntryWatch)
 			return;
 
@@ -135,7 +152,16 @@ public class xacTouchSenseFeatureMaker {
 			}
 		}
 
-		strFeatureRow += classLabels[label] + '\0';
+		// 3. extra features
+		if (extras != null) {
+			for (float feat : extras) {
+				strFeatureRow += String.format("%.4f", feat) + ",";
+			}
+		}
+
+		String[] classLabels = { "Pad", "Side", "Knuckle" };
+		strFeatureRow += classLabels[was] + "," + classLabels[recognizedAs]
+				+ "\0";
 
 		new xacUDPTask().execute(strFeatureRow);
 	}

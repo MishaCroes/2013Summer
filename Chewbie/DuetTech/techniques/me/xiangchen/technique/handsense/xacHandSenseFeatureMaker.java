@@ -27,11 +27,13 @@ public class xacHandSenseFeatureMaker {
 	static int pntrEntryWatch = 0;
 	static int numFeatures = 0;
 	static String LOGTAG = "DuetOS";
-	static int label = -1;
 	
 	static xacAccelerometer accelWatch;
 	static xacAccelerometer accelPhone;
 	static xacAccelerometer[] accels;
+	
+	static int was = -1;
+	static int recognizedAs = -1;
 	
 	/**
 	 * create a table of features, including the first row (the names of the attributes)
@@ -92,8 +94,9 @@ public class xacHandSenseFeatureMaker {
 		pntrEntryWatch++;
 	}
 	
-	public static void setLabel(int lb) {
-		label = lb;
+	public static void setLabels(int lb, int ras) {
+		was = lb;
+		recognizedAs = ras;
 	}
 	
 	public static void updateWatchAccel(float[] values) {
@@ -106,13 +109,25 @@ public class xacHandSenseFeatureMaker {
 		accelPhone.update(values[0], values[1], values[2]);
 	}
 	
-	public static void sendOffData(int numToSend, String[] classLabels) {
+	public static boolean isDataReady() {
 		int lockedPntrEntryPhone = pntrEntryPhone;
 		int lockedPntrEntryWatch = pntrEntryWatch;
-		int numToSendPhone = numToSend;
+		int numToSendPhone = NUMROWSHANDEDNESS;
 		int numToSendWatch = numToSendPhone * DuetTechExtension.WATCHACCELFPS / DuetTech.PHONEACCELFPSGAME;
 		
-		if(label < 0 || numToSendPhone > lockedPntrEntryPhone || numToSendWatch > lockedPntrEntryWatch) 
+		if(numToSendPhone > lockedPntrEntryPhone || numToSendWatch > lockedPntrEntryWatch) 
+			return false;
+		
+		return true;
+	}
+	
+	public static void sendOffData() {
+		int lockedPntrEntryPhone = pntrEntryPhone;
+		int lockedPntrEntryWatch = pntrEntryWatch;
+		int numToSendPhone = NUMROWSHANDEDNESS;
+		int numToSendWatch = numToSendPhone * DuetTechExtension.WATCHACCELFPS / DuetTech.PHONEACCELFPSGAME;
+		
+		if(was < 0 || numToSendPhone > lockedPntrEntryPhone || numToSendWatch > lockedPntrEntryWatch) 
 			return;
 		
 		String strFeatureRow = "";
@@ -131,7 +146,9 @@ public class xacHandSenseFeatureMaker {
 			}
 		}
 		
-		strFeatureRow += classLabels[label] + '\0';
+		String[] classLabels = { "NoWatch", "Watch"};
+		strFeatureRow += classLabels[was] + "," + classLabels[recognizedAs]
+				+ "\0";
 		
 		new xacUDPTask().execute(strFeatureRow);
 	}

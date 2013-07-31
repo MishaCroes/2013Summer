@@ -1,12 +1,13 @@
 package me.xiangchen.app.duettech;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import me.xiangchen.app.duetstudy.FlipAndTap;
+import me.xiangchen.app.duetstudy.Handedness;
 import me.xiangchen.app.duetstudy.TechniqueShell;
+import me.xiangchen.app.duetstudy.TouchWithHandParts;
 import me.xiangchen.app.duetstudy.WristTilt;
 import me.xiangchen.technique.bumpsense.xacBumpSenseFeatureMaker;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
@@ -47,6 +48,8 @@ public class DuetTech extends Activity implements SensorEventListener {
 
 	FlipAndTap flipAndTap;
 	WristTilt wristTilt;
+	TouchWithHandParts touchWithHandParts;
+	Handedness handedness;
 
 	TechniqueShell[] techniques;
 	int idxTech = -1;
@@ -103,12 +106,12 @@ public class DuetTech extends Activity implements SensorEventListener {
 		layout.addView(mediator, paramsMediator);
 
 		flipAndTap = new FlipAndTap(this);
-		// flipAndTap.setBackgroundColor(0xFFFFFF00);
-
 		wristTilt = new WristTilt(this);
-		// wristTilt.setBackgroundColor(0xFFFF00FF);
+		touchWithHandParts = new TouchWithHandParts(this);
+		handedness = new Handedness(this);
 
-		techniques = new TechniqueShell[] { flipAndTap, wristTilt };
+		techniques = new TechniqueShell[] { flipAndTap, wristTilt,
+				touchWithHandParts, handedness};
 
 		// sensors
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -132,14 +135,15 @@ public class DuetTech extends Activity implements SensorEventListener {
 		}, new Date(), 1000 / TIMERFPS);
 
 		// all the recognizers
-		xacHandSenseFeatureMaker.setLabel(xacHandSenseFeatureMaker.UNKNOWN);
+		xacHandSenseFeatureMaker.setLabels(xacHandSenseFeatureMaker.UNKNOWN, xacHandSenseFeatureMaker.UNKNOWN);
 		xacHandSenseFeatureMaker.createFeatureTable();
 
 		xacFlipSenseFeatureMaker.setLabels(xacFlipSenseFeatureMaker.UNKNOWN,
 				xacFlipSenseFeatureMaker.UNKNOWN);
 		xacFlipSenseFeatureMaker.createFeatureTable();
 
-		xacTouchSenseFeatureMaker.setLabel(xacTouchSenseFeatureMaker.UNKNOWN);
+		xacTouchSenseFeatureMaker.setLabels(xacTouchSenseFeatureMaker.UNKNOWN,
+				xacTouchSenseFeatureMaker.UNKNOWN);
 		xacTouchSenseFeatureMaker.createFeatureTable();
 
 		xacAuthenticSenseFeatureMaker.createFeatureTable();

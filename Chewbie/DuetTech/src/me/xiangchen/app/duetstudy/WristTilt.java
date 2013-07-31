@@ -13,15 +13,15 @@ public class WristTilt extends TechniqueShell {
 	public static final int TILTTIMEOUT = 1500;
 	xacPhoneGesture pressAndHold;
 	long timeFromHold;
-	boolean isTouching = false;
 
 	public WristTilt(Context context) {
 		super(context);
-
+		technique = WRISTTILT;
+		
 		numClasses = 2;
 		classLabels = new int[] { xacTiltSenseFeatureMaker.NONE,
 				xacTiltSenseFeatureMaker.TILTOUT };
-		int numDataPointsPerClass = 10;
+		int numDataPointsPerClass = 50;
 		numBlocks = 5;
 		numTrialsPerBlock = numClasses * numDataPointsPerClass / numBlocks;
 

@@ -22,7 +22,11 @@ public class TechniqueShell extends ViewGroup {
 	public final static int TEXTHEIGHT = 240;
 	public final static int FONTSIZEBIG = 32;
 	public final static int FONTSIZESMALL = 16;
+	
 	public final static int FLIPANDTAP = 0;
+	public final static int WRISTTILT = 1;
+	public final static int TOUCHWITHHANDPARTS = 2;
+	public final static int HANDEDNESS = 3;
 	
 	protected TextView tvCue;
 	protected TextView tvStatus;
@@ -45,6 +49,7 @@ public class TechniqueShell extends ViewGroup {
 	protected boolean isStarted = false;
 	protected boolean isReadyForNextTrial = false;
 	protected boolean isBreak = false;
+	protected boolean isTouching = false;
 	
 	public TechniqueShell(Context context) {
 		super(context);
@@ -148,7 +153,7 @@ public class TechniqueShell extends ViewGroup {
 		
 		trialCounter++;
 		for(int i=0; i<numClasses; i++) {
-			radii[i] = (trialCounter - labelCounter[i]) * numClasses * 1.0f / trialCounter;
+			radii[i] = (trialCounter - labelCounter[i]) * numClasses * 1.0f / (trialCounter * (numClasses - 1));
 		}
 		
 		return retLabel;
