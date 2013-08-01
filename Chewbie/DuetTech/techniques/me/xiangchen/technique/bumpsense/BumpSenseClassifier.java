@@ -4,16 +4,16 @@ public class BumpSenseClassifier {
 
 	  public static double classify(Object[] i) throws Exception {
 	    double [] sums = new double [2];
-	    sums[(int) BumpSenseClassifier_0.classify(i)] += 2.935107651737554;
-	    sums[(int) BumpSenseClassifier_1.classify(i)] += 2.849880396541429;
-	    sums[(int) BumpSenseClassifier_2.classify(i)] += 2.8554630532947667;
-	    sums[(int) BumpSenseClassifier_3.classify(i)] += 2.394118737859639;
-	    sums[(int) BumpSenseClassifier_4.classify(i)] += 2.604032568773023;
-	    sums[(int) BumpSenseClassifier_5.classify(i)] += 2.7311040625937495;
-	    sums[(int) BumpSenseClassifier_6.classify(i)] += 3.7111350184107987;
-	    sums[(int) BumpSenseClassifier_7.classify(i)] += 2.830403762933461;
-	    sums[(int) BumpSenseClassifier_8.classify(i)] += 2.0668968226841486;
-	    sums[(int) BumpSenseClassifier_9.classify(i)] += 2.9452956528403464;
+	    sums[(int) BumpSenseClassifier_0.classify(i)] += 3.1835940107235694;
+	    sums[(int) BumpSenseClassifier_1.classify(i)] += 2.8658571921325757;
+	    sums[(int) BumpSenseClassifier_2.classify(i)] += 3.8697118073564205;
+	    sums[(int) BumpSenseClassifier_3.classify(i)] += 2.8192322480335354;
+	    sums[(int) BumpSenseClassifier_4.classify(i)] += 2.7340993929623707;
+	    sums[(int) BumpSenseClassifier_5.classify(i)] += 2.7352198361525035;
+	    sums[(int) BumpSenseClassifier_6.classify(i)] += 2.9473838092021447;
+	    sums[(int) BumpSenseClassifier_7.classify(i)] += 3.0412045766795104;
+	    sums[(int) BumpSenseClassifier_8.classify(i)] += 2.99036439444918;
+	    sums[(int) BumpSenseClassifier_9.classify(i)] += 2.5333510085900173;
 	    double maxV = sums[0];
 	    int maxI = 0;
 	    for (int j = 1; j < 2; j++) {
@@ -28,28 +28,72 @@ public class BumpSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = BumpSenseClassifier_0.N5deda8b3812(i);
+	    p = BumpSenseClassifier_0.N778c632d1049(i);
 	    return p;
 	  }
-	  static double N5deda8b3812(Object []i) {
+	  static double N778c632d1049(Object []i) {
 	    double p = Double.NaN;
 	    if (i[74] == null) {
 	      p = 1;
-	    } else if (((Double) i[74]).doubleValue() <= 6.44) {
+	    } else if (((Double) i[74]).doubleValue() <= 6.28) {
 	      p = 1;
-	    } else if (((Double) i[74]).doubleValue() > 6.44) {
-	    p = BumpSenseClassifier_0.N1ddeaff2813(i);
+	    } else if (((Double) i[74]).doubleValue() > 6.28) {
+	    p = BumpSenseClassifier_0.N21c35cac1050(i);
 	    } 
 	    return p;
 	  }
-	  static double N1ddeaff2813(Object []i) {
+	  static double N21c35cac1050(Object []i) {
 	    double p = Double.NaN;
-	    if (i[31] == null) {
+	    if (i[37] == null) {
 	      p = 0;
-	    } else if (((Double) i[31]).doubleValue() <= 3.7) {
+	    } else if (((Double) i[37]).doubleValue() <= 2.7) {
+	    p = BumpSenseClassifier_0.N20f931851051(i);
+	    } else if (((Double) i[37]).doubleValue() > 2.7) {
+	    p = BumpSenseClassifier_0.N3f7d8bac1054(i);
+	    } 
+	    return p;
+	  }
+	  static double N20f931851051(Object []i) {
+	    double p = Double.NaN;
+	    if (i[56] == null) {
 	      p = 0;
-	    } else if (((Double) i[31]).doubleValue() > 3.7) {
+	    } else if (((Double) i[56]).doubleValue() <= 9.5) {
+	      p = 0;
+	    } else if (((Double) i[56]).doubleValue() > 9.5) {
+	    p = BumpSenseClassifier_0.N482223ac1052(i);
+	    } 
+	    return p;
+	  }
+	  static double N482223ac1052(Object []i) {
+	    double p = Double.NaN;
+	    if (i[2] == null) {
+	      p = 0;
+	    } else if (((Double) i[2]).doubleValue() <= 8.6) {
+	      p = 0;
+	    } else if (((Double) i[2]).doubleValue() > 8.6) {
+	    p = BumpSenseClassifier_0.N395416331053(i);
+	    } 
+	    return p;
+	  }
+	  static double N395416331053(Object []i) {
+	    double p = Double.NaN;
+	    if (i[76] == null) {
+	      p = 0;
+	    } else if (((Double) i[76]).doubleValue() <= -4.75) {
+	      p = 0;
+	    } else if (((Double) i[76]).doubleValue() > -4.75) {
 	      p = 1;
+	    } 
+	    return p;
+	  }
+	  static double N3f7d8bac1054(Object []i) {
+	    double p = Double.NaN;
+	    if (i[71] == null) {
+	      p = 1;
+	    } else if (((Double) i[71]).doubleValue() <= 9.04) {
+	      p = 1;
+	    } else if (((Double) i[71]).doubleValue() > 9.04) {
+	      p = 0;
 	    } 
 	    return p;
 	  }
@@ -60,50 +104,72 @@ public class BumpSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = BumpSenseClassifier_1.N6f14830814(i);
+	    p = BumpSenseClassifier_1.N4b5ce9c41055(i);
 	    return p;
 	  }
-	  static double N6f14830814(Object []i) {
+	  static double N4b5ce9c41055(Object []i) {
 	    double p = Double.NaN;
-	    if (i[64] == null) {
+	    if (i[83] == null) {
 	      p = 1;
-	    } else if (((Double) i[64]).doubleValue() <= -3.83) {
-	    p = BumpSenseClassifier_1.N4aba4adf815(i);
-	    } else if (((Double) i[64]).doubleValue() > -3.83) {
+	    } else if (((Double) i[83]).doubleValue() <= 5.52) {
+	      p = 1;
+	    } else if (((Double) i[83]).doubleValue() > 5.52) {
+	    p = BumpSenseClassifier_1.N40f769831056(i);
+	    } 
+	    return p;
+	  }
+	  static double N40f769831056(Object []i) {
+	    double p = Double.NaN;
+	    if (i[37] == null) {
+	      p = 0;
+	    } else if (((Double) i[37]).doubleValue() <= 2.8) {
+	    p = BumpSenseClassifier_1.N333038c71057(i);
+	    } else if (((Double) i[37]).doubleValue() > 2.8) {
+	      p = 1;
+	    } 
+	    return p;
+	  }
+	  static double N333038c71057(Object []i) {
+	    double p = Double.NaN;
+	    if (i[60] == null) {
+	      p = 1;
+	    } else if (((Double) i[60]).doubleValue() <= -2.76) {
+	      p = 1;
+	    } else if (((Double) i[60]).doubleValue() > -2.76) {
+	    p = BumpSenseClassifier_1.N22dfab121058(i);
+	    } 
+	    return p;
+	  }
+	  static double N22dfab121058(Object []i) {
+	    double p = Double.NaN;
+	    if (i[1] == null) {
+	      p = 0;
+	    } else if (((Double) i[1]).doubleValue() <= 2.3) {
+	      p = 0;
+	    } else if (((Double) i[1]).doubleValue() > 2.3) {
+	    p = BumpSenseClassifier_1.Na583ca11059(i);
+	    } 
+	    return p;
+	  }
+	  static double Na583ca11059(Object []i) {
+	    double p = Double.NaN;
+	    if (i[74] == null) {
+	      p = 1;
+	    } else if (((Double) i[74]).doubleValue() <= 9.04) {
+	    p = BumpSenseClassifier_1.N26f473551060(i);
+	    } else if (((Double) i[74]).doubleValue() > 9.04) {
 	      p = 0;
 	    } 
 	    return p;
 	  }
-	  static double N4aba4adf815(Object []i) {
+	  static double N26f473551060(Object []i) {
 	    double p = Double.NaN;
-	    if (i[5] == null) {
+	    if (i[44] == null) {
 	      p = 1;
-	    } else if (((Double) i[5]).doubleValue() <= 11.1) {
-	    p = BumpSenseClassifier_1.Nc899ccd816(i);
-	    } else if (((Double) i[5]).doubleValue() > 11.1) {
+	    } else if (((Double) i[44]).doubleValue() <= 8.9) {
+	      p = 1;
+	    } else if (((Double) i[44]).doubleValue() > 8.9) {
 	      p = 0;
-	    } 
-	    return p;
-	  }
-	  static double Nc899ccd816(Object []i) {
-	    double p = Double.NaN;
-	    if (i[64] == null) {
-	      p = 1;
-	    } else if (((Double) i[64]).doubleValue() <= -7.51) {
-	      p = 1;
-	    } else if (((Double) i[64]).doubleValue() > -7.51) {
-	    p = BumpSenseClassifier_1.N1e955d29817(i);
-	    } 
-	    return p;
-	  }
-	  static double N1e955d29817(Object []i) {
-	    double p = Double.NaN;
-	    if (i[61] == null) {
-	      p = 0;
-	    } else if (((Double) i[61]).doubleValue() <= -4.44) {
-	      p = 0;
-	    } else if (((Double) i[61]).doubleValue() > -4.44) {
-	      p = 1;
 	    } 
 	    return p;
 	  }
@@ -114,49 +180,93 @@ public class BumpSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = BumpSenseClassifier_2.N60173e6e818(i);
+	    p = BumpSenseClassifier_2.N7abfe56d1061(i);
 	    return p;
 	  }
-	  static double N60173e6e818(Object []i) {
+	  static double N7abfe56d1061(Object []i) {
 	    double p = Double.NaN;
-	    if (i[68] == null) {
+	    if (i[65] == null) {
 	      p = 1;
-	    } else if (((Double) i[68]).doubleValue() <= 7.97) {
+	    } else if (((Double) i[65]).doubleValue() <= 5.98) {
 	      p = 1;
-	    } else if (((Double) i[68]).doubleValue() > 7.97) {
-	    p = BumpSenseClassifier_2.N1603d90b819(i);
+	    } else if (((Double) i[65]).doubleValue() > 5.98) {
+	    p = BumpSenseClassifier_2.N4c6f96101062(i);
 	    } 
 	    return p;
 	  }
-	  static double N1603d90b819(Object []i) {
+	  static double N4c6f96101062(Object []i) {
 	    double p = Double.NaN;
-	    if (i[89] == null) {
-	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() <= 7.66) {
-	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() > 7.66) {
-	    p = BumpSenseClassifier_2.N569e6c77820(i);
-	    } 
-	    return p;
-	  }
-	  static double N569e6c77820(Object []i) {
-	    double p = Double.NaN;
-	    if (i[59] == null) {
+	    if (i[78] == null) {
 	      p = 0;
-	    } else if (((Double) i[59]).doubleValue() <= 10.2) {
-	    p = BumpSenseClassifier_2.N3ae3250e821(i);
-	    } else if (((Double) i[59]).doubleValue() > 10.2) {
+	    } else if (((Double) i[78]).doubleValue() <= 3.22) {
+	    p = BumpSenseClassifier_2.N31e51ba41063(i);
+	    } else if (((Double) i[78]).doubleValue() > 3.22) {
 	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double N3ae3250e821(Object []i) {
+	  static double N31e51ba41063(Object []i) {
 	    double p = Double.NaN;
-	    if (i[9] == null) {
+	    if (i[64] == null) {
+	      p = 0;
+	    } else if (((Double) i[64]).doubleValue() <= -3.06) {
+	    p = BumpSenseClassifier_2.N3879c5931064(i);
+	    } else if (((Double) i[64]).doubleValue() > -3.06) {
+	      p = 0;
+	    } 
+	    return p;
+	  }
+	  static double N3879c5931064(Object []i) {
+	    double p = Double.NaN;
+	    if (i[7] == null) {
+	      p = 0;
+	    } else if (((Double) i[7]).doubleValue() <= 2.5) {
+	    p = BumpSenseClassifier_2.N429a52dc1065(i);
+	    } else if (((Double) i[7]).doubleValue() > 2.5) {
+	    p = BumpSenseClassifier_2.N12135d341068(i);
+	    } 
+	    return p;
+	  }
+	  static double N429a52dc1065(Object []i) {
+	    double p = Double.NaN;
+	    if (i[60] == null) {
 	      p = 1;
-	    } else if (((Double) i[9]).doubleValue() <= -1.6) {
+	    } else if (((Double) i[60]).doubleValue() <= -0.46) {
 	      p = 1;
-	    } else if (((Double) i[9]).doubleValue() > -1.6) {
+	    } else if (((Double) i[60]).doubleValue() > -0.46) {
+	    p = BumpSenseClassifier_2.N21b60bad1066(i);
+	    } 
+	    return p;
+	  }
+	  static double N21b60bad1066(Object []i) {
+	    double p = Double.NaN;
+	    if (i[7] == null) {
+	      p = 0;
+	    } else if (((Double) i[7]).doubleValue() <= 2.2) {
+	      p = 0;
+	    } else if (((Double) i[7]).doubleValue() > 2.2) {
+	    p = BumpSenseClassifier_2.N36b89c251067(i);
+	    } 
+	    return p;
+	  }
+	  static double N36b89c251067(Object []i) {
+	    double p = Double.NaN;
+	    if (i[10] == null) {
+	      p = 1;
+	    } else if (((Double) i[10]).doubleValue() <= 2.3) {
+	      p = 1;
+	    } else if (((Double) i[10]).doubleValue() > 2.3) {
+	      p = 0;
+	    } 
+	    return p;
+	  }
+	  static double N12135d341068(Object []i) {
+	    double p = Double.NaN;
+	    if (i[18] == null) {
+	      p = 1;
+	    } else if (((Double) i[18]).doubleValue() <= 0.6) {
+	      p = 1;
+	    } else if (((Double) i[18]).doubleValue() > 0.6) {
 	      p = 0;
 	    } 
 	    return p;
@@ -168,82 +278,71 @@ public class BumpSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = BumpSenseClassifier_3.N1695d856822(i);
+	    p = BumpSenseClassifier_3.N354c0a311069(i);
 	    return p;
 	  }
-	  static double N1695d856822(Object []i) {
+	  static double N354c0a311069(Object []i) {
 	    double p = Double.NaN;
-	    if (i[86] == null) {
+	    if (i[77] == null) {
 	      p = 1;
-	    } else if (((Double) i[86]).doubleValue() <= 5.52) {
+	    } else if (((Double) i[77]).doubleValue() <= 6.44) {
 	      p = 1;
-	    } else if (((Double) i[86]).doubleValue() > 5.52) {
-	    p = BumpSenseClassifier_3.N47ae01af823(i);
+	    } else if (((Double) i[77]).doubleValue() > 6.44) {
+	    p = BumpSenseClassifier_3.N1331324d1070(i);
 	    } 
 	    return p;
 	  }
-	  static double N47ae01af823(Object []i) {
+	  static double N1331324d1070(Object []i) {
 	    double p = Double.NaN;
-	    if (i[40] == null) {
+	    if (i[63] == null) {
 	      p = 0;
-	    } else if (((Double) i[40]).doubleValue() <= 4.1) {
-	    p = BumpSenseClassifier_3.N70f0acec824(i);
-	    } else if (((Double) i[40]).doubleValue() > 4.1) {
+	    } else if (((Double) i[63]).doubleValue() <= 3.06) {
+	    p = BumpSenseClassifier_3.N2dd67131071(i);
+	    } else if (((Double) i[63]).doubleValue() > 3.06) {
 	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double N70f0acec824(Object []i) {
+	  static double N2dd67131071(Object []i) {
 	    double p = Double.NaN;
-	    if (i[50] == null) {
-	      p = 0;
-	    } else if (((Double) i[50]).doubleValue() <= 10.0) {
-	    p = BumpSenseClassifier_3.N48e8f3e1825(i);
-	    } else if (((Double) i[50]).doubleValue() > 10.0) {
-	    p = BumpSenseClassifier_3.N623bb657827(i);
+	    if (i[67] == null) {
+	      p = 1;
+	    } else if (((Double) i[67]).doubleValue() <= -5.06) {
+	    p = BumpSenseClassifier_3.N159a11dd1072(i);
+	    } else if (((Double) i[67]).doubleValue() > -5.06) {
+	    p = BumpSenseClassifier_3.N360acf3f1073(i);
 	    } 
 	    return p;
 	  }
-	  static double N48e8f3e1825(Object []i) {
+	  static double N159a11dd1072(Object []i) {
+	    double p = Double.NaN;
+	    if (i[0] == null) {
+	      p = 1;
+	    } else if (((Double) i[0]).doubleValue() <= 0.5) {
+	      p = 1;
+	    } else if (((Double) i[0]).doubleValue() > 0.5) {
+	      p = 0;
+	    } 
+	    return p;
+	  }
+	  static double N360acf3f1073(Object []i) {
 	    double p = Double.NaN;
 	    if (i[59] == null) {
 	      p = 0;
-	    } else if (((Double) i[59]).doubleValue() <= 8.9) {
+	    } else if (((Double) i[59]).doubleValue() <= 10.2) {
 	      p = 0;
-	    } else if (((Double) i[59]).doubleValue() > 8.9) {
-	    p = BumpSenseClassifier_3.N35e35e2c826(i);
+	    } else if (((Double) i[59]).doubleValue() > 10.2) {
+	    p = BumpSenseClassifier_3.N7fac4cd01074(i);
 	    } 
 	    return p;
 	  }
-	  static double N35e35e2c826(Object []i) {
+	  static double N7fac4cd01074(Object []i) {
 	    double p = Double.NaN;
-	    if (i[1] == null) {
+	    if (i[9] == null) {
 	      p = 0;
-	    } else if (((Double) i[1]).doubleValue() <= 1.7) {
+	    } else if (((Double) i[9]).doubleValue() <= 0.2) {
 	      p = 0;
-	    } else if (((Double) i[1]).doubleValue() > 1.7) {
-	      p = 1;
-	    } 
-	    return p;
-	  }
-	  static double N623bb657827(Object []i) {
-	    double p = Double.NaN;
-	    if (i[11] == null) {
-	      p = 0;
-	    } else if (((Double) i[11]).doubleValue() <= 6.9) {
-	      p = 0;
-	    } else if (((Double) i[11]).doubleValue() > 6.9) {
-	    p = BumpSenseClassifier_3.N3e403c23828(i);
-	    } 
-	    return p;
-	  }
-	  static double N3e403c23828(Object []i) {
-	    double p = Double.NaN;
-	    if (i[21] == null) {
-	      p = 0;
-	    } else if (((Double) i[21]).doubleValue() <= 0.4) {
-	      p = 0;
-	    } else if (((Double) i[21]).doubleValue() > 0.4) {
+	    } else if (((Double) i[9]).doubleValue() > 0.2) {
 	      p = 1;
 	    } 
 	    return p;
@@ -255,50 +354,61 @@ public class BumpSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = BumpSenseClassifier_4.N6b2c3dc2829(i);
+	    p = BumpSenseClassifier_4.N8e72d2c1075(i);
 	    return p;
 	  }
-	  static double N6b2c3dc2829(Object []i) {
+	  static double N8e72d2c1075(Object []i) {
+	    double p = Double.NaN;
+	    if (i[17] == null) {
+	      p = 1;
+	    } else if (((Double) i[17]).doubleValue() <= 9.8) {
+	    p = BumpSenseClassifier_4.N146a8451076(i);
+	    } else if (((Double) i[17]).doubleValue() > 9.8) {
+	    p = BumpSenseClassifier_4.N383cd16e1079(i);
+	    } 
+	    return p;
+	  }
+	  static double N146a8451076(Object []i) {
+	    double p = Double.NaN;
+	    if (i[74] == null) {
+	      p = 1;
+	    } else if (((Double) i[74]).doubleValue() <= 9.19) {
+	    p = BumpSenseClassifier_4.N45d14aaa1077(i);
+	    } else if (((Double) i[74]).doubleValue() > 9.19) {
+	      p = 0;
+	    } 
+	    return p;
+	  }
+	  static double N45d14aaa1077(Object []i) {
+	    double p = Double.NaN;
+	    if (i[61] == null) {
+	      p = 1;
+	    } else if (((Double) i[61]).doubleValue() <= -3.98) {
+	    p = BumpSenseClassifier_4.N2f7d02b51078(i);
+	    } else if (((Double) i[61]).doubleValue() > -3.98) {
+	      p = 1;
+	    } 
+	    return p;
+	  }
+	  static double N2f7d02b51078(Object []i) {
+	    double p = Double.NaN;
+	    if (i[74] == null) {
+	      p = 1;
+	    } else if (((Double) i[74]).doubleValue() <= 7.97) {
+	      p = 1;
+	    } else if (((Double) i[74]).doubleValue() > 7.97) {
+	      p = 0;
+	    } 
+	    return p;
+	  }
+	  static double N383cd16e1079(Object []i) {
 	    double p = Double.NaN;
 	    if (i[77] == null) {
 	      p = 1;
-	    } else if (((Double) i[77]).doubleValue() <= 7.97) {
-	    p = BumpSenseClassifier_4.N258ac286830(i);
-	    } else if (((Double) i[77]).doubleValue() > 7.97) {
-	    p = BumpSenseClassifier_4.N38e8feab831(i);
-	    } 
-	    return p;
-	  }
-	  static double N258ac286830(Object []i) {
-	    double p = Double.NaN;
-	    if (i[2] == null) {
+	    } else if (((Double) i[77]).doubleValue() <= 6.44) {
 	      p = 1;
-	    } else if (((Double) i[2]).doubleValue() <= 10.2) {
-	      p = 1;
-	    } else if (((Double) i[2]).doubleValue() > 10.2) {
+	    } else if (((Double) i[77]).doubleValue() > 6.44) {
 	      p = 0;
-	    } 
-	    return p;
-	  }
-	  static double N38e8feab831(Object []i) {
-	    double p = Double.NaN;
-	    if (i[56] == null) {
-	      p = 0;
-	    } else if (((Double) i[56]).doubleValue() <= 9.9) {
-	      p = 0;
-	    } else if (((Double) i[56]).doubleValue() > 9.9) {
-	    p = BumpSenseClassifier_4.N48a7a9bd832(i);
-	    } 
-	    return p;
-	  }
-	  static double N48a7a9bd832(Object []i) {
-	    double p = Double.NaN;
-	    if (i[58] == null) {
-	      p = 0;
-	    } else if (((Double) i[58]).doubleValue() <= 1.9) {
-	      p = 0;
-	    } else if (((Double) i[58]).doubleValue() > 1.9) {
-	      p = 1;
 	    } 
 	    return p;
 	  }
@@ -309,83 +419,72 @@ public class BumpSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = BumpSenseClassifier_5.N7778dc8e833(i);
+	    p = BumpSenseClassifier_5.N20d9a99a1080(i);
 	    return p;
 	  }
-	  static double N7778dc8e833(Object []i) {
+	  static double N20d9a99a1080(Object []i) {
 	    double p = Double.NaN;
-	    if (i[89] == null) {
+	    if (i[2] == null) {
 	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() <= 6.13) {
-	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() > 6.13) {
-	    p = BumpSenseClassifier_5.N1fd82be9834(i);
-	    } 
-	    return p;
-	  }
-	  static double N1fd82be9834(Object []i) {
-	    double p = Double.NaN;
-	    if (i[77] == null) {
-	      p = 1;
-	    } else if (((Double) i[77]).doubleValue() <= 6.74) {
-	      p = 1;
-	    } else if (((Double) i[77]).doubleValue() > 6.74) {
-	    p = BumpSenseClassifier_5.N292ade54835(i);
-	    } 
-	    return p;
-	  }
-	  static double N292ade54835(Object []i) {
-	    double p = Double.NaN;
-	    if (i[60] == null) {
-	      p = 1;
-	    } else if (((Double) i[60]).doubleValue() <= -2.76) {
-	      p = 1;
-	    } else if (((Double) i[60]).doubleValue() > -2.76) {
-	    p = BumpSenseClassifier_5.N3d6a71e9836(i);
-	    } 
-	    return p;
-	  }
-	  static double N3d6a71e9836(Object []i) {
-	    double p = Double.NaN;
-	    if (i[87] == null) {
-	      p = 0;
-	    } else if (((Double) i[87]).doubleValue() <= 3.37) {
-	    p = BumpSenseClassifier_5.N175c977f837(i);
-	    } else if (((Double) i[87]).doubleValue() > 3.37) {
-	      p = 1;
-	    } 
-	    return p;
-	  }
-	  static double N175c977f837(Object []i) {
-	    double p = Double.NaN;
-	    if (i[53] == null) {
-	      p = 0;
-	    } else if (((Double) i[53]).doubleValue() <= 11.1) {
-	    p = BumpSenseClassifier_5.N3fde1ed4838(i);
-	    } else if (((Double) i[53]).doubleValue() > 11.1) {
-	      p = 1;
-	    } 
-	    return p;
-	  }
-	  static double N3fde1ed4838(Object []i) {
-	    double p = Double.NaN;
-	    if (i[23] == null) {
-	      p = 0;
-	    } else if (((Double) i[23]).doubleValue() <= 8.6) {
-	    p = BumpSenseClassifier_5.Nfba110e839(i);
-	    } else if (((Double) i[23]).doubleValue() > 8.6) {
+	    } else if (((Double) i[2]).doubleValue() <= 10.9) {
+	    p = BumpSenseClassifier_5.N320dce4f1081(i);
+	    } else if (((Double) i[2]).doubleValue() > 10.9) {
 	      p = 0;
 	    } 
 	    return p;
 	  }
-	  static double Nfba110e839(Object []i) {
+	  static double N320dce4f1081(Object []i) {
 	    double p = Double.NaN;
-	    if (i[60] == null) {
+	    if (i[84] == null) {
 	      p = 0;
-	    } else if (((Double) i[60]).doubleValue() <= 1.38) {
+	    } else if (((Double) i[84]).doubleValue() <= 0.0) {
 	      p = 0;
-	    } else if (((Double) i[60]).doubleValue() > 1.38) {
+	    } else if (((Double) i[84]).doubleValue() > 0.0) {
+	    p = BumpSenseClassifier_5.N2863be351082(i);
+	    } 
+	    return p;
+	  }
+	  static double N2863be351082(Object []i) {
+	    double p = Double.NaN;
+	    if (i[14] == null) {
+	      p = 0;
+	    } else if (((Double) i[14]).doubleValue() <= 5.9) {
+	      p = 0;
+	    } else if (((Double) i[14]).doubleValue() > 5.9) {
+	    p = BumpSenseClassifier_5.N2c5c9e4a1083(i);
+	    } 
+	    return p;
+	  }
+	  static double N2c5c9e4a1083(Object []i) {
+	    double p = Double.NaN;
+	    if (i[7] == null) {
 	      p = 1;
+	    } else if (((Double) i[7]).doubleValue() <= 2.4) {
+	    p = BumpSenseClassifier_5.N749c23061084(i);
+	    } else if (((Double) i[7]).doubleValue() > 2.4) {
+	      p = 1;
+	    } 
+	    return p;
+	  }
+	  static double N749c23061084(Object []i) {
+	    double p = Double.NaN;
+	    if (i[35] == null) {
+	      p = 0;
+	    } else if (((Double) i[35]).doubleValue() <= 9.1) {
+	      p = 0;
+	    } else if (((Double) i[35]).doubleValue() > 9.1) {
+	    p = BumpSenseClassifier_5.N36bf9ab91085(i);
+	    } 
+	    return p;
+	  }
+	  static double N36bf9ab91085(Object []i) {
+	    double p = Double.NaN;
+	    if (i[69] == null) {
+	      p = 1;
+	    } else if (((Double) i[69]).doubleValue() <= 1.53) {
+	      p = 1;
+	    } else if (((Double) i[69]).doubleValue() > 1.53) {
+	      p = 0;
 	    } 
 	    return p;
 	  }
@@ -396,72 +495,94 @@ public class BumpSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = BumpSenseClassifier_6.Nb5b633840(i);
+	    p = BumpSenseClassifier_6.N5d4703c31086(i);
 	    return p;
 	  }
-	  static double Nb5b633840(Object []i) {
-	    double p = Double.NaN;
-	    if (i[89] == null) {
-	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() <= 6.28) {
-	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() > 6.28) {
-	    p = BumpSenseClassifier_6.N19cccea2841(i);
-	    } 
-	    return p;
-	  }
-	  static double N19cccea2841(Object []i) {
-	    double p = Double.NaN;
-	    if (i[18] == null) {
-	      p = 1;
-	    } else if (((Double) i[18]).doubleValue() <= -2.0) {
-	      p = 1;
-	    } else if (((Double) i[18]).doubleValue() > -2.0) {
-	    p = BumpSenseClassifier_6.N5511fae9842(i);
-	    } 
-	    return p;
-	  }
-	  static double N5511fae9842(Object []i) {
-	    double p = Double.NaN;
-	    if (i[43] == null) {
-	      p = 0;
-	    } else if (((Double) i[43]).doubleValue() <= 2.5) {
-	    p = BumpSenseClassifier_6.Nf7002a1843(i);
-	    } else if (((Double) i[43]).doubleValue() > 2.5) {
-	    p = BumpSenseClassifier_6.N2da8ca45845(i);
-	    } 
-	    return p;
-	  }
-	  static double Nf7002a1843(Object []i) {
-	    double p = Double.NaN;
-	    if (i[69] == null) {
-	      p = 0;
-	    } else if (((Double) i[69]).doubleValue() <= -0.15) {
-	    p = BumpSenseClassifier_6.N2bc9ff2844(i);
-	    } else if (((Double) i[69]).doubleValue() > -0.15) {
-	      p = 0;
-	    } 
-	    return p;
-	  }
-	  static double N2bc9ff2844(Object []i) {
-	    double p = Double.NaN;
-	    if (i[2] == null) {
-	      p = 0;
-	    } else if (((Double) i[2]).doubleValue() <= 9.5) {
-	      p = 0;
-	    } else if (((Double) i[2]).doubleValue() > 9.5) {
-	      p = 1;
-	    } 
-	    return p;
-	  }
-	  static double N2da8ca45845(Object []i) {
+	  static double N5d4703c31086(Object []i) {
 	    double p = Double.NaN;
 	    if (i[64] == null) {
 	      p = 1;
-	    } else if (((Double) i[64]).doubleValue() <= -3.83) {
+	    } else if (((Double) i[64]).doubleValue() <= -7.97) {
 	      p = 1;
-	    } else if (((Double) i[64]).doubleValue() > -3.83) {
+	    } else if (((Double) i[64]).doubleValue() > -7.97) {
+	    p = BumpSenseClassifier_6.N6148270c1087(i);
+	    } 
+	    return p;
+	  }
+	  static double N6148270c1087(Object []i) {
+	    double p = Double.NaN;
+	    if (i[89] == null) {
+	      p = 1;
+	    } else if (((Double) i[89]).doubleValue() <= 5.82) {
+	      p = 1;
+	    } else if (((Double) i[89]).doubleValue() > 5.82) {
+	    p = BumpSenseClassifier_6.N47fbb6b91088(i);
+	    } 
+	    return p;
+	  }
+	  static double N47fbb6b91088(Object []i) {
+	    double p = Double.NaN;
+	    if (i[77] == null) {
 	      p = 0;
+	    } else if (((Double) i[77]).doubleValue() <= 9.19) {
+	    p = BumpSenseClassifier_6.N5e99509a1089(i);
+	    } else if (((Double) i[77]).doubleValue() > 9.19) {
+	      p = 0;
+	    } 
+	    return p;
+	  }
+	  static double N5e99509a1089(Object []i) {
+	    double p = Double.NaN;
+	    if (i[3] == null) {
+	      p = 1;
+	    } else if (((Double) i[3]).doubleValue() <= 0.6) {
+	    p = BumpSenseClassifier_6.N237adefb1090(i);
+	    } else if (((Double) i[3]).doubleValue() > 0.6) {
+	      p = 0;
+	    } 
+	    return p;
+	  }
+	  static double N237adefb1090(Object []i) {
+	    double p = Double.NaN;
+	    if (i[66] == null) {
+	      p = 0;
+	    } else if (((Double) i[66]).doubleValue() <= -0.92) {
+	      p = 0;
+	    } else if (((Double) i[66]).doubleValue() > -0.92) {
+	    p = BumpSenseClassifier_6.N57c542ef1091(i);
+	    } 
+	    return p;
+	  }
+	  static double N57c542ef1091(Object []i) {
+	    double p = Double.NaN;
+	    if (i[84] == null) {
+	      p = 0;
+	    } else if (((Double) i[84]).doubleValue() <= 0.0) {
+	      p = 0;
+	    } else if (((Double) i[84]).doubleValue() > 0.0) {
+	    p = BumpSenseClassifier_6.N57ad85ed1092(i);
+	    } 
+	    return p;
+	  }
+	  static double N57ad85ed1092(Object []i) {
+	    double p = Double.NaN;
+	    if (i[2] == null) {
+	      p = 0;
+	    } else if (((Double) i[2]).doubleValue() <= 8.7) {
+	      p = 0;
+	    } else if (((Double) i[2]).doubleValue() > 8.7) {
+	    p = BumpSenseClassifier_6.N4133b7931093(i);
+	    } 
+	    return p;
+	  }
+	  static double N4133b7931093(Object []i) {
+	    double p = Double.NaN;
+	    if (i[44] == null) {
+	      p = 0;
+	    } else if (((Double) i[44]).doubleValue() <= 8.8) {
+	      p = 0;
+	    } else if (((Double) i[44]).doubleValue() > 8.8) {
+	      p = 1;
 	    } 
 	    return p;
 	  }
@@ -472,54 +593,65 @@ public class BumpSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = BumpSenseClassifier_7.N24778f6e846(i);
+	    p = BumpSenseClassifier_7.N2a5935561094(i);
 	    return p;
 	  }
-	  static double N24778f6e846(Object []i) {
+	  static double N2a5935561094(Object []i) {
 	    double p = Double.NaN;
-	    if (i[68] == null) {
-	      p = 1;
-	    } else if (((Double) i[68]).doubleValue() <= 5.36) {
-	      p = 1;
-	    } else if (((Double) i[68]).doubleValue() > 5.36) {
-	    p = BumpSenseClassifier_7.N25699176847(i);
-	    } 
-	    return p;
-	  }
-	  static double N25699176847(Object []i) {
-	    double p = Double.NaN;
-	    if (i[89] == null) {
-	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() <= 6.13) {
-	      p = 1;
-	    } else if (((Double) i[89]).doubleValue() > 6.13) {
-	    p = BumpSenseClassifier_7.N35cced2a848(i);
-	    } 
-	    return p;
-	  }
-	  static double N35cced2a848(Object []i) {
-	    double p = Double.NaN;
-	    if (i[5] == null) {
-	      p = 1;
-	    } else if (((Double) i[5]).doubleValue() <= 3.8) {
-	      p = 1;
-	    } else if (((Double) i[5]).doubleValue() > 3.8) {
-	    p = BumpSenseClassifier_7.N20e67bfe849(i);
-	    } 
-	    return p;
-	  }
-	  static double N20e67bfe849(Object []i) {
-	    double p = Double.NaN;
-	    if (i[59] == null) {
+	    if (i[7] == null) {
 	      p = 0;
-	    } else if (((Double) i[59]).doubleValue() <= 10.2) {
-	      p = 0;
-	    } else if (((Double) i[59]).doubleValue() > 10.2) {
-	    p = BumpSenseClassifier_7.N7bd67191850(i);
+	    } else if (((Double) i[7]).doubleValue() <= 2.7) {
+	    p = BumpSenseClassifier_7.N46bcb6d21095(i);
+	    } else if (((Double) i[7]).doubleValue() > 2.7) {
+	    p = BumpSenseClassifier_7.N3e66af6b1100(i);
 	    } 
 	    return p;
 	  }
-	  static double N7bd67191850(Object []i) {
+	  static double N46bcb6d21095(Object []i) {
+	    double p = Double.NaN;
+	    if (i[64] == null) {
+	      p = 1;
+	    } else if (((Double) i[64]).doubleValue() <= -7.97) {
+	      p = 1;
+	    } else if (((Double) i[64]).doubleValue() > -7.97) {
+	    p = BumpSenseClassifier_7.Nf86b9461096(i);
+	    } 
+	    return p;
+	  }
+	  static double Nf86b9461096(Object []i) {
+	    double p = Double.NaN;
+	    if (i[74] == null) {
+	      p = 1;
+	    } else if (((Double) i[74]).doubleValue() <= 6.13) {
+	      p = 1;
+	    } else if (((Double) i[74]).doubleValue() > 6.13) {
+	    p = BumpSenseClassifier_7.N55edaaa01097(i);
+	    } 
+	    return p;
+	  }
+	  static double N55edaaa01097(Object []i) {
+	    double p = Double.NaN;
+	    if (i[69] == null) {
+	      p = 1;
+	    } else if (((Double) i[69]).doubleValue() <= -0.31) {
+	      p = 1;
+	    } else if (((Double) i[69]).doubleValue() > -0.31) {
+	    p = BumpSenseClassifier_7.N665d1a721098(i);
+	    } 
+	    return p;
+	  }
+	  static double N665d1a721098(Object []i) {
+	    double p = Double.NaN;
+	    if (i[56] == null) {
+	      p = 0;
+	    } else if (((Double) i[56]).doubleValue() <= 10.4) {
+	      p = 0;
+	    } else if (((Double) i[56]).doubleValue() > 10.4) {
+	    p = BumpSenseClassifier_7.N6a7366de1099(i);
+	    } 
+	    return p;
+	  }
+	  static double N6a7366de1099(Object []i) {
 	    double p = Double.NaN;
 	    if (i[2] == null) {
 	      p = 0;
@@ -530,6 +662,17 @@ public class BumpSenseClassifier {
 	    } 
 	    return p;
 	  }
+	  static double N3e66af6b1100(Object []i) {
+	    double p = Double.NaN;
+	    if (i[77] == null) {
+	      p = 1;
+	    } else if (((Double) i[77]).doubleValue() <= 9.19) {
+	      p = 1;
+	    } else if (((Double) i[77]).doubleValue() > 9.19) {
+	      p = 0;
+	    } 
+	    return p;
+	  }
 	}
 	class BumpSenseClassifier_8 {
 
@@ -537,49 +680,93 @@ public class BumpSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = BumpSenseClassifier_8.N3bba261b851(i);
+	    p = BumpSenseClassifier_8.N4786b9ce1101(i);
 	    return p;
 	  }
-	  static double N3bba261b851(Object []i) {
+	  static double N4786b9ce1101(Object []i) {
 	    double p = Double.NaN;
-	    if (i[49] == null) {
+	    if (i[17] == null) {
+	      p = 1;
+	    } else if (((Double) i[17]).doubleValue() <= 9.4) {
+	    p = BumpSenseClassifier_8.N5e10a8111102(i);
+	    } else if (((Double) i[17]).doubleValue() > 9.4) {
+	    p = BumpSenseClassifier_8.Nd20759b1108(i);
+	    } 
+	    return p;
+	  }
+	  static double N5e10a8111102(Object []i) {
+	    double p = Double.NaN;
+	    if (i[74] == null) {
+	      p = 1;
+	    } else if (((Double) i[74]).doubleValue() <= 9.19) {
+	    p = BumpSenseClassifier_8.N178a24561103(i);
+	    } else if (((Double) i[74]).doubleValue() > 9.19) {
 	      p = 0;
-	    } else if (((Double) i[49]).doubleValue() <= 3.2) {
-	    p = BumpSenseClassifier_8.N3a1bd53f852(i);
-	    } else if (((Double) i[49]).doubleValue() > 3.2) {
-	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double N3a1bd53f852(Object []i) {
+	  static double N178a24561103(Object []i) {
 	    double p = Double.NaN;
-	    if (i[75] == null) {
+	    if (i[63] == null) {
 	      p = 0;
-	    } else if (((Double) i[75]).doubleValue() <= 3.06) {
-	    p = BumpSenseClassifier_8.N794d38e6853(i);
-	    } else if (((Double) i[75]).doubleValue() > 3.06) {
+	    } else if (((Double) i[63]).doubleValue() <= 0.15) {
+	      p = 0;
+	    } else if (((Double) i[63]).doubleValue() > 0.15) {
+	    p = BumpSenseClassifier_8.N6e57962c1104(i);
+	    } 
+	    return p;
+	  }
+	  static double N6e57962c1104(Object []i) {
+	    double p = Double.NaN;
+	    if (i[5] == null) {
+	      p = 1;
+	    } else if (((Double) i[5]).doubleValue() <= 9.0) {
+	    p = BumpSenseClassifier_8.N38445b4c1105(i);
+	    } else if (((Double) i[5]).doubleValue() > 9.0) {
+	    p = BumpSenseClassifier_8.Ndf7e2271107(i);
+	    } 
+	    return p;
+	  }
+	  static double N38445b4c1105(Object []i) {
+	    double p = Double.NaN;
+	    if (i[89] == null) {
+	      p = 1;
+	    } else if (((Double) i[89]).doubleValue() <= 9.19) {
+	      p = 1;
+	    } else if (((Double) i[89]).doubleValue() > 9.19) {
+	    p = BumpSenseClassifier_8.Nfc5f7701106(i);
+	    } 
+	    return p;
+	  }
+	  static double Nfc5f7701106(Object []i) {
+	    double p = Double.NaN;
+	    if (i[2] == null) {
+	      p = 1;
+	    } else if (((Double) i[2]).doubleValue() <= 5.1) {
+	      p = 1;
+	    } else if (((Double) i[2]).doubleValue() > 5.1) {
+	      p = 0;
+	    } 
+	    return p;
+	  }
+	  static double Ndf7e2271107(Object []i) {
+	    double p = Double.NaN;
+	    if (i[53] == null) {
+	      p = 0;
+	    } else if (((Double) i[53]).doubleValue() <= 9.3) {
+	      p = 0;
+	    } else if (((Double) i[53]).doubleValue() > 9.3) {
 	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double N794d38e6853(Object []i) {
+	  static double Nd20759b1108(Object []i) {
 	    double p = Double.NaN;
-	    if (i[60] == null) {
+	    if (i[65] == null) {
 	      p = 1;
-	    } else if (((Double) i[60]).doubleValue() <= -2.76) {
+	    } else if (((Double) i[65]).doubleValue() <= 6.44) {
 	      p = 1;
-	    } else if (((Double) i[60]).doubleValue() > -2.76) {
-	    p = BumpSenseClassifier_8.N3cd2c241854(i);
-	    } 
-	    return p;
-	  }
-	  static double N3cd2c241854(Object []i) {
-	    double p = Double.NaN;
-	    if (i[71] == null) {
-	      p = 1;
-	    } else if (((Double) i[71]).doubleValue() <= 4.9) {
-	      p = 1;
-	    } else if (((Double) i[71]).doubleValue() > 4.9) {
+	    } else if (((Double) i[65]).doubleValue() > 6.44) {
 	      p = 0;
 	    } 
 	    return p;
@@ -591,61 +778,94 @@ public class BumpSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = BumpSenseClassifier_9.N30cf5899855(i);
+	    p = BumpSenseClassifier_9.N4e0919d81109(i);
 	    return p;
 	  }
-	  static double N30cf5899855(Object []i) {
+	  static double N4e0919d81109(Object []i) {
 	    double p = Double.NaN;
-	    if (i[77] == null) {
+	    if (i[20] == null) {
 	      p = 1;
-	    } else if (((Double) i[77]).doubleValue() <= 6.74) {
-	      p = 1;
-	    } else if (((Double) i[77]).doubleValue() > 6.74) {
-	    p = BumpSenseClassifier_9.N7cc1bdd7856(i);
+	    } else if (((Double) i[20]).doubleValue() <= 9.7) {
+	    p = BumpSenseClassifier_9.N377fdbee1110(i);
+	    } else if (((Double) i[20]).doubleValue() > 9.7) {
+	    p = BumpSenseClassifier_9.N78e76ee61116(i);
 	    } 
 	    return p;
 	  }
-	  static double N7cc1bdd7856(Object []i) {
+	  static double N377fdbee1110(Object []i) {
 	    double p = Double.NaN;
 	    if (i[29] == null) {
 	      p = 1;
 	    } else if (((Double) i[29]).doubleValue() <= 9.5) {
-	    p = BumpSenseClassifier_9.N1396ae3e857(i);
+	    p = BumpSenseClassifier_9.N2b4002b91111(i);
 	    } else if (((Double) i[29]).doubleValue() > 9.5) {
+	    p = BumpSenseClassifier_9.N3444c361115(i);
+	    } 
+	    return p;
+	  }
+	  static double N2b4002b91111(Object []i) {
+	    double p = Double.NaN;
+	    if (i[21] == null) {
+	      p = 1;
+	    } else if (((Double) i[21]).doubleValue() <= -0.1) {
+	    p = BumpSenseClassifier_9.N7772d5dd1112(i);
+	    } else if (((Double) i[21]).doubleValue() > -0.1) {
+	    p = BumpSenseClassifier_9.N1e03acc71114(i);
+	    } 
+	    return p;
+	  }
+	  static double N7772d5dd1112(Object []i) {
+	    double p = Double.NaN;
+	    if (i[79] == null) {
+	      p = 1;
+	    } else if (((Double) i[79]).doubleValue() <= -2.91) {
+	      p = 1;
+	    } else if (((Double) i[79]).doubleValue() > -2.91) {
+	    p = BumpSenseClassifier_9.N1436dd6f1113(i);
+	    } 
+	    return p;
+	  }
+	  static double N1436dd6f1113(Object []i) {
+	    double p = Double.NaN;
+	    if (i[0] == null) {
+	      p = 1;
+	    } else if (((Double) i[0]).doubleValue() <= -2.3) {
+	      p = 1;
+	    } else if (((Double) i[0]).doubleValue() > -2.3) {
 	      p = 0;
 	    } 
 	    return p;
 	  }
-	  static double N1396ae3e857(Object []i) {
+	  static double N1e03acc71114(Object []i) {
 	    double p = Double.NaN;
-	    if (i[70] == null) {
-	      p = 1;
-	    } else if (((Double) i[70]).doubleValue() <= -3.52) {
-	    p = BumpSenseClassifier_9.N989727e858(i);
-	    } else if (((Double) i[70]).doubleValue() > -3.52) {
+	    if (i[28] == null) {
 	      p = 0;
-	    } 
-	    return p;
-	  }
-	  static double N989727e858(Object []i) {
-	    double p = Double.NaN;
-	    if (i[88] == null) {
+	    } else if (((Double) i[28]).doubleValue() <= 2.5) {
 	      p = 0;
-	    } else if (((Double) i[88]).doubleValue() <= -4.6) {
-	    p = BumpSenseClassifier_9.N1ebbb316859(i);
-	    } else if (((Double) i[88]).doubleValue() > -4.6) {
+	    } else if (((Double) i[28]).doubleValue() > 2.5) {
 	      p = 1;
 	    } 
 	    return p;
 	  }
-	  static double N1ebbb316859(Object []i) {
+	  static double N3444c361115(Object []i) {
 	    double p = Double.NaN;
-	    if (i[29] == null) {
+	    if (i[74] == null) {
 	      p = 1;
-	    } else if (((Double) i[29]).doubleValue() <= 8.1) {
+	    } else if (((Double) i[74]).doubleValue() <= 6.59) {
 	      p = 1;
-	    } else if (((Double) i[29]).doubleValue() > 8.1) {
+	    } else if (((Double) i[74]).doubleValue() > 6.59) {
 	      p = 0;
+	    } 
+	    return p;
+	  }
+	  static double N78e76ee61116(Object []i) {
+	    double p = Double.NaN;
+	    if (i[53] == null) {
+	      p = 0;
+	    } else if (((Double) i[53]).doubleValue() <= 11.7) {
+	      p = 0;
+	    } else if (((Double) i[53]).doubleValue() > 11.7) {
+	      p = 1;
 	    } 
 	    return p;
 	  }

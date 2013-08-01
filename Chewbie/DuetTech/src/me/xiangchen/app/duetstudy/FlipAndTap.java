@@ -1,5 +1,7 @@
 package me.xiangchen.app.duetstudy;
 
+import java.util.Arrays;
+
 import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
 import android.content.Context;
 import android.util.Log;
@@ -14,8 +16,6 @@ public class FlipAndTap extends TechniqueShell{
 		
 		numClasses = 2;
 		classLabels = new int[] {xacFlipSenseFeatureMaker.FLIP, xacFlipSenseFeatureMaker.NOFLIP};
-		int numDataPointsPerClass = 50; 
-		numBlocks = 5;
 		numTrialsPerBlock = numClasses * numDataPointsPerClass / numBlocks;
 		
 		labelCounter = new int[numClasses];
@@ -42,11 +42,14 @@ public class FlipAndTap extends TechniqueShell{
 					block++;
 					isBreak = true;
 					if(block == numBlocks) {
+						tvCue.setTextColor(0xFFFFFFFF);
 						tvCue.setText("End of technique");
 					} else {
+						tvCue.setTextColor(0xFFFFFFFF);
 						tvCue.setText("End of block");
 					}
 				} else {
+					tvCue.setTextColor(0xFFFFFFFF);
 					tvCue.setText("Please wait ...");
 				}
 				
@@ -67,16 +70,18 @@ public class FlipAndTap extends TechniqueShell{
 	public void runOnTimer() {
 		if(!isBreak) {
 			if(!xacFlipSenseFeatureMaker.isDataReady()) {
+				tvCue.setTextColor(0xFFFFFFFF);
 				tvCue.setText("Please wait ...");
 				isReadyForNextTrial = false;
 				Log.d(LOGTAG, "wait...");
 			} else {
 				if(!isReadyForNextTrial) {
 					if(isStarted) {
-						label = nextClassLabel();
+						label = nextClassLabel(false);
 						setCues();	
 						setStatus();
 					} else {
+						tvCue.setTextColor(0xFFFFFFFF);
 						tvCue.setText("Tap to start...");
 					}
 					
@@ -89,6 +94,8 @@ public class FlipAndTap extends TechniqueShell{
 	
 	@Override
 	protected void setCues() {
+		super.setCues();
+		
 		switch(label) {
 		case xacFlipSenseFeatureMaker.FLIP:
 			tvCue.setText("Flip and tap");

@@ -12,8 +12,6 @@ public class TouchWithHandParts extends TechniqueShell {
 
 		numClasses = 3;
 		classLabels = new int[] {xacTouchSenseFeatureMaker.PAD, xacTouchSenseFeatureMaker.SIDE, xacTouchSenseFeatureMaker.KNUCKLE};
-		int numDataPointsPerClass = 50; 
-		numBlocks = 5;
 		numTrialsPerBlock = numClasses * numDataPointsPerClass / numBlocks;
 		
 		labelCounter = new int[numClasses];
@@ -30,21 +28,28 @@ public class TouchWithHandParts extends TechniqueShell {
 	public boolean doTouch(MotionEvent event) {
 		if(!isBreak && isReadyForNextTrial) {
 			if(isStarted) {
-				int touchResult = xacTouchSenseFeatureMaker.calculateHandPart(new double[] { event.getSize(0) });
-				xacTouchSenseFeatureMaker.setLabels(label, touchResult);
-				xacTouchSenseFeatureMaker.sendOffData(new float[] { event.getSize(0) });
-				trial++;
-				
-				if(trial == numTrialsPerBlock) {
-					block++;
-					isBreak = true;
-					if(block == numBlocks) {
-						tvCue.setText("End of technique");
+				if (xacTouchSenseFeatureMaker.isDataReady()) {
+					int touchResult = xacTouchSenseFeatureMaker
+							.calculateHandPart(new double[] { event.getSize(0) });
+					xacTouchSenseFeatureMaker.setLabels(label, touchResult);
+					xacTouchSenseFeatureMaker.sendOffData(new float[] { event
+							.getSize(0) });
+					trial++;
+
+					if (trial == numTrialsPerBlock) {
+						block++;
+						isBreak = true;
+						if (block == numBlocks) {
+							tvCue.setTextColor(0xFFFFFFFF);
+							tvCue.setText("End of technique");
+						} else {
+							tvCue.setTextColor(0xFFFFFFFF);
+							tvCue.setText("End of block");
+						}
 					} else {
-						tvCue.setText("End of block");
+						tvCue.setTextColor(0xFFFFFFFF);
+						tvCue.setText("Please wait ...");
 					}
-				} else {
-					tvCue.setText("Please wait ...");
 				}
 				
 			} else {
@@ -63,16 +68,18 @@ public class TouchWithHandParts extends TechniqueShell {
 	public void runOnTimer() {
 		if (!isBreak) {
 			if (!xacTouchSenseFeatureMaker.isDataReady()) {
+				tvCue.setTextColor(0xFFFFFFFF);
 				tvCue.setText("Please wait ...");
 				isReadyForNextTrial = false;
 				// Log.d(LOGTAG, "wait...");
 			} else {
 				if (!isReadyForNextTrial) {
 					if (isStarted) {
-						label = nextClassLabel();
+						label = nextClassLabel(false);
 						setCues();
 						setStatus();
 					} else {
+						tvCue.setTextColor(0xFFFFFFFF);
 						tvCue.setText("Tap to start...");
 					}
 
@@ -85,6 +92,7 @@ public class TouchWithHandParts extends TechniqueShell {
 	
 	@Override
 	protected void setCues() {
+		super.setCues();
 		switch(label) {
 		case xacTouchSenseFeatureMaker.PAD:
 			tvCue.setText("Pad of index finger");

@@ -21,11 +21,11 @@ public class xacBumpSenseFeatureMaker {
 	public final static float TAPTHRS = 200;
 	public final static int  HOLDTIMEOUT = 750; // ms
 	
-	public final static int BUMPZOOMTIMEIN = 1000; // ms
-	public final static int NUMROWPHONEAUTHEN = DuetTech.PHONEACCELFPSGAME
+	public final static int BUMPZOOMTIMEIN = 500; // ms
+	public final static int NUMROWBUMP = DuetTech.PHONEACCELFPSGAME
 			* BUMPZOOMTIMEIN / 1000;
 
-	static final int MAXNUMROW = 256;
+	static final int MAXNUMROW = 1024;
 	static final int NUMSOURCES = 2;
 
 	static String[] featureNames = null;
@@ -35,7 +35,8 @@ public class xacBumpSenseFeatureMaker {
 	static int pntrEntryWatch = 0;
 	static int numFeatures = 0;
 	static String tag = "FeatureMaker";
-	static int label = -1;
+	static int was = -1;
+	static int recognizedAs = -1;
 
 	static xacAccelerometer accelWatch;
 	static xacAccelerometer accelPhone;
@@ -109,10 +110,11 @@ public class xacBumpSenseFeatureMaker {
 		pntrEntryWatch++;
 	}
 
-	public static void setLabel(int lb) {
-		label = lb;
+	public static void setLabels(int lb, int ras) {
+		was = lb;
+		recognizedAs = ras;
 	}
-
+	
 	public static void updateWatchAccel(float[] values) {
 		if (accelWatch == null)
 			return;
@@ -125,14 +127,26 @@ public class xacBumpSenseFeatureMaker {
 		accelPhone.update(values[0], values[1], values[2]);
 	}
 
-	public static void sendOffData(int numToSend, String[] classLabels) {
+	public static boolean isDataReady() {
 		int lockedPntrEntryPhone = pntrEntryPhone;
 		int lockedPntrEntryWatch = pntrEntryWatch;
-		int numToSendPhone = numToSend;
+		int numToSendPhone = NUMROWBUMP;
+		int numToSendWatch = numToSendPhone * DuetTechExtension.WATCHACCELFPS / DuetTech.PHONEACCELFPSGAME;
+		
+		if(numToSendPhone > lockedPntrEntryPhone || numToSendWatch > lockedPntrEntryWatch) 
+			return false;
+		
+		return true;
+	}
+	
+	public static void sendOffData() {
+		int lockedPntrEntryPhone = pntrEntryPhone;
+		int lockedPntrEntryWatch = pntrEntryWatch;
+		int numToSendPhone = NUMROWBUMP;
 		int numToSendWatch = numToSendPhone * DuetTechExtension.WATCHACCELFPS
 				/ DuetTech.PHONEACCELFPSGAME;
 
-		if (label < 0 || numToSendPhone > lockedPntrEntryPhone
+		if (was < 0 || numToSendPhone > lockedPntrEntryPhone
 				|| numToSendWatch > lockedPntrEntryWatch)
 			return;
 
@@ -154,7 +168,8 @@ public class xacBumpSenseFeatureMaker {
 			}
 		}
 
-		strFeatureRow += classLabels[label] + '\0';
+		String[] classLabels = {"Bump", "NoBump"};
+		strFeatureRow += classLabels[was] + "," + classLabels[recognizedAs] + "\0";
 
 		new xacUDPTask().execute(strFeatureRow);
 	}
@@ -201,7 +216,7 @@ public class xacBumpSenseFeatureMaker {
 	public static int calculateBumping() {
 		int label = NOBUMP;
 
-		Object[] features = getFlattenedData(NUMROWPHONEAUTHEN);
+		Object[] features = getFlattenedData(NUMROWBUMP);
 
 		int idxClass = -1;
 		try {

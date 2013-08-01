@@ -3,26 +3,26 @@ package me.xiangchen.app.duetstudy;
 import java.util.Calendar;
 
 import me.xiangchen.lib.xacPhoneGesture;
-import me.xiangchen.technique.tiltsense.xacTiltSenseFeatureMaker;
+import me.xiangchen.technique.bumpsense.xacBumpSenseFeatureMaker;
 import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 
-public class WristTilt extends TechniqueShell {
+public class Bump extends TechniqueShell {
 
-	public static final int TILTTIMEOUT = 1500;
+	public static final int BUMPTIMEOUT = 1500;
 	xacPhoneGesture pressAndHold;
 	long timeFromHold;
-
-	public WristTilt(Context context) {
+	public Bump(Context context) {
 		super(context);
-		technique = WRISTTILT;
-
+		technique = BUMP;
+		
 		numClasses = 2;
-		classLabels = new int[] { xacTiltSenseFeatureMaker.NONE,
-				xacTiltSenseFeatureMaker.TILTOUT };
+		classLabels = new int[] {xacBumpSenseFeatureMaker.BUMP, xacBumpSenseFeatureMaker.NOBUMP};
+//		int numDataPointsPerClass = 50; 
+//		numBlocks = 5;
 		numTrialsPerBlock = numClasses * numDataPointsPerClass / numBlocks;
-
+		
 		labelCounter = new int[numClasses];
 		radii = new float[numClasses];
 		for (int i = 0; i < numClasses; i++) {
@@ -31,8 +31,8 @@ public class WristTilt extends TechniqueShell {
 		}
 
 		pressAndHold = new xacPhoneGesture(xacPhoneGesture.PRESSANDHOLD);
-
-		tvStatus.setText("Wrist tilting");
+		
+		tvStatus.setText("Bump");
 	}
 
 	@Override
@@ -43,46 +43,48 @@ public class WristTilt extends TechniqueShell {
 		int action = event.getAction();
 
 		if (!isBreak) {
-			if (isStarted) {
-				long curTime = Calendar.getInstance().getTimeInMillis();
-				switch (action) {
-				case MotionEvent.ACTION_DOWN:
-					pressAndHold.update(event);
-					timeFromHold = -1;
-					break;
-				case MotionEvent.ACTION_MOVE:
-					if (pressAndHold.getResult() != pressAndHold.YES) {
+//			if (isReadyForNextTrial) {
+
+				if (isStarted) {
+					long curTime = Calendar.getInstance().getTimeInMillis();
+
+					switch (action) {
+					case MotionEvent.ACTION_DOWN:
 						pressAndHold.update(event);
-						xacTiltSenseFeatureMaker.clearData();
-						isReadyForNextTrial = false;
-					} else {
-						if (timeFromHold < 0) {
-							label = nextClassLabel(false);
-							setCues();
-							timeFromHold = curTime;
+						timeFromHold = -1;
+
+						break;
+					case MotionEvent.ACTION_MOVE:
+						if (pressAndHold.getResult() != pressAndHold.YES) {
+							pressAndHold.update(event);
+							xacBumpSenseFeatureMaker.clearData();
+							isReadyForNextTrial = false;
 						} else {
-							if (curTime - timeFromHold > TILTTIMEOUT) {
-								if (xacTiltSenseFeatureMaker.isDataReady()) {
-									int tiltResult = xacTiltSenseFeatureMaker
-											.calculateTilting();
-									xacTiltSenseFeatureMaker.setLabels(label,
-											tiltResult);
-									xacTiltSenseFeatureMaker.sendOffData();
-									xacTiltSenseFeatureMaker.clearData();
-									isReadyForNextTrial = false;
-									Log.d(LOGTAG, label + " : " + tiltResult);
-									tvCue.setText("Release");
-									timeFromHold = curTime;
-									trial++;
+							if (timeFromHold < 0) {
+								label = nextClassLabel(false);
+								setCues();
+								timeFromHold = curTime;
+							} else {
+								if (curTime - timeFromHold > BUMPTIMEOUT) {
+									if (xacBumpSenseFeatureMaker.isDataReady()) {
+										int bumpResult = xacBumpSenseFeatureMaker.calculateBumping();
+										xacBumpSenseFeatureMaker.setLabels(label, bumpResult);
+										xacBumpSenseFeatureMaker.sendOffData();
+										xacBumpSenseFeatureMaker.clearData();
+										isReadyForNextTrial = false;
+										Log.d(LOGTAG, label + " : " + bumpResult);
+										tvCue.setText("Release");
+										timeFromHold = curTime;
+										trial++;
+									}
 								}
 							}
 						}
+						break;
+					case MotionEvent.ACTION_UP:
+						break;
 					}
-					break;
-				case MotionEvent.ACTION_UP:
-					break;
 				}
-			}
 
 			if (action == MotionEvent.ACTION_UP) {
 				if (isStarted) {
@@ -99,14 +101,14 @@ public class WristTilt extends TechniqueShell {
 					} else {
 						tvCue.setTextColor(0xFFFFFFFF);
 						tvCue.setText("Please wait ...");
-					}
+					}					
 				} else {
 					isStarted = true;
 					block = 0;
 					trial = 0;
 				}
-
-				xacTiltSenseFeatureMaker.clearData();
+				
+				xacBumpSenseFeatureMaker.clearData();
 				isReadyForNextTrial = false;
 				isTouching = false;
 			}
@@ -114,11 +116,11 @@ public class WristTilt extends TechniqueShell {
 
 		return true;
 	}
-
+	
 	@Override
 	public void runOnTimer() {
 		if (!isBreak && !isTouching) {
-			if (!xacTiltSenseFeatureMaker.isDataReady()) {
+			if (!xacBumpSenseFeatureMaker.isDataReady()) {
 				tvCue.setTextColor(0xFFFFFFFF);
 				tvCue.setText("Please wait ...");
 				isReadyForNextTrial = false;
@@ -141,18 +143,17 @@ public class WristTilt extends TechniqueShell {
 			}
 		}
 	}
-
+	
 	@Override
 	protected void setCues() {
 		super.setCues();
 		switch (label) {
-		case xacTiltSenseFeatureMaker.TILTOUT:
-			tvCue.setText("Tilt the wrist");
+		case xacBumpSenseFeatureMaker.BUMP:
+			tvCue.setText("Bump");
 			break;
-		case xacTiltSenseFeatureMaker.NONE:
+		case xacBumpSenseFeatureMaker.NOBUMP:
 			tvCue.setText("Press and hold");
 			break;
 		}
 	}
-
 }
