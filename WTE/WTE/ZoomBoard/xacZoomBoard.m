@@ -31,11 +31,10 @@ NSArray *keysThree;
     if (self) {
         // Initialization code
         
-        [self initKeyBoard:frame];
-        
         centerX = self.center.x;
         centerY = self.center.y;
         
+        [self initKeyBoard:frame];
     }
     return self;
 }
@@ -58,14 +57,13 @@ float centerY;
 - (void) zoomIn:(float)x :(float)y :(float)zoomFactor{
     zoomedFactor = zoomFactor;
     [self zoom :x :y :zoomFactor];
-    _isZoomed = true;
 }
 
 - (void) zoomOut:(float)zoomFactor {
-    if(_isZoomed) {
+//    if(_isZoomed) {
         [self zoom:centerX :centerY : 1 / zoomFactor];
-        _isZoomed = false;
-    }
+//        _isZoomed = false;
+//    }
 }
 
 - (void) zoom :(float)x :(float)y :(float)factor {
@@ -154,16 +152,17 @@ float centerY;
     keysTwo = [[NSArray alloc] initWithObjects:@"A", @"S", @"D", @"F", @"G", @"H", @"J", @"K", @"L", nil];
     keysThree = [[NSArray alloc] initWithObjects:@"Z", @"X", @"C", @"V", @"B", @"N", @"M", @",", @".", nil];
     
-    float marginHori = 0.02f;
+    float marginHori = 0.05f;
     float marginVert = 0.02f;
-    float wKey = frame.size.width * (1 - marginHori * 2) / lineOne.count * (1 - marginHori);
-    float wMargin = frame.size.width * (1 - marginHori * 2) / lineOne.count * marginHori;
-    float hKey = frame.size.height * (1 - marginVert * 4) / 3;
+    
+    float wKey = frame.size.width * (1 - marginHori * 2) / lineOne.count * (1 - marginHori) / 2;// * INITIALZOOMLEVEL * ZOOMFACTOR;
+    float wMargin = 0;//frame.size.width * (1 - marginHori * 2) / lineOne.count * marginHori / 2;
+    float hKey = frame.size.height * (1 - marginVert * 4) / 3 / 2;// * INITIALZOOMLEVEL * ZOOMFACTOR;
     
     for (int i=0; i<lineOne.count; i++) {
         UIButton *btn = lineOne[i];
-        float left = frame.size.width * marginHori + wMargin + (wKey+wMargin) * i;
-        float top = frame.size.height * marginVert * 0;
+        float left = frame.size.width / 4 + frame.size.width * marginHori + wMargin + (wKey+wMargin) * i;
+        float top = frame.size.height * marginVert * 0 - frame.size.height / 5;
         [btn setTitle:keysOne[i] forState:UIControlStateNormal];
         btn.titleLabel.font = [UIFont systemFontOfSize:ZOOMBOARDFONTSIZE];
         [btn.titleLabel setTextAlignment:NSTextAlignmentCenter];
@@ -177,8 +176,8 @@ float centerY;
     
     for (int i=0; i<lineTwo.count; i++) {
         UIButton *btn = lineTwo[i];
-        float left = frame.size.width * 1.5f * marginHori + wMargin + (wKey+wMargin) * i;
-        float top = frame.size.height * marginVert * 1 + hKey;
+        float left = frame.size.width / 4 + frame.size.width * marginHori + wMargin + (wKey+wMargin) * (i + 0.5f);
+        float top = frame.size.height * marginVert * 1 + hKey * 1 - frame.size.height / 5;
         [btn setTitle:keysTwo[i] forState:UIControlStateNormal];
         btn.titleLabel.font = [UIFont systemFontOfSize:ZOOMBOARDFONTSIZE];
         [btn.titleLabel setTextAlignment:NSTextAlignmentCenter];
@@ -192,8 +191,8 @@ float centerY;
     
     for (int i=0; i<lineThree.count; i++) {
         UIButton *btn = lineThree[i];
-        float left = frame.size.width * 2 * marginHori + wMargin + (wKey+wMargin) * i;
-        float top = frame.size.height * marginVert * 2 + hKey * 2;
+        float left = frame.size.width / 4 + frame.size.width * marginHori + wMargin + (wKey+wMargin) * (i + 0.5f);
+        float top = frame.size.height * marginVert * 2 + hKey * 2 - frame.size.height / 5;
         [btn setTitle:keysThree[i] forState:UIControlStateNormal];
         btn.titleLabel.font = [UIFont systemFontOfSize:ZOOMBOARDFONTSIZE];
         [btn.titleLabel setTextAlignment:NSTextAlignmentCenter];
@@ -204,6 +203,15 @@ float centerY;
 //        [btn addGestureRecognizer:swipeUpRecognizer];
         [self addSubview:btn];
     }
+    
+//    float oldCenterX = centerX;
+//    float oldCenterY = centerY;
+//    centerX /= 2;
+//    centerY /= 2;
+//    centerY *= 1.5;
+//    [self zoomOut:INITIALZOOMLEVEL * ZOOMFACTOR];
+//    centerX = oldCenterX;
+//    centerY = oldCenterY;
 }
 
 @end

@@ -20,6 +20,7 @@
         _textEntry = [[xacTextEntry alloc] init];
         [_textEntry initVisualView:self];
 //        [_textEntry initTextField:self];
+//        [self setBackgroundColor:[UIColor redColor]];
         
     }
     return self;

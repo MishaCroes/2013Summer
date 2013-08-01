@@ -111,8 +111,8 @@ int idxSubString;
 }
 */
 
-float zoomFactor = 3.0f;
-bool isZoomed = false;
+
+int zoomLevel = 0;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 
@@ -122,26 +122,25 @@ bool isZoomed = false;
     
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {    
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     if([touches count] > MAXTOUCHPOINTS)
         return;
-    if(!isZoomed) {
+    if(zoomLevel < MAXZOOMLEVEL) {
         for(UITouch *touch in [touches allObjects]) {
             
             CGPoint tchPnt = [touch locationInView:self];
-            float x1 = zoomFactor * (zoomBoard.center.x - tchPnt.x) + tchPnt.x;
-            float y1 = zoomFactor * (zoomBoard.center.y - tchPnt.y) + tchPnt.y;
-            [zoomBoard zoomIn:x1 :y1: zoomFactor];
+            float x1 = ZOOMFACTOR * (zoomBoard.center.x - tchPnt.x) + tchPnt.x;
+            float y1 = ZOOMFACTOR * (zoomBoard.center.y - tchPnt.y) + tchPnt.y;
+            [zoomBoard zoomIn:x1 :y1: ZOOMFACTOR];
+            zoomLevel++;
         }
-        
-        isZoomed = TRUE;
         zoomBoard.typedChar = @"";
     } else {
         if(ptrCharZoomBoard == 0) {
             [_testText resetTimer];
         }
-        [zoomBoard zoomOut:zoomFactor];
-        isZoomed = FALSE;
+        [zoomBoard zoomOut:pow(ZOOMFACTOR, zoomLevel)];
+        zoomLevel = 0;
         NSLog(@"%@", zoomBoard.typedChar);
         [self addTypedKey:zoomBoard.typedChar];
         [self updateTextField];
@@ -225,9 +224,11 @@ bool isZoomed = false;
 }
 
 - (void) doZoomOut {
-    NSLog(@"doZoomOut");
-    [zoomBoard zoomOut:zoomFactor];
-    isZoomed = FALSE;
+    NSLog(@"zoomlevel: %d", zoomLevel);
+    if(zoomLevel > 0) {
+        [zoomBoard zoomOut:pow(ZOOMFACTOR, zoomLevel)];
+        zoomLevel = 0;
+    }
 }
 
 - (void) doKeyboardSwitch {

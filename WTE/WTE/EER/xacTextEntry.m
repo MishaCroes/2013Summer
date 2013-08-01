@@ -297,7 +297,7 @@ bool isThereNewInput = false;
 - (void) initVisualView :(UIView*) view {
     imgView = [[UIImageView alloc] init];
     imgView.image = [UIImage imageNamed:@"keyboard.png"];
-    imgView.frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height);
+    imgView.frame = CGRectMake(view.frame.size.width/4, view.frame.size.height/4, view.frame.size.width/2, view.frame.size.height/2);
     [view addSubview:imgView];
 }
 

@@ -21,8 +21,8 @@
 
 #define ZOOMBOARDFONTSIZE 5
 
-#define WATCHORIX 0.4285f
-#define WATCHORIY 0.4600f
+#define WATCHORIX 0.3950f
+#define WATCHORIY 0.4100f
 
 #define TEXTFIELDORIX 0.00f
 #define TEXTFIELDORIY 0.20f
@@ -43,6 +43,11 @@
 
 #define SUMMARIZATION 0
 #define PERENTRY 1
+
+#define MAXZOOMLEVEL 2
+
+#define INITIALZOOMLEVEL 1
+#define ZOOMFACTOR 3.0f
 
 #endif
 
