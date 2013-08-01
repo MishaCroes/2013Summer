@@ -29,7 +29,7 @@ public class xacAuthenticSenseFeatureMaker {
 	public final static int NUMROWPHONEAUTHEN = DuetTech.PHONEACCELFPSGAME
 			* PHONEAUTHENDURATION / 1000;
 
-	static final int MAXNUMROW = 256;
+	static final int MAXNUMROW = 1024;
 	static final int NUMSOURCES = 2;
 
 	static String[] featureNames = null;
@@ -39,7 +39,8 @@ public class xacAuthenticSenseFeatureMaker {
 	static int pntrEntryWatch = 0;
 	static int numFeatures = 0;
 	static String tag = "FeatureMaker";
-	static int label = -1;
+	static int was = -1;
+	static int recognizedAs = -1;
 
 	static xacAccelerometer accelWatch;
 	static xacAccelerometer accelPhone;
@@ -113,8 +114,9 @@ public class xacAuthenticSenseFeatureMaker {
 		pntrEntryWatch++;
 	}
 
-	public static void setLabel(int lb) {
-		label = lb;
+	public static void setLabels(int lb, int ras) {
+		was = lb;
+		recognizedAs = ras;
 	}
 
 	public static void updateWatchAccel(float[] values) {
@@ -129,14 +131,26 @@ public class xacAuthenticSenseFeatureMaker {
 		accelPhone.update(values[0], values[1], values[2]);
 	}
 
-	public static void sendOffData(int numToSend, String[] classLabels) {
+	public static boolean isDataReady() {
 		int lockedPntrEntryPhone = pntrEntryPhone;
 		int lockedPntrEntryWatch = pntrEntryWatch;
-		int numToSendPhone = numToSend;
+		int numToSendPhone = NUMROWPHONEAUTHEN;
+		int numToSendWatch = numToSendPhone * DuetTechExtension.WATCHACCELFPS / DuetTech.PHONEACCELFPSGAME;
+		
+		if(numToSendPhone > lockedPntrEntryPhone || numToSendWatch > lockedPntrEntryWatch) 
+			return false;
+		
+		return true;
+	}
+	
+	public static void sendOffData() {
+		int lockedPntrEntryPhone = pntrEntryPhone;
+		int lockedPntrEntryWatch = pntrEntryWatch;
+		int numToSendPhone = NUMROWPHONEAUTHEN;
 		int numToSendWatch = numToSendPhone * DuetTechExtension.WATCHACCELFPS
 				/ DuetTech.PHONEACCELFPSGAME;
 
-		if (label < 0 || numToSendPhone > lockedPntrEntryPhone
+		if (was < 0 || numToSendPhone > lockedPntrEntryPhone
 				|| numToSendWatch > lockedPntrEntryWatch)
 			return;
 
@@ -158,7 +172,8 @@ public class xacAuthenticSenseFeatureMaker {
 			}
 		}
 
-		strFeatureRow += classLabels[label] + '\0';
+		String[] classLabels = {"InTheWild", "LeftBackWrist", "LeftBackInnerWrist"};
+		strFeatureRow += classLabels[was] + "," + classLabels[recognizedAs] + "\0";
 
 		new xacUDPTask().execute(strFeatureRow);
 	}
@@ -226,7 +241,7 @@ public class xacAuthenticSenseFeatureMaker {
 			 Log.d(LOGTAG, "left inner wrist");
 			break;
 		case 2:
-			label = LEFTBACKWRISTNOPHONE;	// now only left
+			label = LEFTBACKWRIST;	// now only left
 			 Log.d(LOGTAG, "right back wrist");
 			break;
 		case 3:

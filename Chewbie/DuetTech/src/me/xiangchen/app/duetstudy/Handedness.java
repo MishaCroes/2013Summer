@@ -18,8 +18,6 @@ public class Handedness extends TechniqueShell {
 		numClasses = 2;
 		classLabels = new int[] { xacHandSenseFeatureMaker.WATCH,
 				xacHandSenseFeatureMaker.NOWATCH };
-		int numDataPointsPerClass = 50;
-		numBlocks = 5;
 		numTrialsPerBlock = numClasses * numDataPointsPerClass / numBlocks;
 
 		labelCounter = new int[numClasses];
@@ -29,6 +27,8 @@ public class Handedness extends TechniqueShell {
 			radii[i] = 1;
 		}
 		
+//		tvCue.setLines(3);
+//		tvCue.setHeight(tvCue.getHeight() * 3);
 		tvStatus.setText("Handedness");
 	}
 
@@ -40,8 +40,6 @@ public class Handedness extends TechniqueShell {
 		
 		if (!isBreak) {
 			if (isStarted) {
-				
-				
 				switch (action) {
 				case MotionEvent.ACTION_DOWN:
 					handedness = xacHandSenseFeatureMaker.UNKNOWN;
@@ -59,6 +57,7 @@ public class Handedness extends TechniqueShell {
 						xacHandSenseFeatureMaker.clearData();
 						isReadyForNextTrial = false;
 						tvCue.setText("Release");
+						trial++;
 					}
 					break;
 				case MotionEvent.ACTION_UP:
@@ -68,16 +67,18 @@ public class Handedness extends TechniqueShell {
 			
 			if (action == MotionEvent.ACTION_UP) {
 				if (isStarted) {
-					trial++;
 					if (trial == numTrialsPerBlock) {
 						block++;
 						isBreak = true;
 						if (block == numBlocks) {
+							tvCue.setTextColor(0xFFFFFFFF);
 							tvCue.setText("End of technique");
 						} else {
+							tvCue.setTextColor(0xFFFFFFFF);
 							tvCue.setText("End of block");
 						}
 					} else {
+						tvCue.setTextColor(0xFFFFFFFF);
 						tvCue.setText("Please wait ...");
 					}					
 				} else {
@@ -98,16 +99,18 @@ public class Handedness extends TechniqueShell {
 	public void runOnTimer() {
 		if (!isBreak && !isTouching) {
 			if (!xacHandSenseFeatureMaker.isDataReady()) {
+				tvCue.setTextColor(0xFFFFFFFF);
 				tvCue.setText("Please wait ...");
 				isReadyForNextTrial = false;
 				// Log.d(LOGTAG, "wait...");
 			} else {
 				if (!isReadyForNextTrial) {
 					if (isStarted) {
-						label = nextClassLabel();
+						label = nextClassLabel(false);
 						setCues();
 						setStatus();
 					} else {
+						tvCue.setTextColor(0xFFFFFFFF);
 						tvCue.setText("Tap to start...");
 					}
 
@@ -120,12 +123,16 @@ public class Handedness extends TechniqueShell {
 	
 	@Override
 	protected void setCues() {
+		super.setCues();
+		String strCue = "";
 		switch (label) {
 		case xacHandSenseFeatureMaker.WATCH:
-			tvCue.setText("Left");
+			strCue = "Swipe all the way up with\nLeft\nHand";
+			tvCue.setText(strCue);
 			break;
 		case xacHandSenseFeatureMaker.NOWATCH:
-			tvCue.setText("Right");
+			strCue = "Swipe all the way up with\nRight\nHand";
+			tvCue.setText(strCue);
 			break;
 		}
 	}

@@ -1,5 +1,7 @@
 package me.xiangchen.app.duettech;
 
+import java.util.Calendar;
+
 import me.xiangchen.technique.bumpsense.xacBumpSenseFeatureMaker;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import com.sonyericsson.extras.liveware.aef.control.Control;
 import com.sonyericsson.extras.liveware.aef.sensor.Sensor;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
+import com.sonyericsson.extras.liveware.extension.util.control.ControlTouchEvent;
 import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensor;
 import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorEvent;
 import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorEventListener;
@@ -42,7 +45,8 @@ public class DuetTechExtension extends ControlExtension {
 
 	public DuetTechExtension(Context context, String hostAppPackageName) {
 		super(context, hostAppPackageName);
-
+		DuetTechManager.setWatch(this);
+		
 		width = getSupportedControlWidth(context);
 		height = getSupportedControlHeight(context);
 
@@ -87,6 +91,29 @@ public class DuetTechExtension extends ControlExtension {
 			}
 		};
 	}
+	
+	@Override
+	public void onTouch(final ControlTouchEvent event) {
+		long curTime = Calendar.getInstance().getTimeInMillis();
+		if(event.getAction() == Control.Intents.TOUCH_ACTION_PRESS) {
+			DuetTechManager.updateWatchGesture(DuetTechManager.TAP, curTime);
+		}
+	}
+	
+	@Override
+	public void onSwipe(int direction) {
+		long curTime = Calendar.getInstance().getTimeInMillis();
+		switch(direction) {
+		case Control.Intents.SWIPE_DIRECTION_RIGHT:
+			DuetTechManager
+					.updateWatchGesture(DuetTechManager.SWIPECLOSE, curTime);
+			break;
+		case Control.Intents.SWIPE_DIRECTION_LEFT:
+			DuetTechManager.updateWatchGesture(DuetTechManager.SWIPEOPEN, curTime);
+			break;
+		}
+	}
+
 
 	@Override
 	public void onResume() {
@@ -140,5 +167,9 @@ public class DuetTechExtension extends ControlExtension {
 	public static int getSupportedControlHeight(Context context) {
 		return context.getResources().getDimensionPixelSize(
 				R.dimen.smart_watch_control_height);
+	}
+	
+	public void updateVisual(Bitmap bitmap) {
+		showBitmap(bitmap);
 	}
 }

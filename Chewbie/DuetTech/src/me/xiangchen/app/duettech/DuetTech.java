@@ -4,8 +4,11 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import me.xiangchen.app.duetstudy.Bump;
 import me.xiangchen.app.duetstudy.FlipAndTap;
+import me.xiangchen.app.duetstudy.FlipToConfigure;
 import me.xiangchen.app.duetstudy.Handedness;
+import me.xiangchen.app.duetstudy.MultiDeviceGesture;
 import me.xiangchen.app.duetstudy.TechniqueShell;
 import me.xiangchen.app.duetstudy.TouchWithHandParts;
 import me.xiangchen.app.duetstudy.WristTilt;
@@ -50,6 +53,9 @@ public class DuetTech extends Activity implements SensorEventListener {
 	WristTilt wristTilt;
 	TouchWithHandParts touchWithHandParts;
 	Handedness handedness;
+	Bump bump;
+	FlipToConfigure flipToConfigure;
+	MultiDeviceGesture multiDeviceGesture;
 
 	TechniqueShell[] techniques;
 	int idxTech = -1;
@@ -62,7 +68,9 @@ public class DuetTech extends Activity implements SensorEventListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		DuetTechManager.setPhone(this);
+		DuetTechManager.initGestureManager()
+;		
 		// remove title bar
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		// remove notification bar
@@ -81,7 +89,8 @@ public class DuetTech extends Activity implements SensorEventListener {
 				return false;
 			}
 		});
-
+		
+		
 		mediator = new RelativeLayout(this);
 		mediator.setBackgroundColor(0xFF000000);
 
@@ -109,9 +118,12 @@ public class DuetTech extends Activity implements SensorEventListener {
 		wristTilt = new WristTilt(this);
 		touchWithHandParts = new TouchWithHandParts(this);
 		handedness = new Handedness(this);
+		bump = new Bump(this);
+		flipToConfigure = new FlipToConfigure(this);
+		multiDeviceGesture = new MultiDeviceGesture(this);
 
 		techniques = new TechniqueShell[] { flipAndTap, wristTilt,
-				touchWithHandParts, handedness};
+				touchWithHandParts, handedness, bump, flipToConfigure, multiDeviceGesture };
 
 		// sensors
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -135,7 +147,8 @@ public class DuetTech extends Activity implements SensorEventListener {
 		}, new Date(), 1000 / TIMERFPS);
 
 		// all the recognizers
-		xacHandSenseFeatureMaker.setLabels(xacHandSenseFeatureMaker.UNKNOWN, xacHandSenseFeatureMaker.UNKNOWN);
+		xacHandSenseFeatureMaker.setLabels(xacHandSenseFeatureMaker.UNKNOWN,
+				xacHandSenseFeatureMaker.UNKNOWN);
 		xacHandSenseFeatureMaker.createFeatureTable();
 
 		xacFlipSenseFeatureMaker.setLabels(xacFlipSenseFeatureMaker.UNKNOWN,
@@ -147,15 +160,17 @@ public class DuetTech extends Activity implements SensorEventListener {
 		xacTouchSenseFeatureMaker.createFeatureTable();
 
 		xacAuthenticSenseFeatureMaker.createFeatureTable();
-		xacAuthenticSenseFeatureMaker
-				.setLabel(xacAuthenticSenseFeatureMaker.INTHEWILD);
+		xacAuthenticSenseFeatureMaker.setLabels(
+				xacAuthenticSenseFeatureMaker.INTHEWILD,
+				xacAuthenticSenseFeatureMaker.INTHEWILD);
 
 		xacTiltSenseFeatureMaker.createFeatureTable();
 		xacTiltSenseFeatureMaker.setLabels(xacTiltSenseFeatureMaker.NONE,
 				xacTiltSenseFeatureMaker.NONE);
 
 		xacBumpSenseFeatureMaker.createFeatureTable();
-		xacBumpSenseFeatureMaker.setLabel(xacBumpSenseFeatureMaker.NOBUMP);
+		xacBumpSenseFeatureMaker.setLabels(xacBumpSenseFeatureMaker.NOBUMP,
+				xacBumpSenseFeatureMaker.NOBUMP);
 
 		setContentView(layout);
 	}
