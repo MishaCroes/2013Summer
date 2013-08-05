@@ -31,6 +31,9 @@ public class TechniqueShell extends ViewGroup {
 	public final static int BUMP = 4;
 	public final static int FLIPTOCONFIGURE = 5;
 	public final static int MULTIDEVICEGESTURE = 6;
+	
+	public final static String[] TECHNIQUENAMES = {"Flip and tap", "Wrist tilt", "Touch with hand parts",
+		"Handedness", "Bump", "Flip to configure", "Multi-device gesture"};
 
 	public final static int[] CUECOLORS = { 0xFF00FFFF, 0xFFFFFF00, 0xFFFF00FF, 0xFFAA0F0F};
 
@@ -85,8 +88,8 @@ public class TechniqueShell extends ViewGroup {
 		tvStatus.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
 		this.addView(tvStatus);
 
-		numDataPointsPerClass = 6;
-		numBlocks = 2;
+		numDataPointsPerClass = 50;
+		numBlocks = 5;
 	}
 
 	public boolean doTouch(MotionEvent event) {
@@ -116,6 +119,7 @@ public class TechniqueShell extends ViewGroup {
 			trial = 0;
 			isBreak = false;
 			setStatus();
+			tvCue.setText("Tap to start ...");
 		}
 	}
 
@@ -210,7 +214,7 @@ public class TechniqueShell extends ViewGroup {
 	}
 
 	protected void setStatus() {
-		tvStatus.setText("Techniuqe #" + (technique + 1) + ", Block #"
+		tvStatus.setText(TECHNIQUENAMES[technique] + ": Block #"
 				+ (block + 1) + " Trial #" + (trial + 1));
 	}
 

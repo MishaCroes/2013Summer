@@ -1,5 +1,6 @@
 package me.xiangchen.app.duetstudy;
 
+import me.xiangchen.app.duettech.R;
 import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
 import android.content.Context;
 import android.view.MotionEvent;
@@ -75,7 +76,11 @@ public class TouchWithHandParts extends TechniqueShell {
 			} else {
 				if (!isReadyForNextTrial) {
 					if (isStarted) {
-						label = nextClassLabel(false);
+						if(block == 0) {
+							label = nextClassLabel(true);
+						} else {
+							label = nextClassLabel(false);
+						}
 						setCues();
 						setStatus();
 					} else {
@@ -96,12 +101,15 @@ public class TouchWithHandParts extends TechniqueShell {
 		switch(label) {
 		case xacTouchSenseFeatureMaker.PAD:
 			tvCue.setText("Pad of index finger");
+			ivCue.setImageResource(R.drawable.pad);
 			break;
 		case xacTouchSenseFeatureMaker.SIDE:
 			tvCue.setText("Side of index finger");
+			ivCue.setImageResource(R.drawable.side);
 			break;
 		case xacTouchSenseFeatureMaker.KNUCKLE:
 			tvCue.setText("Knuckle of index finger");
+			ivCue.setImageResource(R.drawable.knuckle);
 			break;
 		}
 	}

@@ -2,6 +2,7 @@ package me.xiangchen.app.duetstudy;
 
 import java.util.Calendar;
 
+import me.xiangchen.app.duettech.R;
 import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
 import android.content.Context;
 import android.view.MotionEvent;
@@ -29,6 +30,7 @@ public class Handedness extends TechniqueShell {
 		
 //		tvCue.setLines(3);
 //		tvCue.setHeight(tvCue.getHeight() * 3);
+		setPhoneImage(R.drawable.phone_up);
 		tvStatus.setText("Handedness");
 	}
 
@@ -106,7 +108,11 @@ public class Handedness extends TechniqueShell {
 			} else {
 				if (!isReadyForNextTrial) {
 					if (isStarted) {
-						label = nextClassLabel(false);
+						if(block == 0) {
+							label = nextClassLabel(true);
+						} else {
+							label = nextClassLabel(false);
+						}
 						setCues();
 						setStatus();
 					} else {

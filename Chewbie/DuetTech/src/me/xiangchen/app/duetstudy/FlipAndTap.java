@@ -2,6 +2,7 @@ package me.xiangchen.app.duetstudy;
 
 import java.util.Arrays;
 
+import me.xiangchen.app.duettech.R;
 import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
 import android.content.Context;
 import android.util.Log;
@@ -77,7 +78,11 @@ public class FlipAndTap extends TechniqueShell{
 			} else {
 				if(!isReadyForNextTrial) {
 					if(isStarted) {
-						label = nextClassLabel(false);
+						if(block == 0) {
+							label = nextClassLabel(true);
+						} else {
+							label = nextClassLabel(false);
+						}
 						setCues();	
 						setStatus();
 					} else {
@@ -99,9 +104,11 @@ public class FlipAndTap extends TechniqueShell{
 		switch(label) {
 		case xacFlipSenseFeatureMaker.FLIP:
 			tvCue.setText("Flip and tap");
+			ivCue.setImageResource(R.drawable.flip_and_tap);
 			break;
 		case xacFlipSenseFeatureMaker.NOFLIP:
 			tvCue.setText("Normal tap");
+			ivCue.setImageResource(R.drawable.normal_tap);
 			break;
 		}
 	}

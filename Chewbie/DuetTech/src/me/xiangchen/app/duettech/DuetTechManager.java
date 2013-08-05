@@ -139,4 +139,10 @@ public class DuetTechManager {
 			watch.updateVisual(BitmapFactory.decodeResource(phone.getResources(), resId));
 		}
 	}
+	
+	public static void buzzWatch(int duration) {
+		if(watch != null) {
+			watch.buzz(duration);
+		}
+	}
 }

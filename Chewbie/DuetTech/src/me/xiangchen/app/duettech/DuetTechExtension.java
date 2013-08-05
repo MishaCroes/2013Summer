@@ -172,4 +172,8 @@ public class DuetTechExtension extends ControlExtension {
 	public void updateVisual(Bitmap bitmap) {
 		showBitmap(bitmap);
 	}
+	
+	public void buzz(int duration) {
+		startVibrator(duration, 0, 1);
+	}
 }

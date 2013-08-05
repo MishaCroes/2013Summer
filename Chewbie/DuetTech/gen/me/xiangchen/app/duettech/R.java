@@ -46,17 +46,31 @@ public final class R {
     }
     public static final class drawable {
         public static final int badge_counter=0x7f020000;
-        public static final int headset_pro_cancel_icn=0x7f020001;
-        public static final int headset_pro_focus_xs_icn=0x7f020002;
-        public static final int headset_pro_ok_icn=0x7f020003;
-        public static final int ic_extension=0x7f020004;
-        public static final int ic_launcher=0x7f020005;
-        public static final int phone_close=0x7f020006;
-        public static final int phone_open=0x7f020007;
-        public static final int text_bg=0x7f020008;
-        public static final int watch_close=0x7f020009;
-        public static final int watch_open=0x7f02000a;
-        public static final int widget_frame=0x7f02000b;
+        public static final int bump=0x7f020001;
+        public static final int flip_and_tap=0x7f020002;
+        public static final int headset_pro_cancel_icn=0x7f020003;
+        public static final int headset_pro_focus_xs_icn=0x7f020004;
+        public static final int headset_pro_ok_icn=0x7f020005;
+        public static final int hold=0x7f020006;
+        public static final int hold_and_flip=0x7f020007;
+        public static final int hold_no_bump=0x7f020008;
+        public static final int hold_no_flip=0x7f020009;
+        public static final int ic_extension=0x7f02000a;
+        public static final int ic_launcher=0x7f02000b;
+        public static final int knuckle=0x7f02000c;
+        public static final int normal_tap=0x7f02000d;
+        public static final int nothing=0x7f02000e;
+        public static final int pad=0x7f02000f;
+        public static final int phone_close=0x7f020010;
+        public static final int phone_open=0x7f020011;
+        public static final int phone_up=0x7f020012;
+        public static final int side=0x7f020013;
+        public static final int text_bg=0x7f020014;
+        public static final int watch_close=0x7f020015;
+        public static final int watch_inner_wrist=0x7f020016;
+        public static final int watch_open=0x7f020017;
+        public static final int watch_outer_wrist=0x7f020018;
+        public static final int widget_frame=0x7f020019;
     }
     public static final class id {
         public static final int action_settings=0x7f09000a;

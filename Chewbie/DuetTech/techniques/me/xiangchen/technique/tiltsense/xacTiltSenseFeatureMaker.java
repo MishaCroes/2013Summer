@@ -128,7 +128,7 @@ public class xacTiltSenseFeatureMaker {
 			}
 		}
 		
-		String[] classLabels = {"None", "TiltOut"};
+		String[] classLabels = {"None", "TiltOut", "TiltIn"};
 		strFeatureRow += classLabels[was] + "," + classLabels[recognizedAs] + "\0";
 		
 		new xacUDPTask().execute(strFeatureRow);
@@ -202,8 +202,8 @@ public class xacTiltSenseFeatureMaker {
 			return NONE;
 		case 0:
 			return TILTOUT;
-//		case 1:
-//			return TILTIN;
+		case 1:
+			return TILTIN;
 		}
 		
 		return NONE;
