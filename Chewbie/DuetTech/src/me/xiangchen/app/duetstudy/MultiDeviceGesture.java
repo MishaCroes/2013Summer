@@ -112,7 +112,7 @@ public class MultiDeviceGesture extends TechniqueShell {
 		String strFeatureRow = "";
 		String[] classLabels = { "PinchOpen", "PinchClose", "PhoneToWatch",
 				"WatchToPhone" };
-		strFeatureRow += classLabels[label] + "," + classLabels[recognizedAs];
+		strFeatureRow += classLabels[label] + "," + classLabels[recognizedAs] + "\0";
 		new xacUDPTask().execute(strFeatureRow);
 	}
 

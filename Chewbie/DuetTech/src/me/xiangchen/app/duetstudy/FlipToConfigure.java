@@ -155,11 +155,7 @@ public class FlipToConfigure extends TechniqueShell {
 		if (toBeRandom) {
 			retLabel = classLabels[0];
 		} else {
-			if (trial < numTrialsPerBlock * 2 / 3) {
-				retLabel = classLabels[block % 2];
-			} else {
-				retLabel = classLabels[0];
-			}
+			retLabel = classLabels[block % 2];
 		}
 
 		return retLabel;

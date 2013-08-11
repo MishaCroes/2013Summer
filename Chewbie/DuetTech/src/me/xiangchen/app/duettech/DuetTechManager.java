@@ -115,7 +115,7 @@ public class DuetTechManager {
 					recognizedAs = MultiDeviceGesture.SWIPEOPEN;
 				} else if (phoneGesture.gesture == SWIPECLOSE) {
 					Log.d(LOGTAG, "by tap: swipe close");
-					recognizedAs = MultiDeviceGesture.SWIPEOPEN;
+					recognizedAs = MultiDeviceGesture.SWIPECLOSE;
 				}
 			} else if(dtGesture < -ORDERTIME) {
 				Log.d(LOGTAG, "by tap: watch->phone");
@@ -143,6 +143,12 @@ public class DuetTechManager {
 	public static void buzzWatch(int duration) {
 		if(watch != null) {
 			watch.buzz(duration);
+		}
+	}
+	
+	public static void restoreWatchVisual() {
+		if(watch != null) {
+			watch.updateVisual();
 		}
 	}
 }

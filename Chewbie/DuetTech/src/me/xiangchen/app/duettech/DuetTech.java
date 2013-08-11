@@ -193,10 +193,13 @@ public class DuetTech extends Activity implements SensorEventListener {
 			int numTechniques = techniques.length;
 			if (idxTech >= 0) {
 				layout.removeView(techniques[idxTech]);
+				if(techniques[idxTech] == multiDeviceGesture) {
+					DuetTechManager.restoreWatchVisual();
+				}
 			} else {
 				layout.removeView(mediator);
 			}
-
+			
 			idxTech = (idxTech + 1) % numTechniques;
 			layout.addView(techniques[idxTech]);
 
