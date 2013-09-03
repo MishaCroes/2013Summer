@@ -2,9 +2,9 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="257" key="DIALOG_WIDTH"/>
-		<item value="527" key="DIALOG_Y_ORIGIN"/>
-		<item value="843" key="DIALOG_X_ORIGIN"/>
-		<item value="380" key="DIALOG_HEIGHT"/>
+		<item value="503" key="DIALOG_Y_ORIGIN"/>
+		<item value="1972" key="DIALOG_X_ORIGIN"/>
+		<item value="342" key="DIALOG_HEIGHT"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
@@ -13,26 +13,26 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="" key="selection"/>
+		<item value="watchConfig" key="selection"/>
 		<list key="findhistory">
-			<item value="dora"/>
-			<item value="canvas canvas"/>
-			<item value="onresume"/>
-			<item value="drawLoadingScreen"/>
-			<item value=".draw"/>
-			<item value="mCurrentImage"/>
-			<item value="getNumberImage"/>
-			<item value="mNumberTextPaint"/>
+			<item value="watchConfig"/>
+			<item value="activeapp = n"/>
+			<item value="addem"/>
+			<item value="settext"/>
+			<item value="setb"/>
+			<item value="addemail"/>
+			<item value="setbackg"/>
+			<item value="app_"/>
 		</list>
 		<list key="replacehistory">
-			<item value="Integer(xacSwipe."/>
-			<item value="xacSwipe."/>
-			<item value="));"/>
-			<item value="&quot;), new Integer("/>
-			<item value="), new Integer("/>
-			<item value=".p"/>
-			<item value=".put(new String("/>
-			<item value="g"/>
+			<item value="btnIncrBrightness"/>
+			<item value="btnDecrFontSize"/>
+			<item value="btnIncrFontSize"/>
+			<item value="prevNumUnnotified"/>
+			<item value="layoutViews"/>
+			<item value="LOGTAB"/>
+			<item value="Log"/>
+			<item value="updateViews"/>
 		</list>
 	</section>
 </section>

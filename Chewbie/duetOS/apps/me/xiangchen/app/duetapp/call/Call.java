@@ -23,7 +23,7 @@ import android.widget.TextView;
 @SuppressLint("NewApi")
 public class Call extends App {
 
-	public final static int TAPTHRS = 200;
+	public final static int TAPTHRS = 300;
 	public final static String LOGTAG = "DuetOS";
 	public final static int APPWIDTH = 1080;
 	public final static int CALLTAB = 0;

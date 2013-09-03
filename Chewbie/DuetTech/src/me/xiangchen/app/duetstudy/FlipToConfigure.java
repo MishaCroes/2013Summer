@@ -2,24 +2,25 @@ package me.xiangchen.app.duetstudy;
 
 import java.util.Calendar;
 
+import me.xiangchen.app.duettech.R;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import android.content.Context;
 import android.view.MotionEvent;
 
 public class FlipToConfigure extends TechniqueShell {
 
-	public final static int CONFIGURETIMEOUT = 1500; //ms
+	public final static int CONFIGURETIMEOUT = 1500; // ms
 	long timeTouchDown;
 
 	public FlipToConfigure(Context context) {
 		super(context);
 		technique = FLIPTOCONFIGURE;
 
-		numClasses = 3;
-		classLabels = new int[] { xacAuthenticSenseFeatureMaker.INTHEWILD,
-				xacAuthenticSenseFeatureMaker.LEFTBACKWRIST,
+		numClasses = 2;
+		classLabels = new int[] { xacAuthenticSenseFeatureMaker.LEFTBACKWRIST,
 				xacAuthenticSenseFeatureMaker.LEFTINNERWRIST };
-		numBlocks = 2;
+		// numBlocks = numBlocks % 2 == 1 ? numBlocks + 1 : numBlocks;
+		// numBlocks = numBlocks == 0 ? 2 : numBlocks;
 		numTrialsPerBlock = numClasses * numDataPointsPerClass / numBlocks;
 
 		labelCounter = new int[numClasses];
@@ -42,9 +43,10 @@ public class FlipToConfigure extends TechniqueShell {
 			case MotionEvent.ACTION_DOWN:
 				xacAuthenticSenseFeatureMaker.clearData();
 				timeTouchDown = curTime;
+
 				break;
 			case MotionEvent.ACTION_MOVE:
-				if(curTime - timeTouchDown > CONFIGURETIMEOUT) {
+				if (curTime - timeTouchDown > CONFIGURETIMEOUT) {
 					tvCue.setText("Release");
 				}
 				break;
@@ -73,6 +75,7 @@ public class FlipToConfigure extends TechniqueShell {
 								isStarted = false;
 							}
 						} else {
+							ivCue.setImageResource(R.drawable.nothing);
 							tvCue.setTextColor(0xFFFFFFFF);
 							tvCue.setText("Please wait ...");
 						}
@@ -98,7 +101,11 @@ public class FlipToConfigure extends TechniqueShell {
 				// Log.d(LOGTAG, "wait...");
 			} else {
 				if (!isReadyForNextTrial) {
-					label = nextClassLabel(false);
+					if (block == 0) {
+						label = super.nextClassLabel(true);
+					} else {
+						label = nextClassLabel(false);
+					}
 					if (isStarted) {
 						setCues();
 						setStatus();
@@ -115,13 +122,15 @@ public class FlipToConfigure extends TechniqueShell {
 
 	@Override
 	protected void setCues() {
-		super.setCues();
+//		super.setCues();
 		switch (label) {
 		case xacAuthenticSenseFeatureMaker.INTHEWILD:
 			tvCue.setText("Hold");
+			ivCue.setImageResource(R.drawable.hold_no_flip);
 			break;
 		default:
 			tvCue.setText("Hold and flip");
+			ivCue.setImageResource(R.drawable.hold_and_flip);
 			break;
 		}
 	}
@@ -131,9 +140,11 @@ public class FlipToConfigure extends TechniqueShell {
 		switch (label) {
 		case xacAuthenticSenseFeatureMaker.LEFTINNERWRIST:
 			tvCue.setText("Wear the watch on the \ninner wrist");
+			ivCue.setImageResource(R.drawable.watch_inner_wrist);
 			break;
 		default:
 			tvCue.setText("Wear the watch on the \nouter wrist");
+			ivCue.setImageResource(R.drawable.watch_outer_wrist);
 			break;
 		}
 	}
@@ -144,13 +155,9 @@ public class FlipToConfigure extends TechniqueShell {
 		if (toBeRandom) {
 			retLabel = classLabels[0];
 		} else {
-			if (trial < numTrialsPerBlock / 2) {
-				retLabel = classLabels[1 + block % 2];
-			} else {
-				retLabel = classLabels[0];
-			}
+			retLabel = classLabels[block % 2];
 		}
-		
+
 		return retLabel;
 	}
 }

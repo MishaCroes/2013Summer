@@ -2,6 +2,7 @@ package me.xiangchen.app.duetstudy;
 
 import java.util.Calendar;
 
+import me.xiangchen.app.duettech.R;
 import me.xiangchen.lib.xacPhoneGesture;
 import me.xiangchen.technique.tiltsense.xacTiltSenseFeatureMaker;
 import android.content.Context;
@@ -18,9 +19,9 @@ public class WristTilt extends TechniqueShell {
 		super(context);
 		technique = WRISTTILT;
 
-		numClasses = 2;
+		numClasses = 3;
 		classLabels = new int[] { xacTiltSenseFeatureMaker.NONE,
-				xacTiltSenseFeatureMaker.TILTOUT };
+				xacTiltSenseFeatureMaker.TILTOUT, xacTiltSenseFeatureMaker.TILTIN };
 		numTrialsPerBlock = numClasses * numDataPointsPerClass / numBlocks;
 
 		labelCounter = new int[numClasses];
@@ -57,7 +58,11 @@ public class WristTilt extends TechniqueShell {
 						isReadyForNextTrial = false;
 					} else {
 						if (timeFromHold < 0) {
-							label = nextClassLabel(false);
+							if(block == 0) {
+								label = nextClassLabel(true);
+							} else {
+								label = nextClassLabel(false);
+							}
 							setCues();
 							timeFromHold = curTime;
 						} else {
@@ -109,6 +114,7 @@ public class WristTilt extends TechniqueShell {
 				xacTiltSenseFeatureMaker.clearData();
 				isReadyForNextTrial = false;
 				isTouching = false;
+				ivCue.setImageResource(R.drawable.nothing);
 			}
 		}
 
@@ -126,7 +132,7 @@ public class WristTilt extends TechniqueShell {
 			} else {
 				if (!isReadyForNextTrial) {
 					if (isStarted) {
-						label = nextClassLabel(false);
+//						label = nextClassLabel(false);
 						tvCue.setTextColor(0xFFFFFFFF);
 						tvCue.setText("Press and hold");
 						setStatus();
@@ -147,10 +153,16 @@ public class WristTilt extends TechniqueShell {
 		super.setCues();
 		switch (label) {
 		case xacTiltSenseFeatureMaker.TILTOUT:
-			tvCue.setText("Tilt the wrist");
+			tvCue.setText("Tilt the wrist outward");
+//			ivCue.setImageResource(R.drawable.tilt);
+			break;
+		case xacTiltSenseFeatureMaker.TILTIN:
+			tvCue.setText("Tilt the wrist inward");
+//			ivCue.setImageResource(R.drawable.tilt_out);
 			break;
 		case xacTiltSenseFeatureMaker.NONE:
 			tvCue.setText("Press and hold");
+			ivCue.setImageResource(R.drawable.nothing);
 			break;
 		}
 	}

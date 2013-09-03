@@ -8,53 +8,79 @@ import me.xiangchen.ml.TouchSenseClassifier;
 import me.xiangchen.ml.xacFeatureMaker;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TouchSense extends Activity {
-	
-	final static String[] touchLabels = {"Pad", "Phalanx", "Knuckle"};
+public class TouchSense extends Activity implements SensorEventListener {
+
+	final public static int PHONEACCELFPS = 50;
+	final static String[] touchLabels = { "Pad", "Side", "Knuckle" };
 	int idxHandParts = 0;
-	
+	final int TOUCHTIMEOUT = 500; // ms
+
 	boolean isRecognition = true;
-	
+
 	LinearLayout layout;
 	Button btnHandParts;
 	TextView txtHandParts;
 	int alphaText = 255;
-	
+
 	Timer timer;
-	
+
+	SensorManager sensorManager;
+	Sensor sensorAccel;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
+		// remove title bar
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		// remove notification bar
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+		xacFeatureMaker.createFeatureTable();
 		xacFeatureMaker.setLabel(idxHandParts);
-		
+
+		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+		sensorAccel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		sensorManager.registerListener(this, sensorAccel,
+				SensorManager.SENSOR_DELAY_GAME);
+
 		layout = new LinearLayout(this);
 		layout.setBackgroundColor(Color.BLACK);
 		layout.setOnTouchListener(new View.OnTouchListener() {
 			@Override
-			public boolean onTouch(View arg0, MotionEvent arg1) {
-				// TODO Auto-generated method stub
-				
+			public boolean onTouch(View view, MotionEvent event) {
+				int numRowsToSend = PHONEACCELFPS * TOUCHTIMEOUT / 1000;
+				float sizeTouch = event.getSize(0);
 				// training phase
 				if (!isRecognition) {
-					xacFeatureMaker.sendOffData(10, touchLabels);
+					xacFeatureMaker.sendOffData(numRowsToSend,
+							new float[] { sizeTouch }, touchLabels);
 					xacFeatureMaker.clearData();
 				} else {
 
 					// recognition phase
-					Object[] features = xacFeatureMaker.getFlattenedData(10);
+					Object[] features = xacFeatureMaker.getFlattenedData(
+							numRowsToSend, new double[] { sizeTouch });
 					if (features != null) {
 						alphaText = 255;
 						try {
@@ -73,102 +99,99 @@ public class TouchSense extends Activity {
 						txtHandParts.setText("Wait...");
 					}
 				}
-				
+
 				return false;
 			}
 		});
-		
+
 		int widthButton = 500;
-		int heightButton = 360;
+		int heightButton = 500;
 		btnHandParts = new Button(this);
 		btnHandParts.setId(0);
 		btnHandParts.layout(0, 0, widthButton, heightButton);
-		
+
 		btnHandParts.setBackgroundColor(Color.BLACK);
 		btnHandParts.setTextColor(Color.GRAY);
-		
+
 		btnHandParts.setText(touchLabels[idxHandParts]);
-		
+
 		btnHandParts.setTextSize(36);
 		btnHandParts.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				idxHandParts = (idxHandParts + 1) % touchLabels.length;
 				xacFeatureMaker.setLabel(idxHandParts);
 				btnHandParts.setText(touchLabels[idxHandParts]);
-				
+
 			}
 		});
-		
-		int widthTxtView = 500;
-		int heightTxtView = 360;
+
+		int widthTxtView = 1080;
+		int heightTxtView = 750;
 		txtHandParts = new TextView(this);
 		txtHandParts.setId(1);
-		txtHandParts.setTextSize(36);
-		txtHandParts.setBackgroundColor(Color.WHITE);
-		txtHandParts.setTextColor(Color.BLACK);
+		txtHandParts.setTextSize(60);
+		txtHandParts.setBackgroundColor(Color.BLACK);
+		txtHandParts.setTextColor(Color.WHITE);
 		txtHandParts.setText("Unknow");
 		txtHandParts.layout(widthButton, 0, widthTxtView, heightTxtView);
 		txtHandParts.setGravity(Gravity.CENTER);
-		
-		
+
 		LinearLayout.LayoutParams paramsButton = new LinearLayout.LayoutParams(
-				widthButton, 
-				heightButton);
-		layout.addView(btnHandParts, paramsButton);
-		
+				widthButton, heightButton);
+//		layout.addView(btnHandParts, paramsButton);
+
 		LinearLayout.LayoutParams paramsText = new LinearLayout.LayoutParams(
-				widthTxtView, 
-				heightTxtView);
+				widthTxtView, heightTxtView);
 		layout.addView(txtHandParts, paramsText);
-		
+
 		setContentView(layout);
-		
+
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
-			  @Override
-			  public void run() {
-			    // Your database code here
-				  runOnUiThread( new Runnable()  {
-					  @Override
-					  public void run() {
-					    // Your database code here
-						if(isRecognition) {
+			@Override
+			public void run() {
+				// Your database code here
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						// Your database code here
+						if (isRecognition) {
 							alphaText *= 0.95f;
-							txtHandParts.setTextColor(Color.argb(alphaText, 0, 0, 0));
+							txtHandParts.setTextColor(Color.argb(alphaText, 255,
+									255, 255));
 						}
-					  }
-					});
-			  }
-			}, new Date(),20);
-		
+					}
+				});
+			}
+		}, new Date(), 20);
+
 		setAutoOrientationEnabled(getContentResolver(), false);
 	}
-	
+
 	private void toggleMode() {
 		isRecognition = !isRecognition;
 
 		alphaText = 255;
-		
-		if(isRecognition) {
+
+		if (isRecognition) {
 			Toast.makeText(this, "Recognition mode", Toast.LENGTH_SHORT).show();
 			btnHandParts.setBackgroundColor(Color.BLACK);
-			btnHandParts.setTextColor(Color.BLACK);
+			btnHandParts.setTextColor(Color.WHITE);
 			txtHandParts.setText("Unknown");
-			txtHandParts.setBackgroundColor(Color.WHITE);
-			txtHandParts.setTextColor(Color.BLACK);
-		}
-		else {
+			txtHandParts.setBackgroundColor(Color.BLACK);
+			txtHandParts.setTextColor(Color.WHITE);
+		} else {
 			Toast.makeText(this, "Training mode", Toast.LENGTH_SHORT).show();
 			txtHandParts.setBackgroundColor(Color.BLACK);
-			txtHandParts.setTextColor(Color.BLACK);
-			btnHandParts.setBackgroundColor(Color.WHITE);
-			btnHandParts.setTextColor(Color.BLACK);
+			txtHandParts.setTextColor(Color.WHITE);
+			btnHandParts.setBackgroundColor(Color.BLACK);
+			btnHandParts.setTextColor(Color.WHITE);
 		}
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		switch (keyCode) {
@@ -176,12 +199,25 @@ public class TouchSense extends Activity {
 			toggleMode();
 			break;
 		}
-		
+
 		return true;
 	}
-	
-	public static void setAutoOrientationEnabled(ContentResolver resolver, boolean enabled)
-	{
-	  Settings.System.putInt(resolver, Settings.System.ACCELEROMETER_ROTATION, enabled ? 1 : 0);
+
+	public static void setAutoOrientationEnabled(ContentResolver resolver,
+			boolean enabled) {
+		Settings.System.putInt(resolver,
+				Settings.System.ACCELEROMETER_ROTATION, enabled ? 1 : 0);
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		xacFeatureMaker.updatePhoneAccel(event.values);
+		xacFeatureMaker.addPhoneFeatureEntry();
 	}
 }

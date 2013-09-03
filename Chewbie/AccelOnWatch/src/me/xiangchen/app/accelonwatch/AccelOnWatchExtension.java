@@ -52,11 +52,12 @@ public class AccelOnWatchExtension extends ControlExtension {
 		
 		AccessorySensorManager manager = new AccessorySensorManager(context, hostAppPackageName);
         sensor = manager.getSensor(Sensor.SENSOR_TYPE_ACCELEROMETER);
+        
 		listener = new AccessorySensorEventListener() {
 
 	        public void onSensorEvent(AccessorySensorEvent sensorEvent) {
 	        	float[] values = sensorEvent.getSensorValues();
-	            streamSensorData(values);
+//	            streamSensorData(values);
 	            updateFPS();
 	            updateDisplay(values);
 	        }
@@ -86,7 +87,8 @@ public class AccelOnWatchExtension extends ControlExtension {
         // Start listening for sensor updates.
         if (sensor != null) {
             try {
-            	sensor.registerInterruptListener(listener);
+//            	sensor.registerInterruptListener(listener);
+            	sensor.registerFixedRateListener(listener, Sensor.SensorRates.SENSOR_DELAY_FASTEST);
             } catch (AccessorySensorException e) {
                 Log.d(SampleExtensionService.LOG_TAG, "Failed to register listener");
             }

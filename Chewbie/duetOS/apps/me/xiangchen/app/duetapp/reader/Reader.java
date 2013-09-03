@@ -5,13 +5,11 @@ import java.util.Calendar;
 import java.util.Hashtable;
 
 import me.xiangchen.app.duetapp.App;
-import me.xiangchen.app.duetapp.call.CallManager;
 import me.xiangchen.app.duetos.LauncherManager;
 import me.xiangchen.app.duetos.R;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
 import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
-import me.xiangchen.technique.posturesense.xacPostureSenseFeatureMaker;
 import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
 import me.xiangchen.ui.xacBufferCanvas;
 import me.xiangchen.ui.xacInteractiveCanvas;
@@ -25,6 +23,7 @@ import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.BackgroundColorSpan;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.View;
@@ -85,6 +84,9 @@ public class Reader extends App {
 
 	int dScrollX = 0;
 	int dScrollY = 0;
+	
+	float dTouchX = 0;
+	float dTouchY = 0;
 
 	xacInteractiveCanvas menu;
 	float alphaMenu = 0.0f;
@@ -107,7 +109,9 @@ public class Reader extends App {
 	Button btnUndo;
 	Button btnRedo;
 	ArrayList<Button> buttons;
+	ArrayList<Button> advancedButtons;
 	TableLayout layoutButtons;
+	TableLayout layoutAdvancedButtons;
 
 	int numTouches;
 	
@@ -116,9 +120,15 @@ public class Reader extends App {
 	int bgAlpha = 192;
 	
 	boolean isFlipMenuOn = false;
+	boolean isAdvFlipMenuOn = false;
 	
 	int imgBtn[] = {R.drawable.pencil, R.drawable.highlighter, R.drawable.undo, R.drawable.redo,
 			R.drawable.font_decr, R.drawable.font_incr, R.drawable.sun_small, R.drawable.sun_big};
+	
+	String txtAdvBtn[] = {  "Ref.", "Email", "Capture", "Fonts", 
+							"Meta", "Texture", "Translate", "Embed", 
+							"Diff", "Print", "Fax", "Backup", 
+							"Find", "Sell", "Count", "Kerning"};
 	
 	String tooltips[] = {"A pencil tool for annotation", "A highlighter tool for annotation", "Undo the last stroke", "Redo the last stroke",
 			"Decrease the font size", "Increase the font size", "Decrease the screen brightness", "Increase the screen brightness"};
@@ -152,6 +162,10 @@ public class Reader extends App {
 						doTouchWatchOnWristBack(event);
 					} else if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTINNERWRIST) {
 						doTouchWatchOnInnerWrist(event);
+					} else {
+						if(event.getAction() == MotionEvent.ACTION_DOWN) {
+							LauncherManager.doAndriodToast("Hold and flip the phone for configuration");
+						}
 					}
 				}
 				// }
@@ -161,13 +175,20 @@ public class Reader extends App {
 
 		// text view
 		textView = new TextView(context);
+		textView.setGravity(Gravity.FILL_HORIZONTAL);
 		textView.setTextSize(textSize);
 		text = context.getString(R.string.a_tale_of_two_cities);
 		textView.setText(text);
 		textView.setTypeface(LauncherManager.getTypeface(LauncherManager.READ));
 		textView.setBackgroundColor(Color.argb(bgAlpha, 255,
 				255, 255));
-		scrollLayout.addView(textView);
+		
+		RelativeLayout.LayoutParams paramsTextView = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		paramsTextView.setMargins(25, 25, 25, 25);
+		scrollLayout.setBackgroundColor(0xFFFFFFFF);
+		scrollLayout.addView(textView, paramsTextView);
 
 		// sketch canvs
 		canvas = new xacSketchCanvas(context);
@@ -191,7 +212,7 @@ public class Reader extends App {
 		// menu
 		// menu = new xacInteractiveCanvas(context);
 		layoutButtons = new TableLayout(context);
-		layoutButtons.setId(71);
+//		layoutButtons.setId(71);
 		layoutButtons.setOnTouchListener(new View.OnTouchListener() {
 
 			@Override
@@ -201,8 +222,54 @@ public class Reader extends App {
 			}
 		});
 		dispatchButtons(context);
+		
+		layoutAdvancedButtons = new TableLayout(context);
+		layoutAdvancedButtons.setOnTouchListener(new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				appLayout.removeView(layoutAdvancedButtons);
+				return false;
+			}
+		});
+		dispatchAdvancedButtons(context);
+		
+		
+		decrBrightness();
 	}
 
+	private void dispatchAdvancedButtons(Context context) {
+		// layoutButtons = new RelativeLayout(context);
+		advancedButtons = new ArrayList<Button>();
+
+		int numRows = 4;
+		int numCols = 4;
+		int w = APPWIDTH / numCols;
+		int h = w * 2 / 3;
+		for (int i = 0; i < numRows; i++) {
+			TableRow tr = new TableRow(context);
+			for (int j = 0; j < numCols; j++) {
+				TableRow.LayoutParams params = new TableRow.LayoutParams(j);
+				int idxBtn = i * numCols + j;
+//				if (idxBtn < advancedButtons.size()) {
+					Button btn = new Button(context); 
+					advancedButtons.add(btn);
+					btn.setText(txtAdvBtn[idxBtn]);
+					btn.setLayoutParams(params);
+					btn.setTextSize(15);
+					btn.setTextColor(0xFFFFFFFF);
+					btn.setBackgroundColor(0xAA000000);
+//					btn.setBackgroundResource(imgBtn[idxBtn]);
+					tr.addView(btn, w, h);
+//				}
+			}
+			layoutAdvancedButtons.addView(tr, new TableLayout.LayoutParams(
+					TableLayout.LayoutParams.MATCH_PARENT,
+					TableLayout.LayoutParams.WRAP_CONTENT));
+		}
+
+	}
+	
 	private void dispatchButtons(Context context) {
 		// layoutButtons = new RelativeLayout(context);
 		buttons = new ArrayList<Button>();
@@ -218,7 +285,7 @@ public class Reader extends App {
 					wasLongClick = false;
 					return;
 				}
-				setTool(xacSketchCanvas.PEN);
+				setTool(xacSketchCanvas.PEN, true);
 			}
 		});
 		// layoutButtons.addView(btnPen);
@@ -234,7 +301,7 @@ public class Reader extends App {
 					wasLongClick = false;
 					return;
 				}
-				setTool(xacSketchCanvas.HIGHLIGHTER);
+				setTool(xacSketchCanvas.HIGHLIGHTER, true);
 
 			}
 		});
@@ -420,6 +487,7 @@ public class Reader extends App {
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			timeTouchDown = curTime;
+			appLayout.removeView(layoutAdvancedButtons);
 			appLayout.removeView(layoutButtons);
 			break;
 		case MotionEvent.ACTION_MOVE:
@@ -474,36 +542,39 @@ public class Reader extends App {
 		canvas.setScrollOffsets(0, 0);
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
-
+			dTouchX = 0;
+			dTouchY = 0;
+			
 			timeTouchDown = curTime;
 			bufCan.clearRects();
 			handedness = xacHandSenseFeatureMaker.UNKNOWN;
 			appLayout.removeView(layoutButtons);
-			if (selectedText.length() > 0) {
-				unSelectText(textView, text);
-				selectedText = "";
-			}
+			appLayout.removeView(layoutAdvancedButtons);
 
 			// is there a flip?
-			isFlipped = xacFlipSenseFeatureMaker.calculateFlipGesture();
-			xacFlipSenseFeatureMaker.clearData();
-			switch (isFlipped) {
-			case xacFlipSenseFeatureMaker.FLIP:
-				// show menu
-				RelativeLayout.LayoutParams paramsButtons = new RelativeLayout.LayoutParams (
-						RelativeLayout.LayoutParams.MATCH_PARENT,
-						RelativeLayout.LayoutParams.WRAP_CONTENT);
-				paramsButtons.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-				appLayout.addView(layoutButtons, paramsButtons);
-				// alphaMenu = 0.0f;
-				// menu.setAlpha(alphaMenu);
-				break;
-			case xacFlipSenseFeatureMaker.NOFLIP:
+//			isFlipped = xacFlipSenseFeatureMaker.calculateFlipGesture();
+//			xacFlipSenseFeatureMaker.clearData();
+//			switch (isFlipped) {
+//			case xacFlipSenseFeatureMaker.FLIP:
+//				// show menu
+////				undo();
+////				RelativeLayout.LayoutParams paramsButtons = new RelativeLayout.LayoutParams (
+////						RelativeLayout.LayoutParams.MATCH_PARENT,
+////						RelativeLayout.LayoutParams.WRAP_CONTENT);
+////				paramsButtons.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+////				appLayout.addView(layoutButtons, paramsButtons);
+////				isFlipMenuOn = true;
+//				// alphaMenu = 0.0f;
+//				// menu.setAlpha(alphaMenu);
+//				break;
+//			case xacFlipSenseFeatureMaker.NOFLIP:
 				// register hand part
 				handPart = xacTouchSenseFeatureMaker
 						.calculateHandPart(new double[] { event.getSize(0) });
 				switch (handPart) {
 				case xacTouchSenseFeatureMaker.PAD:
+					isFlipped = xacFlipSenseFeatureMaker.calculateFlipGesture();
+					xacFlipSenseFeatureMaker.clearData();
 					break;
 				case xacTouchSenseFeatureMaker.SIDE:
 					break;
@@ -513,11 +584,13 @@ public class Reader extends App {
 //					bufCan.clearRects();
 					break;
 				}
-				break;
-			}
+//				break;
+//			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-
+			dTouchX += Math.abs(xCur - xPrev);
+			dTouchY += Math.abs(yCur - yPrev);
+			
 			if (isFlipped == xacFlipSenseFeatureMaker.FLIP) {
 				break;
 			}
@@ -548,7 +621,9 @@ public class Reader extends App {
 			} else {
 				switch (handPart) {
 				case xacTouchSenseFeatureMaker.PAD:
-					canvas.doTouch(event);
+					if(Math.max(dTouchX, dTouchY) > 100) {
+						canvas.doTouch(event);
+					}
 					break;
 				case xacTouchSenseFeatureMaker.SIDE:
 					float speedRatio = 0.75f;
@@ -594,15 +669,55 @@ public class Reader extends App {
 			}
 			break;
 		case MotionEvent.ACTION_UP:
-
 			if (isFlipped == xacFlipSenseFeatureMaker.FLIP) {
+//				undo();
+//				RelativeLayout.LayoutParams paramsButtons = new RelativeLayout.LayoutParams (
+//						RelativeLayout.LayoutParams.MATCH_PARENT,
+//						RelativeLayout.LayoutParams.WRAP_CONTENT);
+//				paramsButtons.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//				appLayout.addView(layoutButtons, paramsButtons);
+//				isFlipMenuOn = true;
+				RelativeLayout.LayoutParams paramsButtons = new RelativeLayout.LayoutParams (
+						RelativeLayout.LayoutParams.MATCH_PARENT,
+						RelativeLayout.LayoutParams.WRAP_CONTENT);
+				paramsButtons.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+				appLayout.addView(layoutAdvancedButtons, paramsButtons);
+				isAdvFlipMenuOn = true;
+				break;
+			} 
+			
+			if(isAdvFlipMenuOn) {
+				isAdvFlipMenuOn = false;
+				return;
+			}
+			
+			canvas.doTouch(event);
+			
+			if (selectedText.length() > 0) {
+				unSelectText(textView, text);
+				selectedText = "";
+				break;
+			}
+			
+			if(Math.max(dTouchX, dTouchY) < 100) {
+				if(!isFlipMenuOn && !isAdvFlipMenuOn) {
+					RelativeLayout.LayoutParams paramsButtons = new RelativeLayout.LayoutParams (
+							RelativeLayout.LayoutParams.MATCH_PARENT,
+							RelativeLayout.LayoutParams.WRAP_CONTENT);
+					paramsButtons.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+					appLayout.addView(layoutButtons, paramsButtons);
+					isFlipMenuOn = true;
+				} else {
+					appLayout.removeView(layoutButtons);
+					isFlipMenuOn = false;
+				}
 				break;
 			}
 
 			if (handedness == xacHandSenseFeatureMaker.WATCH || handPart == xacTouchSenseFeatureMaker.PAD) {
 				switch (handPart) {
 				case xacTouchSenseFeatureMaker.PAD:
-					canvas.doTouch(event);
+					
 					break;
 				case xacTouchSenseFeatureMaker.SIDE:
 					unSelectText(textView, text);
@@ -631,12 +746,14 @@ public class Reader extends App {
 					break;
 				}
 			}
+			
 
 			break;
 		}
 
 		xPrev = xCur;
 		yPrev = yCur;
+		
 	}
 
 	private void updateCursor(float l, float t, float r, float b) {
@@ -699,8 +816,8 @@ public class Reader extends App {
 		tv.setText(txt);
 	}
 
-	public void setTool(int tool) {
-		canvas.setTool(tool);
+	public void setTool(int tool, boolean feedback) {
+		canvas.setTool(tool, feedback);
 	}
 
 	public void undo() {
@@ -728,12 +845,16 @@ public class Reader extends App {
 		brightness = Math.min(brightness, MAXBRIGHTNESS);
 		textView.setBackgroundColor(Color.argb((int)(bgAlpha * brightness), 255,
 				255, 255));
+		scrollLayout.setBackgroundColor(Color.argb((int)(bgAlpha * brightness), 255,
+				255, 255));
 	}
 
 	public void decrBrightness() {
 		brightness -= STEPBRIGHTNESS;
 		brightness = Math.max(brightness, MINBRIGHTNESS);
 		textView.setBackgroundColor(Color.argb((int)(bgAlpha * brightness), 255,
+				255, 255));
+		scrollLayout.setBackgroundColor(Color.argb((int)(bgAlpha * brightness), 255,
 				255, 255));
 	}
 	

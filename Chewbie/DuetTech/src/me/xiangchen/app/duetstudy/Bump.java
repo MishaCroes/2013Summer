@@ -2,6 +2,7 @@ package me.xiangchen.app.duetstudy;
 
 import java.util.Calendar;
 
+import me.xiangchen.app.duettech.R;
 import me.xiangchen.lib.xacPhoneGesture;
 import me.xiangchen.technique.bumpsense.xacBumpSenseFeatureMaker;
 import android.content.Context;
@@ -52,7 +53,7 @@ public class Bump extends TechniqueShell {
 					case MotionEvent.ACTION_DOWN:
 						pressAndHold.update(event);
 						timeFromHold = -1;
-
+						ivCue.setImageResource(R.drawable.hold_no_bump);
 						break;
 					case MotionEvent.ACTION_MOVE:
 						if (pressAndHold.getResult() != pressAndHold.YES) {
@@ -61,10 +62,14 @@ public class Bump extends TechniqueShell {
 							isReadyForNextTrial = false;
 						} else {
 							if (timeFromHold < 0) {
-								label = nextClassLabel(false);
+								if(block == 0) {
+									label = nextClassLabel(true);
+								} else {
+									label = nextClassLabel(false);
+								}
 								setCues();
 								timeFromHold = curTime;
-							} else {
+							} else { 
 								if (curTime - timeFromHold > BUMPTIMEOUT) {
 									if (xacBumpSenseFeatureMaker.isDataReady()) {
 										int bumpResult = xacBumpSenseFeatureMaker.calculateBumping();
@@ -111,6 +116,7 @@ public class Bump extends TechniqueShell {
 				xacBumpSenseFeatureMaker.clearData();
 				isReadyForNextTrial = false;
 				isTouching = false;
+				ivCue.setImageResource(R.drawable.nothing);
 			}
 		}
 
@@ -128,7 +134,7 @@ public class Bump extends TechniqueShell {
 			} else {
 				if (!isReadyForNextTrial) {
 					if (isStarted) {
-						label = nextClassLabel(false);
+//						label = nextClassLabel(false);
 						tvCue.setTextColor(0xFFFFFFFF);
 						tvCue.setText("Press and hold");
 						setStatus();
@@ -150,9 +156,11 @@ public class Bump extends TechniqueShell {
 		switch (label) {
 		case xacBumpSenseFeatureMaker.BUMP:
 			tvCue.setText("Bump");
+			ivCue.setImageResource(R.drawable.bump);
 			break;
 		case xacBumpSenseFeatureMaker.NOBUMP:
 			tvCue.setText("Press and hold");
+			
 			break;
 		}
 	}

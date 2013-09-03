@@ -1,0 +1,75 @@
+package me.xiangchen.app.duetstudy;
+
+import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
+import me.xiangchen.technique.tiltsense.xacTiltSenseFeatureMaker;
+import android.content.Context;
+import android.view.MotionEvent;
+
+public class Handedness extends TechniqueShell {
+	public static final int HANDEDNESSTIMEOUT  = 100; // ms
+	
+	public Handedness(Context context) {
+		super(context);
+		technique = HANDEDNESS;
+		
+		numClasses = 2;
+		classLabels = new int[] { xacHandSenseFeatureMaker.WATCH,
+				xacHandSenseFeatureMaker.NOWATCH };
+		int numDataPointsPerClass = 50;
+		numBlocks = 5;
+		numTrialsPerBlock = numClasses * numDataPointsPerClass / numBlocks;
+
+		labelCounter = new int[numClasses];
+		radii = new float[numClasses];
+		for (int i = 0; i < numClasses; i++) {
+			labelCounter[i] = 0;
+			radii[i] = 1;
+		}
+		
+		tvStatus.setText("Handedness");
+	}
+
+	@Override
+	public boolean doTouch(MotionEvent event) {
+		if (!isBreak) {
+			
+		}
+		return true;
+	}
+	
+	@Override
+	public void runOnTimer() {
+		if (!isBreak && !isTouching) {
+			if (!xacTiltSenseFeatureMaker.isDataReady()) {
+				tvCue.setText("Please wait ...");
+				isReadyForNextTrial = false;
+				// Log.d(LOGTAG, "wait...");
+			} else {
+				if (!isReadyForNextTrial) {
+					if (isStarted) {
+						label = nextClassLabel();
+						tvCue.setText("Press and hold");
+						setStatus();
+					} else {
+						tvCue.setText("Tap to start...");
+					}
+
+					isReadyForNextTrial = true;
+					// Log.d(LOGTAG, "ready");
+				}
+			}
+		}
+	}
+	
+	@Override
+	protected void setCues() {
+		switch (label) {
+		case xacHandSenseFeatureMaker.WATCH:
+			tvCue.setText("Left");
+			break;
+		case xacHandSenseFeatureMaker.NOWATCH:
+			tvCue.setText("Right");
+			break;
+		}
+	}
+}

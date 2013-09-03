@@ -1,14 +1,9 @@
 package me.xiangchen.app.eerv2;
 
-import java.io.IOException;
-import java.util.Hashtable;
-
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.sony.smallapp.SmallAppWindow;

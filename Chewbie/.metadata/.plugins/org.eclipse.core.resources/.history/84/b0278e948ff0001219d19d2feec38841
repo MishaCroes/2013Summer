@@ -1,0 +1,130 @@
+package me.xiangchen.app.duetapp.reader;
+
+import me.xiangchen.app.duetapp.AppExtension;
+import me.xiangchen.app.duetapp.call.CallManager;
+import me.xiangchen.app.duetos.LauncherManager;
+import me.xiangchen.app.duetos.R;
+import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
+import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
+import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
+import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
+import me.xiangchen.ui.xacSketchCanvas;
+import android.util.Log;
+
+import com.sonyericsson.extras.liveware.aef.control.Control;
+import com.sonyericsson.extras.liveware.extension.util.control.ControlTouchEvent;
+
+public class ReaderExtenstion extends AppExtension {
+
+	public final static String LOGTAG = "DuetOS";
+	public final static int NUMTOOLPALLETES = 2;
+
+	int idxToolPallete = 0;
+	int[] bmpToolPallets = { R.drawable.tool_pallete_1,
+			R.drawable.tool_pallete_2 };
+
+	public ReaderExtenstion() {
+		ReaderManager.setWatch(this);
+	}
+
+	@Override
+	public void doResume() {
+		showText("Reader");
+	}
+
+	@Override
+	public void doTouch(ControlTouchEvent event) {
+		if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTINNERWRIST) {
+			if (event.getAction() == Control.Intents.TOUCH_ACTION_PRESS) {
+				int width = getWidth();
+				int height = getHeight();
+				float x = event.getX();
+				float y = event.getY();
+
+				switch (idxToolPallete) {
+				case 0:
+					if (x < width / 2 && y < height / 2) {
+						ReaderManager.setTool(xacSketchCanvas.PEN);
+					} else if (x > width / 2 && y < height / 2) {
+						ReaderManager.setTool(xacSketchCanvas.HIGHLIGHTER);
+					} else if (x > width / 2 && y > height / 2) {
+						ReaderManager.redo();
+					} else if (x < width / 2 && y > height / 2) {
+						ReaderManager.undo();
+					}
+					break;
+				case 1:
+					if (x < width / 2 && y < height / 2) {
+						ReaderManager.decrTextSize();
+					} else if (x > width / 2 && y < height / 2) {
+						ReaderManager.incrTextSize();
+					} else if (x > width / 2 && y > height / 2) {
+						ReaderManager.incrBrightness();
+					} else if (x < width / 2 && y > height / 2) {
+						ReaderManager.decrBrightness();
+					}
+					break;
+				}
+			}
+		}
+	}
+
+	@Override
+	public void doSwipe(int direction) {
+		if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTINNERWRIST) {
+			switch (direction) {
+			case Control.Intents.SWIPE_DIRECTION_LEFT:
+				idxToolPallete = (idxToolPallete + NUMTOOLPALLETES - 1)
+						% NUMTOOLPALLETES;
+				updateWatchVisual(
+						LauncherManager
+								.getBitmap(bmpToolPallets[idxToolPallete]),
+						true);
+				break;
+			case Control.Intents.SWIPE_DIRECTION_RIGHT:
+				idxToolPallete = (idxToolPallete + 1) % NUMTOOLPALLETES;
+				updateWatchVisual(
+						LauncherManager
+								.getBitmap(bmpToolPallets[idxToolPallete]),
+						true);
+				break;
+			}
+		} else if(LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST) {
+			switch (direction) {
+			case Control.Intents.SWIPE_DIRECTION_LEFT:
+				
+				break;
+			case Control.Intents.SWIPE_DIRECTION_RIGHT:
+				
+				break;
+			}
+		}
+	}
+
+	public void showToolPallete() {
+		updateWatchVisual(
+				LauncherManager.getBitmap(bmpToolPallets[idxToolPallete]), true);
+	}
+
+	@Override
+	public void doAccelerometer(float[] values) {
+		xacHandSenseFeatureMaker.updateWatchAccel(values);
+		xacHandSenseFeatureMaker.addWatchFeatureEntry();
+
+		xacTouchSenseFeatureMaker.updateWatchAccel(values);
+		xacTouchSenseFeatureMaker.addWatchFeatureEntry();
+
+		xacFlipSenseFeatureMaker.updateWatchAccel(values);
+		xacFlipSenseFeatureMaker.addWatchFeatureEntry();
+	}
+
+	public void showTextOption(String text) {
+		int lengthSubText = Math.min(text.length(), 15);
+		String subText = text.substring(0, lengthSubText)
+				+ (text.length() == lengthSubText ? "" : "...");
+		String option1 = "-> Check dictionary";
+		String option2 = "-> Share on social media";
+
+		showText(subText + "\n\n" + option1 + "\n" + option2);
+	}
+}

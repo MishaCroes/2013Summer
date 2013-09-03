@@ -1,0 +1,12 @@
+package me.xiangchen.app.duetstudy;
+
+import android.content.Context;
+
+public class FlipAndTap extends TechniqueShell{
+
+	public FlipAndTap(Context context) {
+		super(context);
+		technique = FLIPANDTAP;
+	}
+
+}

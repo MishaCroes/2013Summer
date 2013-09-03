@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy package &apos;me.xiangchen.ui&apos; to &apos;duetOS/src&apos;&#x0D;&#x0A;- Original project: &apos;duetShiftSense&apos;&#x0D;&#x0A;- Destination element: &apos;duetOS/src&apos;&#x0D;&#x0A;- Original element: &apos;duetShiftSense/src/me.xiangchen.ui&apos;" description="Copy package" destination="=duetOS/src" element1="/src&lt;me.xiangchen.ui" flags="589830" fragments="1" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyPackages" stamp="1373033957079" version="1.0"/>
+</session>

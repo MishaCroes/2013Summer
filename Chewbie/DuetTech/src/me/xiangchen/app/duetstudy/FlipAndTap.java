@@ -2,46 +2,50 @@ package me.xiangchen.app.duetstudy;
 
 import java.util.Arrays;
 
+import me.xiangchen.app.duettech.R;
 import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
 import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 
-public class FlipAndTap extends TechniqueShell{
+public class FlipAndTap extends TechniqueShell {
 
-	
 	public FlipAndTap(Context context) {
 		super(context);
 		technique = FLIPANDTAP;
-		
+
 		numClasses = 2;
-		classLabels = new int[] {xacFlipSenseFeatureMaker.FLIP, xacFlipSenseFeatureMaker.NOFLIP};
+		classLabels = new int[] { xacFlipSenseFeatureMaker.FLIP,
+				xacFlipSenseFeatureMaker.NOFLIP };
 		numTrialsPerBlock = numClasses * numDataPointsPerClass / numBlocks;
-		
+
 		labelCounter = new int[numClasses];
 		radii = new float[numClasses];
-		for(int i=0; i<numClasses; i++) {
+		for (int i = 0; i < numClasses; i++) {
 			labelCounter[i] = 0;
 			radii[i] = 1;
 		}
-		
+
 		tvStatus.setText("Flip and tap");
+		tvCue.setText("Tap to start...");
 	}
-	
+
 	@Override
 	public boolean doTouch(MotionEvent event) {
-		
-		if(!isBreak && isReadyForNextTrial) {
-			if(isStarted) {
-				int flipResult = xacFlipSenseFeatureMaker.calculateFlipGesture();
+
+		if (!isBreak && isReadyForNextTrial) {
+			if (isStarted) {
+				int flipResult = xacFlipSenseFeatureMaker
+						.calculateFlipGesture();
 				xacFlipSenseFeatureMaker.setLabels(label, flipResult);
-				xacFlipSenseFeatureMaker.sendOffData();
-				trial++;
-				
-				if(trial == numTrialsPerBlock) {
+				if (xacFlipSenseFeatureMaker.sendOffData()) {
+					trial++;
+				}
+
+				if (trial == numTrialsPerBlock) {
 					block++;
 					isBreak = true;
-					if(block == numBlocks) {
+					if (block == numBlocks) {
 						tvCue.setTextColor(0xFFFFFFFF);
 						tvCue.setText("End of technique");
 					} else {
@@ -52,56 +56,67 @@ public class FlipAndTap extends TechniqueShell{
 					tvCue.setTextColor(0xFFFFFFFF);
 					tvCue.setText("Please wait ...");
 				}
-				
+
 			} else {
 				isStarted = true;
 				block = 0;
 				trial = 0;
 			}
-			xacFlipSenseFeatureMaker.clearData();
-			isReadyForNextTrial = false;
 			
-		}
-		
+//			if(event.getAction() == MotionEvent.ACTION_UP) {
+				xacFlipSenseFeatureMaker.clearData();
+				isReadyForNextTrial = false;
+				
+			}
+
+//		}
+
 		return false;
 	}
 
 	@Override
 	public void runOnTimer() {
-		if(!isBreak) {
-			if(!xacFlipSenseFeatureMaker.isDataReady()) {
+		if (!isBreak) {
+			if (!xacFlipSenseFeatureMaker.isDataReady()) {
 				tvCue.setTextColor(0xFFFFFFFF);
 				tvCue.setText("Please wait ...");
 				isReadyForNextTrial = false;
 				Log.d(LOGTAG, "wait...");
 			} else {
-				if(!isReadyForNextTrial) {
-					if(isStarted) {
-						label = nextClassLabel(false);
-						setCues();	
+				if (!isReadyForNextTrial) {
+					if (isStarted) {
+						if (block == 0) {
+							label = nextClassLabel(true);
+						} else {
+							label = nextClassLabel(false);
+						}
+						setCues();
 						setStatus();
 					} else {
 						tvCue.setTextColor(0xFFFFFFFF);
 						tvCue.setText("Tap to start...");
 					}
-					
+
 					isReadyForNextTrial = true;
-					Log.d(LOGTAG, "ready");
+//					Log.d(LOGTAG, "ready");
 				}
+				
 			}
 		}
 	}
-	
+
 	@Override
 	protected void setCues() {
 		super.setCues();
-		
-		switch(label) {
+
+		switch (label) {
 		case xacFlipSenseFeatureMaker.FLIP:
 			tvCue.setText("Flip and tap");
+			ivCue.setImageResource(R.drawable.flip_and_tap);
 			break;
 		case xacFlipSenseFeatureMaker.NOFLIP:
 			tvCue.setText("Normal tap");
+			ivCue.setImageResource(R.drawable.normal_tap);
 			break;
 		}
 	}

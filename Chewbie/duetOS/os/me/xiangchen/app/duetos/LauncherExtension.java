@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import me.xiangchen.app.duetapp.AppExtension;
-import me.xiangchen.app.duetapp.email.EmailManager;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
 import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
 import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
@@ -132,6 +131,10 @@ public class LauncherExtension extends ControlExtension {
 	}
 
 	public void showText(String text) {
+		if(text == null) {
+			return;
+		}
+//		textView.setTypeface(LauncherManager.getTypeface(LauncherManager.NORMAL));
 		textView.setTextSize(text.length() > 0 ? (int)(5f + 70.0f / Math.max(12, text.length())) : 0);
 		textView.setText(text);
 		updateVisual();
@@ -254,6 +257,11 @@ public class LauncherExtension extends ControlExtension {
 					appExt.doTouch(event);
 				}
 			}
+			
+			long curTime = Calendar.getInstance().getTimeInMillis();
+			if(event.getAction() == Control.Intents.TOUCH_ACTION_PRESS) {
+				LauncherManager.updateWatchGesture(LauncherManager.TAP, curTime);
+			}
 		} else {
 			if (event.getAction() == Control.Intents.TOUCH_ACTION_LONGPRESS) {
 				if (!wasALongPress) {
@@ -305,15 +313,15 @@ public class LauncherExtension extends ControlExtension {
 		long curTime = calendar.getTimeInMillis();
 		if (appExt == null) {
 			
-			switch (direction) {
-			case Control.Intents.SWIPE_DIRECTION_UP:
-				isSharing = true;
-				break;
-			case Control.Intents.SWIPE_DIRECTION_DOWN:
-				isSharing = false;
-				break;
-			
-			}
+//			switch (direction) {
+//			case Control.Intents.SWIPE_DIRECTION_UP:
+//				isSharing = true;
+//				break;
+//			case Control.Intents.SWIPE_DIRECTION_DOWN:
+//				isSharing = false;
+//				break;
+//			
+//			}
 			
 			appExt = LauncherManager.getAppExtension();
 		}
@@ -323,10 +331,10 @@ public class LauncherExtension extends ControlExtension {
 				switch(direction) {
 				case Control.Intents.SWIPE_DIRECTION_RIGHT:
 					LauncherManager
-							.updateWatchGesture(EmailManager.SWIPECLOSE, curTime);
+							.updateWatchGesture(LauncherManager.SWIPECLOSE, curTime);
 					break;
 				case Control.Intents.SWIPE_DIRECTION_LEFT:
-					LauncherManager.updateWatchGesture(EmailManager.SWIPEOPEN, curTime);
+					LauncherManager.updateWatchGesture(LauncherManager.SWIPEOPEN, curTime);
 					break;
 				}
 			}

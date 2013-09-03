@@ -1,0 +1,449 @@
+package me.xiangchen.app.duetapp.call;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+
+import me.xiangchen.app.duetapp.App;
+import me.xiangchen.app.duetos.LauncherManager;
+import me.xiangchen.app.duetos.R;
+import me.xiangchen.technique.posturesense.xacPostureSenseFeatureMaker;
+import me.xiangchen.ui.xacInteractiveCanvas;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.MotionEvent.PointerCoords;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+
+@SuppressLint("NewApi")
+public class Call extends App {
+
+	public final static int TAPTHRS = 100;
+	public final static String LOGTAG = "DuetOS";
+	public final static int APPWIDTH = 1080;
+	public final static int CALLTAB = 0;
+	public final static int LOGTAB = 1;
+
+	int idxTab = CALLTAB;
+	Button btnCall;
+	Button btnLog;
+	Button btnContact;
+	ArrayList<Button> buttons;
+	RelativeLayout layoutViews;
+
+	// RelativeLayout layoutViews;
+	RelativeLayout layoutCall;
+	RelativeLayout layoutLog;
+
+	TextView textView;
+	Hashtable<Button, String> htKeys;
+	String strKeys = "";
+	Button btnVoiceMail;
+	boolean wasLongClick = false;
+	
+	int posture =xacPostureSenseFeatureMaker.NONE; 
+	
+	int idxVoiceMail = -1;
+	int[] voiceMails = {R.raw.no_annoying_sounds, R.raw.listen_up,
+			R.raw.so_fluffy};
+
+	float xTouchDown;
+	float yTouchDown;
+	
+	RelativeLayout layoutCallScreen;
+	boolean isCalling = false;
+	
+	public Call(Context context) {
+		super(context);
+		color = xacInteractiveCanvas.fgColorGreen;
+		
+		CallManager.setPhone(this);
+
+		appLayout = new RelativeLayout(context);
+		appLayout.setBackgroundColor(xacInteractiveCanvas.bgColorGreen);
+
+//		dispatchButtons(context);
+		layoutViews = new RelativeLayout(context);
+		appLayout.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View view, MotionEvent event) {
+				posture = xacPostureSenseFeatureMaker.calculatePosture();
+				if(posture != xacPostureSenseFeatureMaker.NOWATCH) {
+					return false;
+				}
+				
+				return true;
+			}
+		});
+		layoutViews.setId(42);
+		appLayout.addView(layoutViews);
+
+		dispatchViews(context);
+		
+		layoutCallScreen = new RelativeLayout(context);
+		layoutCallScreen.setBackgroundColor(0xDD000000);
+		layoutCallScreen.setOnTouchListener(new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				
+				posture = xacPostureSenseFeatureMaker.calculatePosture();
+				if(posture == xacPostureSenseFeatureMaker.NONE) {
+					if(event.getAction() == MotionEvent.ACTION_UP) {
+						appLayout.removeView(layoutCallScreen);
+						isCalling = false;
+					}
+				} else if(posture == xacPostureSenseFeatureMaker.NOWATCH) {
+					doTouch(event);
+				}
+				
+				return true;
+			}
+		});
+		
+		sup = "5 missed calls from Tiffany";
+	}
+
+	private void dispatchViews(Context context) {
+
+		layoutCall = new RelativeLayout(context);
+		layoutCall.setBackgroundColor(0xAA000000);
+//		layoutCall.setBackgroundColor(xacInteractiveCanvas.bgColorGreen);
+		makeNumPad(context);
+
+		layoutLog = new RelativeLayout(context);
+		layoutLog.setBackgroundColor(0xFF00FF00);
+
+		updateViews(idxTab);
+	}
+
+	private void clearViews(int idx) {
+		switch (idx) {
+		case CALLTAB:
+			layoutViews.removeView(layoutCall);
+			break;
+		case LOGTAB:
+			layoutViews.removeView(layoutLog);
+			break;
+		}
+	}
+
+	private void updateViews(int idx) {
+		switch (idx) {
+		case CALLTAB:
+			RelativeLayout.LayoutParams paramsCall = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.MATCH_PARENT,
+					RelativeLayout.LayoutParams.MATCH_PARENT);
+//			paramsCall.addRule(RelativeLayout.ABOVE, buttons.get(0).getId());
+			layoutViews.addView(layoutCall, paramsCall);
+			break;
+		case LOGTAB:
+			RelativeLayout.LayoutParams paramsLog = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.MATCH_PARENT,
+					RelativeLayout.LayoutParams.MATCH_PARENT);
+//			paramsLog.addRule(RelativeLayout.ABOVE, buttons.get(0).getId());
+			layoutViews.addView(layoutLog, paramsLog);
+			break;
+		}
+	}
+
+	private void dispatchButtons(Context context) {
+
+		buttons = new ArrayList<Button>();
+
+		btnCall = new Button(context);
+		btnCall.setText("Call");
+		btnCall.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if (idxTab != CALLTAB) {
+					clearViews(idxTab);
+					idxTab = CALLTAB;
+					updateViews(idxTab);
+				}
+			}
+		});
+		buttons.add(btnCall);
+
+		btnLog = new Button(context);
+		btnLog.setText("Log");
+		btnLog.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if (idxTab != LOGTAB) {
+					clearViews(idxTab);
+					idxTab = LOGTAB;
+					updateViews(idxTab);
+				}
+			}
+		});
+		buttons.add(btnLog);
+
+		btnContact = new Button(context);
+		btnContact.setText("Contact");
+		btnContact.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+
+			}
+		});
+		buttons.add(btnContact);
+
+		Button btnLast = null;
+		int idBtn = 1;
+		layoutViews.setId(1027);
+		int w = APPWIDTH / buttons.size();
+		int h = w * 2 / 3;
+		for (Button btn : buttons) {
+			btn.setId(1027 + idBtn);
+			btn.setBackgroundColor(0xDD000000);
+			btn.setTextColor(0xFFFFFFFF);
+			btn.setTypeface(LauncherManager.getTypeface(LauncherManager.NORMAL));
+			btn.setTextSize(20);
+			
+			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+					w, h);
+			if (idBtn > 1) {
+				params.addRule(RelativeLayout.RIGHT_OF, btnLast.getId());
+			}
+			params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			layoutViews.addView(btn, params);
+			idBtn++;
+			btnLast = btn;
+		}
+
+		// appLayout.addView(layoutViews);
+	}
+
+	private void makeNumPad(Context context) {
+		textView = new TextView(context);
+		textView.setBackgroundColor(0x00000000);
+		TableLayout tableLayout = new TableLayout(context);
+
+		tableLayout.setId(41);
+		int numRows = 5;
+		int numCols = 3;
+
+		htKeys = new Hashtable<Button, String>();
+		int[] bgRscs = new int[] { R.drawable.key1, R.drawable.key2,
+				R.drawable.key3, R.drawable.key4, R.drawable.key5,
+				R.drawable.key6, R.drawable.key7, R.drawable.key8,
+				R.drawable.key9, R.drawable.key_star, R.drawable.key0,
+				R.drawable.key_sharp, R.drawable.key_speed_dial, R.drawable.key_call,
+				R.drawable.key_delete };
+
+		String[] keyChars = new String[] { "1", "2", "3", "4", "5", "6", "7",
+				"8", "9", "*", "0", "#" };
+
+		int cntKey = 0;
+		int w = APPWIDTH / numCols;
+		int h = w * 2 / 3;
+		for (int i = 0; i < numRows; i++) {
+			TableRow tr = new TableRow(context);
+			for (int j = 0; j < numCols; j++) {
+				TableRow.LayoutParams params = new TableRow.LayoutParams(j);
+				Button btn = new Button(context);
+				btn.setBackgroundResource(bgRscs[cntKey]);
+				btn.setLayoutParams(params);
+				btn.setAlpha(0.60f);
+
+				if (i < numRows - 1) {
+					if (i == 0 && j == 0) {
+						btnVoiceMail = btn;
+						btn.setOnLongClickListener(new View.OnLongClickListener() {
+
+							@Override
+							public boolean onLongClick(View arg0) {
+								if(isCalling) {
+									return false;
+								}
+								
+								posture = xacPostureSenseFeatureMaker.calculatePosture();
+								if(posture != xacPostureSenseFeatureMaker.NONE) {
+									return false;
+								}
+								
+//								Log.d(LOGTAG, "voice mail!");
+								LauncherManager.vibrate(500);
+								CallManager.playNextVoiceMail();
+								wasLongClick = true;
+								return false;
+							}
+						});
+					}
+
+					htKeys.put(btn, keyChars[cntKey]);
+					btn.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View view) {
+							if(isCalling) {
+								return;
+							}
+							
+							posture = xacPostureSenseFeatureMaker.calculatePosture();
+							if(posture != xacPostureSenseFeatureMaker.NONE) {
+								return;
+							}
+							
+							Button btn = (Button) view;
+							if(btn == btnVoiceMail && wasLongClick) {
+								wasLongClick = false;
+								return;
+							}
+							strKeys += htKeys.get(btn);
+							textView.setText(new StringBuffer(new StringBuffer(
+									strKeys)
+									.reverse()
+									.toString()
+									.substring(0,
+											Math.min(strKeys.length(), 10)))
+									.reverse().toString());
+						}
+					});
+				} else {
+					if (i == 4 && j == 1) {
+						// phone call
+						
+						btn.setOnClickListener(new View.OnClickListener() {
+							
+							@Override
+							public void onClick(View arg0) {
+								if(isCalling) {
+									return;
+								}
+								
+								RelativeLayout.LayoutParams paramsCallScreen = new RelativeLayout.LayoutParams(
+										RelativeLayout.LayoutParams.MATCH_PARENT,
+										RelativeLayout.LayoutParams.MATCH_PARENT);
+//								paramsCallScreen.addRule(RelativeLayout.ABOVE, layoutViews.getId());
+								appLayout.addView(layoutCallScreen, paramsCallScreen);
+								isCalling = true;
+								
+							}
+						});
+						
+					} else if (i == 4 && j == 2) {
+						// delete
+						
+						btn.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								if(isCalling) {
+									return;
+								}
+								
+								posture = xacPostureSenseFeatureMaker.calculatePosture();
+								if(posture != xacPostureSenseFeatureMaker.NONE) {
+									return;
+								}
+								
+								if (strKeys.length() > 0) {
+									strKeys = strKeys.substring(0,
+											strKeys.length() - 1);
+									textView.setText(new StringBuffer(
+											new StringBuffer(strKeys)
+													.reverse()
+													.toString()
+													.substring(
+															0,
+															Math.min(strKeys
+																	.length(),
+																	10)))
+											.reverse().toString());
+								}
+							}
+						});
+					}
+				}
+
+				tr.addView(btn, w, h);
+
+				cntKey++;
+			}
+			tableLayout.addView(tr, new TableLayout.LayoutParams(
+					TableLayout.LayoutParams.MATCH_PARENT,
+					TableLayout.LayoutParams.WRAP_CONTENT));
+		}
+
+		RelativeLayout.LayoutParams paramsKeys = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.MATCH_PARENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		paramsKeys.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		layoutCall.addView(tableLayout, paramsKeys);
+
+//		textView.setBackgroundColor(0xFF000000);
+		textView.setText("");
+		textView.setTextColor(0xFFFFFFFF);
+		textView.setTextSize(60);
+		textView.setTypeface(LauncherManager
+				.getTypeface(LauncherManager.NORMAL));
+		RelativeLayout.LayoutParams paramsText = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.MATCH_PARENT,
+				layoutCall.getMeasuredHeight() - h * numRows);
+		paramsText.addRule(RelativeLayout.ABOVE, tableLayout.getId());
+		paramsText.bottomMargin = 100;
+		layoutCall.addView(textView, paramsText);
+	}
+
+	@Override
+	public void doAccelerometer(float values[]) {
+		xacPostureSenseFeatureMaker.updatePhoneAccel(values);
+		xacPostureSenseFeatureMaker.addPhoneFeatureEntry();
+	}
+	
+	public void playNextVoiceMail() {
+		++idxVoiceMail;
+		if(idxVoiceMail >= 0 && idxVoiceMail < voiceMails.length) {
+			LauncherManager.playAudio(voiceMails[idxVoiceMail]);
+		}
+	}
+	
+	public void playLastVoiceMail() {
+		--idxVoiceMail;
+		if(idxVoiceMail >= 0 && idxVoiceMail < voiceMails.length) {
+			LauncherManager.playAudio(voiceMails[idxVoiceMail]);
+		}
+	}
+	
+	@Override
+	public void doTouch(MotionEvent event) {
+		int action = event.getAction();
+		PointerCoords coord = new PointerCoords();
+		event.getPointerCoords(0, coord);
+		
+		switch(action) {
+		case MotionEvent.ACTION_DOWN:
+			xTouchDown = coord.x;
+			yTouchDown = coord.y;
+			break;
+		case MotionEvent.ACTION_MOVE:
+			break;
+		case MotionEvent.ACTION_UP:
+			float dx = coord.x - xTouchDown;
+			float dy = coord.y - yTouchDown;
+			if(Math.abs(dx) < TAPTHRS) {
+				if(dy > TAPTHRS) {
+//					Log.d(LOGTAG, "down");
+					CallManager.nextAppExtension();
+				} else if(dy < -TAPTHRS){
+//					Log.d(LOGTAG, "up");
+					CallManager.lastAppExtension();
+				}
+			} else if(Math.abs(dy) < TAPTHRS){
+				if(dx > TAPTHRS) {
+					Log.d(LOGTAG, "right");
+					CallManager.nextItem();
+				} else {
+					Log.d(LOGTAG, "left");
+					CallManager.lastItem();
+				}
+			}
+			break;
+		}
+	}
+}

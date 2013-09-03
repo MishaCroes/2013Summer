@@ -22,7 +22,7 @@ public class xacBumpSenseFeatureMaker {
 	public final static float TAPTHRS = 200;
 	public final static int  HOLDTIMEOUT = 750; // ms
 	
-	public final static int BUMPZOOMTIMEIN = 1000; // ms
+	public final static int BUMPZOOMTIMEIN = 500; // ms
 	public final static int NUMROWPHONEAUTHEN = LauncherManager.PHONEACCELFPSGAME
 			* BUMPZOOMTIMEIN / 1000;
 

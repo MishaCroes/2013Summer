@@ -5,14 +5,20 @@ import me.xiangchen.ml.xacFeatureMaker;
 public class AuthenticManager {
 
 	public final static int INTHEWILD = 0;
-	public final static int AUTHENTICATED = 1;
-	public final static String[] classLabels = {"InTheWild", "Authenticated"};
+	public final static int LEFTBACKWRIST = 1;
+	public final static int LEFTINNERWRIST = 2;
+	public final static int RIGHTBACKWRIST = 3;
+	public final static int RIGHTINNERWRIST = 4;
+	public final static int LEFTBACKWRISTNOPHONE = 5;
+	
+	public final static String[] classLabels = {"InTheWild", "LeftBackWrist", "LeftInnerWrist",
+		"RightBackWrist", "RightInnerWrist", "LeftBackWristNoPhone"};
 
-	public final static int PHONEAUTHENDURATION = 250; // ms
+	public final static int PHONEAUTHENDURATION = 1000; // ms
 	public final static int NUMROWPHONEAUTHEN = AuthenticSense.PHONEACCELFPS
 			* PHONEAUTHENDURATION / 1000;
 
-	public final static int AUTHENTICACTIONTIMEOUT = 1000;
+	public final static int AUTHENTICACTIONTIMEOUT = 500;
 	
 	static int label = INTHEWILD;
 
@@ -34,7 +40,26 @@ public class AuthenticManager {
 	}
 
 	public static void toggleLabel() {
-		label = label == INTHEWILD ? AUTHENTICATED : INTHEWILD;
+		switch(label) {
+		case INTHEWILD:
+			label = LEFTBACKWRIST;
+			break;
+		case LEFTBACKWRIST:
+			label = LEFTINNERWRIST;
+			break;
+		case LEFTINNERWRIST:
+			label = RIGHTBACKWRIST;
+			break;
+		case RIGHTBACKWRIST:
+			label = RIGHTINNERWRIST;
+			break;
+		case RIGHTINNERWRIST:
+			label = LEFTBACKWRISTNOPHONE;
+			break;
+		case LEFTBACKWRISTNOPHONE:
+			label = INTHEWILD;
+			break;
+		}
 		xacFeatureMaker.setLabel(label);
 	}
 

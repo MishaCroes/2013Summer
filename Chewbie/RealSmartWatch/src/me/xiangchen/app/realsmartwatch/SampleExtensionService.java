@@ -44,7 +44,7 @@ import com.sonyericsson.extras.liveware.extension.util.registration.Registration
 public class SampleExtensionService extends ExtensionService {
 
     public static final String EXTENSION_SPECIFIC_ID = "EXTENSION_SPECIFIC_ID_SAMPLE_NOTIFICATION";
-    public static final String EXTENSION_KEY = "me.xiangchen.app.realsmartwatch.key";
+    public static final String EXTENSION_KEY = "me.xiangchen.app.accelonwatch.key";
     public static final String LOG_TAG = "RealSmartWatch";
 
     

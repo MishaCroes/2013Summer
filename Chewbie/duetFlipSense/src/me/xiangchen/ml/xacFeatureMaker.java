@@ -7,7 +7,7 @@ import me.xiangchen.network.xacUDPTask;
 
 public class xacFeatureMaker {
 	
-	static final int MAXNUMROW = 8096;
+	static final int MAXNUMROW = 1024;
 	static final int NUMSOURCES = 2;
 	
 	static String[] featureNames = null;
@@ -96,14 +96,14 @@ public class xacFeatureMaker {
 		accelPhone.update(values[0], values[1], values[2]);
 	}
 	
-	public static void sendOffData(int numToSend, String[] classLabels) {
+	public static boolean sendOffData(int numToSend, String[] classLabels) {
 		int lockedPntrEntryPhone = pntrEntryPhone;
 		int lockedPntrEntryWatch = pntrEntryWatch;
 		int numToSendPhone = numToSend;
 		int numToSendWatch = numToSendPhone * FlipSenseExtension.WATCHACCELFPS / FlipSense.PHONEACCELFPS;
 		
 		if(label < 0 || numToSendPhone > lockedPntrEntryPhone || numToSendWatch > lockedPntrEntryWatch) 
-			return;
+			return false;
 		
 		String strFeatureRow = "";
 		
@@ -124,6 +124,8 @@ public class xacFeatureMaker {
 		strFeatureRow += classLabels[label] + '\0';
 		
 		new xacUDPTask().execute(strFeatureRow);
+		
+		return true;
 	}
 	
 	public static Object[] getFlattenedData(int numToSend) {
@@ -161,47 +163,5 @@ public class xacFeatureMaker {
 		pntrEntryPhone = 0;
 		pntrEntryWatch = 0;
 	}
-	
-//	/**
-//	 * delete the last added feature row
-//	 */
-//	public static void deleteLastEntry() {
-//		if(pntrEntry <= 0)
-//			return;
-//		pntrEntry--;
-//		Log.d(tag, "The " + (pntrEntry+1) + "th entry deleted");
-//	}
-//	
-//	/**
-//	 * save the feature table as a .csv file
-//	 */
-//	public static void generateFeatureCSV(String[] classLabels) {
-//		Calendar cal = Calendar.getInstance();
-//		String fileName = "duetToucSense" + cal.getTime().toString() + ".csv";
-//		try {
-//			FileWriter fstream = new FileWriter(fileName);
-//			BufferedWriter out = new BufferedWriter(fstream);
-//			  
-//			// write the first row
-//			for(int i = 0; i < numFeatures; i++) {
-//				out.write(featureNames[i] + ",");
-//			}
-//			out.write(featureNames[numFeatures] + "\n");
-//			
-//			for(int j = 0; j < pntrEntry; j++) {
-//				for(int i = 0; i < numFeatures; i++) {
-//					out.write(featureTable[j][i] + ",");
-//				}
-//				out.write(classLabels[(int) featureTable[j][numFeatures]] + "\n");
-//			}
-//			
-//		  //Close the output stream
-//		  out.close();
-//		  System.out.println(fileName + " created.");
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		
-//	}
 
 }

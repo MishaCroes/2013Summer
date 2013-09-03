@@ -1,0 +1,279 @@
+package me.xiangchen.app.sharesense;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+import me.xiangchen.lib.xacWatchGesture;
+import me.xiangchen.ml.ShareSenseClassifier;
+import me.xiangchen.ml.xacFeatureMaker;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.util.Log;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.sonyericsson.extras.liveware.aef.control.Control;
+import com.sonyericsson.extras.liveware.aef.sensor.Sensor;
+import com.sonyericsson.extras.liveware.extension.util.R;
+import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
+import com.sonyericsson.extras.liveware.extension.util.control.ControlTouchEvent;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensor;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorEvent;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorEventListener;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorException;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorManager;
+
+public class ShareSenseExtension extends ControlExtension {
+
+	public final static int WATCHACCELFPS = 10;
+	public final static String LOGTAG = "ShareSense";
+
+	public final static int PRIVATE = 0;
+	public final static int PUBLIC = 1;
+	public final static String[] classmodes = { "Private", "Public" };
+	// public final static String[] displayedInfo = {
+	// "You have 5 missed calls from Tiffany", ""}
+	int mode;
+
+	int width;
+	int height;
+
+	AccessorySensor sensor = null;
+	AccessorySensorEventListener listener;
+
+	Context context;
+
+	RelativeLayout layout;
+	Canvas canvas;
+	Bitmap bitmap;
+	TextView textView;
+
+	boolean isRecognition = true;
+	boolean isSharing = false;
+
+	double runningSumAccel = 0;
+	double counter = 0;
+	float accelMotion = 0.5f;
+	long timeMotion;
+
+	xacWatchGesture doubleTap;
+
+	public ShareSenseExtension(Context context, String hostAppPackageName) {
+		super(context, hostAppPackageName);
+
+		xacFeatureMaker.createFeatureTable();
+		mode = PUBLIC;
+		xacFeatureMaker.setLabel(mode);
+
+		width = getSupportedControlWidth(context);
+		height = getSupportedControlHeight(context);
+
+		layout = new RelativeLayout(context);
+		textView = new TextView(context);
+		textView.setText("Share\nSense");
+		textView.setTextSize(8);
+		textView.setTextColor(Color.WHITE);
+		textView.layout(0, 0, width, height);
+		layout.addView(textView);
+
+		doubleTap = new xacWatchGesture(xacWatchGesture.DOUBLETAP);
+
+		AccessorySensorManager manager = new AccessorySensorManager(context,
+				hostAppPackageName);
+		sensor = manager.getSensor(Sensor.SENSOR_TYPE_ACCELEROMETER);
+
+		listener = new AccessorySensorEventListener() {
+
+			public void onSensorEvent(AccessorySensorEvent sensorEvent) {
+				float[] values = sensorEvent.getSensorValues();
+				xacFeatureMaker.updateWatchAccel(values);
+				xacFeatureMaker.addWatchFeatureEntry();
+				int numRowsToSend = WATCHACCELFPS;
+				if (isRecognition) {
+
+						mode = doClassification(numRowsToSend);
+						// textView.setText(classmodes[mode]);
+						showDisplayedInfo(mode);
+						updateDisplay();
+						// startVibrator(100, 0, 1);
+						timeMotion = 0;
+//					}
+
+				} else {
+					if (xacFeatureMaker.sendOffData(numRowsToSend, classmodes)) {
+						Log.d(LOGTAG, "data sent");
+						xacFeatureMaker.clearData();
+					}
+				}
+
+			}
+		};
+	}
+
+	private void showDisplayedInfo(int mode) {
+		switch (mode) {
+		case PRIVATE:
+			isSharing = false;
+			textView.setTextSize(8);
+			textView.setText("5 missed calls from Tiffany");
+			break;
+		case PUBLIC:
+			Date dt = new Date();
+			@SuppressWarnings("deprecation")
+			int curHours = dt.getHours();// lCDateTime.getDisplayName(Calendar.HOUR,
+											// Calendar.SHORT, Locale.US);
+			@SuppressWarnings("deprecation")
+			int curMinutes = dt.getMinutes();// .getDisplayName(Calendar.MINUTE,
+												// Calendar.SHORT, Locale.US);
+			textView.setTextSize(16);
+			textView.setText((curHours < 10 ? "0" : "") + curHours + ":" + (curMinutes < 10 ? "0" : "") + curMinutes);
+			break;
+		}
+	}
+
+	@Override
+	public void onResume() {
+
+		setScreenState(Control.Intents.SCREEN_STATE_ON);
+
+		// Start listening for sensor updates.
+		if (sensor != null) {
+			try {
+				sensor.registerFixedRateListener(listener,
+						Sensor.SensorRates.SENSOR_DELAY_FASTEST);
+			} catch (AccessorySensorException e) {
+				Log.d(LOGTAG, "Failed to register listener");
+			}
+		}
+
+		updateDisplay();
+	}
+
+	@Override
+	public void onPause() {
+		// Stop sensor
+		if (sensor != null) {
+			sensor.unregisterListener();
+		}
+	}
+
+	@Override
+	public void onDestroy() {
+		// Stop sensor
+		if (sensor != null) {
+			sensor.unregisterListener();
+			sensor = null;
+		}
+	}
+
+	@Override
+	public void onTouch(final ControlTouchEvent event) {
+		// int action = event.getAction();
+
+		if (doubleTap.update(event) == xacWatchGesture.YES) {
+			isRecognition = !isRecognition;
+			startVibrator(100, 0, 1);
+			textView.setTextSize(8);
+			if (!isRecognition) {
+				textView.setText(classmodes[mode]);
+			} else {
+				textView.setText("Share\nSense");
+			}
+			updateDisplay();
+		}
+
+		// switch (action) {
+		// case Control.Intents.TOUCH_ACTION_RELEASE:
+		// // swtich between training and recognition modes
+		//
+		// break;
+		//
+		// }
+	}
+
+	@Override
+	public void onSwipe(int direction) {
+		switch (direction) {
+		case Control.Intents.SWIPE_DIRECTION_UP:
+			mode = PUBLIC;
+			if (isRecognition) {
+				// rotate display to public
+				// updateDisplay();
+				isSharing = true;
+			} else {
+				// switch to public mode training
+				xacFeatureMaker.setLabel(mode);
+				textView.setText(classmodes[mode]);
+				// updateDisplay();
+			}
+			break;
+		case Control.Intents.SWIPE_DIRECTION_DOWN:
+			mode = PRIVATE;
+			if (isRecognition) {
+				// rotate display to private
+				isSharing = false;
+			} else {
+				// switch to private mode training
+				xacFeatureMaker.setLabel(mode);
+				textView.setText(classmodes[mode]);
+				// updateDisplay();
+			}
+			break;
+		}
+
+		updateDisplay();
+	}
+
+	private void updateDisplay() {
+		bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+		canvas = new Canvas(bitmap);
+		if (isSharing) {
+			Matrix matrix = new Matrix();
+			matrix.setRotate(180, width / 2, height / 2);
+			// canvas.drawColor(Color.BLACK);
+			canvas.setMatrix(matrix);
+		}
+
+		layout.draw(canvas);
+
+		showBitmap(bitmap);
+	}
+
+	private int doClassification(int n) {
+		int idxClass = 0;
+		Object[] features = xacFeatureMaker.getFlattenedData(n);
+		if (features != null) {
+			try {
+				idxClass = (int) ShareSenseClassifier.classify(features);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		switch (idxClass) {
+		case 0:
+			return PUBLIC;
+		case 1:
+			return PRIVATE;
+
+		}
+
+		return PUBLIC;
+	}
+
+	public static int getSupportedControlWidth(Context context) {
+		return context.getResources().getDimensionPixelSize(
+				R.dimen.smart_watch_control_width);
+	}
+
+	public static int getSupportedControlHeight(Context context) {
+		return context.getResources().getDimensionPixelSize(
+				R.dimen.smart_watch_control_height);
+	}
+
+}

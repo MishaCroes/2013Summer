@@ -7,6 +7,7 @@ import me.xiangchen.app.duettech.R;
 import me.xiangchen.network.xacUDPTask;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 
@@ -94,7 +95,11 @@ public class MultiDeviceGesture extends TechniqueShell {
 			} else {
 				if(action == MotionEvent.ACTION_UP) {
 					isStarted = true;
-					label = nextClassLabel(false);
+					if(block == 0) {
+						label = nextClassLabel(true);
+					} else {
+						label = nextClassLabel(false);
+					}
 					setCues();
 					setStatus();
 				}
@@ -107,11 +112,34 @@ public class MultiDeviceGesture extends TechniqueShell {
 		String strFeatureRow = "";
 		String[] classLabels = { "PinchOpen", "PinchClose", "PhoneToWatch",
 				"WatchToPhone" };
-		strFeatureRow += classLabels[label] + "," + classLabels[recognizedAs];
+		strFeatureRow += classLabels[label] + "," + classLabels[recognizedAs] + "\0";
 		new xacUDPTask().execute(strFeatureRow);
 	}
 
-	public void advance() {
+	public void feedback(int recognizedAs) {
+		if(label == recognizedAs) {
+			DuetTechManager.buzzWatch(100);
+		} else {
+			DuetTechManager.buzzWatch(750);
+		}
+	}
+	
+	public void advance(int recognizedAs) {
+//		long curTime = Calendar.getInstance().getTimeInMillis();
+//		tvCue.setText("Please wait...");
+//		tvCue.invalidate();
+//		while(Calendar.getInstance().getTimeInMillis() - curTime < 5000) {
+//			Log.d(LOGTAG, "waiting");
+//		}
+		
+//		DuetTechManager.buzzWatch(100);
+	
+		if(block == 0) {
+			if(label != recognizedAs) {
+				return;
+			}
+		}
+		
 		++trial;
 		if (trial == numTrialsPerBlock) {
 			block++;
@@ -134,7 +162,13 @@ public class MultiDeviceGesture extends TechniqueShell {
 			
 		}
 
-		label = nextClassLabel(false);
+		if(block == 0) {
+			label = nextClassLabel(true);
+		} else {
+			label = nextClassLabel(false);
+		}
+		
+		label = label == -1 ? SWIPEOPEN : label;
 		setCues();
 		setStatus();
 	}
@@ -165,4 +199,11 @@ public class MultiDeviceGesture extends TechniqueShell {
 			break;
 		}
 	}
+	
+//	@Override
+//	public void runOnTimer() {
+//		if(ivCue.getAlpha() < 255) {
+//			ivCue.setAlpha(ivCue.getAlpha() + 1);
+//		}
+//	}
 }

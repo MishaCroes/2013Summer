@@ -12,7 +12,7 @@ import android.widget.ImageView;
 
 public class xacToast extends ViewGroup {
 
-	public static final float FADERATE = 0.95f;
+	public static final float FADERATE = 0.975f;
 	public static final float LOWALPHA = 0.01f;
 	ImageView imageView;
 	float alpha = 1.0f;
@@ -99,6 +99,7 @@ public class xacToast extends ViewGroup {
 	public boolean isActive() {
 		return !(this.getParent() == null);
 	}
+	
 	
 	public void setImgSrc(int src) {
 		imageSource = src;

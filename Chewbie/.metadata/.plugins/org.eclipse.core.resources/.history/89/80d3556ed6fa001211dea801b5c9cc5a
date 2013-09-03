@@ -1,0 +1,30 @@
+package me.xiangchen.app.duetstudy;
+
+import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
+import android.content.Context;
+
+public class FlipToConfigure extends TechniqueShell {
+
+	public FlipToConfigure(Context context) {
+		super(context);
+		technique = FLIPTOCONFIGURE;
+
+		numClasses = 3;
+		classLabels = new int[] { xacAuthenticSenseFeatureMaker.INTHEWILD,
+				xacAuthenticSenseFeatureMaker.LEFTBACKWRIST,
+				xacAuthenticSenseFeatureMaker.LEFTINNERWRIST };
+		int numDataPointsPerClass = 50;
+		numBlocks = 5;
+		numTrialsPerBlock = numClasses * numDataPointsPerClass / numBlocks;
+
+		labelCounter = new int[numClasses];
+		radii = new float[numClasses];
+		for (int i = 0; i < numClasses; i++) {
+			labelCounter[i] = 0;
+			radii[i] = 1;
+		}
+
+		tvStatus.setText("Flip to configure");
+	}
+
+}

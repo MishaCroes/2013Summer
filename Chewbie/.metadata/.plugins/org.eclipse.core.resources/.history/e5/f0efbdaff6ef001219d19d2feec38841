@@ -1,0 +1,60 @@
+package me.xiangchen.lib;
+
+import java.util.Calendar;
+
+import android.util.Log;
+import android.view.MotionEvent;
+
+public class xacPhoneGesture {
+
+	public final static String LOGTAG = "DuetOS";
+	public final static int DOUBLETAP = 0;
+	public final static int YES = 0;
+	public final static int NO = -1;
+	
+	public final static int INTRVLDOUBLETAP = 375; //ms
+	
+	int type;
+	
+	long lastUpdateTime = 0;
+
+	
+	public xacPhoneGesture(int type) {
+		this.type = type;
+	}
+	
+	public float update(MotionEvent event) {
+		float val = NO;
+		switch(type) {
+		case DOUBLETAP:
+			return updateDoubleTap(event);
+		}
+		return val;
+	}
+	
+	private float updateDoubleTap(MotionEvent event) {
+		if(event.getAction() != MotionEvent.ACTION_UP)
+			return NO;
+		
+		if(event.getPointerCount() > 1) {
+			return NO;
+		}
+		
+		float val = NO;
+		
+		Calendar lCDateTime = Calendar.getInstance();
+		long curTime = lCDateTime.getTimeInMillis();
+		
+		Log.d(LOGTAG, curTime - lastUpdateTime + "");
+		if(curTime - lastUpdateTime < INTRVLDOUBLETAP) {
+			val = YES;
+			lastUpdateTime = 0;
+		} else {
+			Log.d(LOGTAG, "interval: "+(curTime-lastUpdateTime));
+		}
+		
+		lastUpdateTime = curTime;
+		
+		return val;
+	}
+}

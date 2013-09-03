@@ -1,0 +1,169 @@
+package me.xiangchen.app.duetstudy;
+
+import java.util.Random;
+
+import android.content.Context;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+public class TechniqueShell extends ViewGroup {
+
+	public final static String LOGTAG = "DuetTech";
+	public final static Random random = new Random();
+	public final int UNKNOWN = -1;
+	public final static int LARGENUMBER = 65535;
+	public final static int TEXTWIDTH = 480;
+	public final static int TEXTHEIGHT = 240;
+	public final static int FONTSIZEBIG = 32;
+	public final static int FONTSIZESMALL = 16;
+	public final static int FLIPANDTAP = 0;
+	
+	protected TextView tvCue;
+	protected TextView tvStatus;
+	
+	protected int numClasses;
+	protected int numBlocks;
+	protected int numTrialsPerBlock;
+	
+	protected int technique;
+	
+	protected int trialCounter = 0;
+	protected int block;
+	protected int trial;
+	
+	protected int label = UNKNOWN;
+	protected int[] classLabels;
+	protected int[] labelCounter;
+	protected float[] radii;
+	
+	protected boolean isStarted = false;
+	protected boolean isReadyForNextTrial = false;
+	protected boolean isBreak = false;
+	
+	public TechniqueShell(Context context) {
+		super(context);
+		this.setBackgroundColor(0xFF000000);
+		
+		tvCue = new TextView(context);
+		tvCue.setTextSize(FONTSIZEBIG);
+		tvCue.setTextColor(0xFFFFFFFF);
+		tvCue.setText("Cue");
+		tvCue.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/HelveticaBQ-Light.otf"));
+		tvCue.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+		this.addView(tvCue);
+		
+		tvStatus = new TextView(context);
+		tvStatus.setTextSize(FONTSIZESMALL);
+		tvStatus.setTextColor(0xFFFFFFFF);
+		tvStatus.setText("Status");
+		tvStatus.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/HelveticaBQ-Light.otf"));
+		tvStatus.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+		this.addView(tvStatus);
+	}
+	
+	public boolean doTouch(MotionEvent event) {
+		int action = event.getAction();
+		switch(action) {
+		case MotionEvent.ACTION_DOWN:
+			break;
+		case MotionEvent.ACTION_MOVE:
+			break;
+		case MotionEvent.ACTION_UP:
+			break;
+		}
+		
+		return false;
+	}
+	
+	public void doKeyDown(int keyCode, KeyEvent event) {
+		
+	}
+	
+	public void sendData() {
+		
+	}
+	
+	public void nextBlock() {
+		block++;
+		if(trial == numTrialsPerBlock && block < numBlocks) {
+			trial = 0;
+			isBreak = false;
+			setStatus();
+		}
+	}
+
+	@Override
+	protected void onLayout(boolean changed, int l, int t, int r, int b) {
+		{
+			int widthtvCue = r - l;//.getMeasuredWidth();
+			int heighttvCue = (int) (getTextHeight(tvCue) * 1.5f);//.getMeasuredHeight();
+			int lefttvCue = l + ((r - l) - widthtvCue) / 2;
+			int toptvCue = t + ((b - t) - heighttvCue) / 2; 
+			tvCue.layout(lefttvCue, toptvCue, lefttvCue + widthtvCue, toptvCue + heighttvCue);
+		}
+		
+		{
+			int widthtvStatus = r - l;//getTextWidth(tvCue);//.getMeasuredWidth();
+			int heighttvStatus = (int) (getTextHeight(tvCue) * 1.5f);//.getMeasuredHeight();
+			int lefttvStatus = l;
+			int toptvStatus = t; 
+			tvStatus.layout(lefttvStatus, toptvStatus, lefttvStatus + widthtvStatus, toptvStatus + heighttvStatus);
+		}
+	}
+	
+	protected void showCues(String text) {
+		
+	}
+	
+	protected int getTextWidth(TextView tv) {
+		Rect bounds = new Rect();
+		Paint textPaint = tvCue.getPaint();
+		textPaint.getTextBounds((String) tv.getText(), 0, tv.getText().length(), bounds);
+		return bounds.width();
+	}
+	
+	protected int getTextHeight(TextView tv) {
+		Rect bounds = new Rect();
+		Paint textPaint = tvCue.getPaint();
+		textPaint.getTextBounds((String) tv.getText(), 0, tv.getText().length(), bounds);
+		return bounds.height();
+	}
+	
+	protected int nextClassLabel() {
+		int randNum = random.nextInt(LARGENUMBER) % numClasses;
+		int retLabel = UNKNOWN;
+		for(int i=0, start=0; i<numClasses; i++) {
+			if(start <= randNum && randNum < start + radii[i]) {
+				retLabel = classLabels[i];
+				labelCounter[i]++;
+				break;
+			}
+			start += radii[i];
+		}
+		
+		trialCounter++;
+		for(int i=0; i<numClasses; i++) {
+			radii[i] = (trialCounter - labelCounter[i]) * numClasses * 1.0f / trialCounter;
+		}
+		
+		return retLabel;
+	}
+	
+	protected void setCues() {
+		
+	}
+
+	public void runOnTimer() {
+		
+	}
+	
+	protected void setStatus() {
+		tvStatus.setText("Techniuqe #" + (technique+1) + ", Block #" + (block+1) + " Trial #" + (trial+1));
+	}
+}

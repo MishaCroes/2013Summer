@@ -2,6 +2,9 @@ package me.xiangchen.ui;
 
 import java.util.ArrayList;
 
+import me.xiangchen.app.duetos.LauncherManager;
+import me.xiangchen.app.duetos.R;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -121,6 +124,9 @@ public class xacSketchCanvas extends SurfaceView implements
 			float y = event.getY();
 
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
+				isStroking = false;
+				path = null;
+				pathOffSet = null;
 
 			} else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 				if (!isStroking) {
@@ -142,11 +148,14 @@ public class xacSketchCanvas extends SurfaceView implements
 //					pathOffSet.lineTo(x - dx, y - dy);
 					// not updating until now
 					paths.add(path);
-					if (clientCanvas != null) {
+					if (clientCanvas != null && pathOffSet != null) {
 						clientCanvas.addPath(pathOffSet, paint);
 						clientCanvas.invalidate();
+						Log.d(LOGTAG, "drew something");
 					}
 					isStroking = false;
+					path = null;
+					pathOffSet = null;
 				}
 			}
 
@@ -157,10 +166,10 @@ public class xacSketchCanvas extends SurfaceView implements
 	private void setDefaultPaint() {
 		paint = new Paint();
 		paint.setDither(true);
-		setTool(PEN);
+		setTool(PEN, false);
 	}
 
-	public void setTool(int t) {
+	public void setTool(int t, boolean feedback) {
 		tool = t;
 
 		switch (tool) {
@@ -170,6 +179,9 @@ public class xacSketchCanvas extends SurfaceView implements
 			paint.setStrokeJoin(Paint.Join.ROUND);
 			paint.setStrokeCap(Paint.Cap.ROUND);
 			paint.setStrokeWidth(15);
+			if(feedback) {
+				LauncherManager.showNotificationOnUnlockedPhone(R.drawable.pencil);
+			}
 			break;
 		case HIGHLIGHTER:
 			paint.setColor(0x44FFFF00);
@@ -177,6 +189,9 @@ public class xacSketchCanvas extends SurfaceView implements
 			paint.setStrokeJoin(Paint.Join.BEVEL);
 			paint.setStrokeCap(Paint.Cap.SQUARE);
 			paint.setStrokeWidth(75);
+			if(feedback) {
+				LauncherManager.showNotificationOnUnlockedPhone(R.drawable.highlighter);
+			}
 			break;
 		case ERASER:
 			paint.setColor(0x00000000);

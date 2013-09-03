@@ -106,14 +106,14 @@ public class xacFlipSenseFeatureMaker {
 		accelPhone.update(values[0], values[1], values[2]);
 	}
 	
-	public static void sendOffData() {
+	public static boolean sendOffData() {
 		int lockedPntrEntryPhone = pntrEntryPhone;
 		int lockedPntrEntryWatch = pntrEntryWatch;
 		int numToSendPhone = NUMROWSFLIPGESTURE;
 		int numToSendWatch = numToSendPhone * DuetTechExtension.WATCHACCELFPS / DuetTech.PHONEACCELFPSGAME;
 		
 		if(was < 0 || numToSendPhone > lockedPntrEntryPhone || numToSendWatch > lockedPntrEntryWatch) 
-			return;
+			return false;
 		
 		String strFeatureRow = "";
 		
@@ -135,6 +135,8 @@ public class xacFlipSenseFeatureMaker {
 		strFeatureRow += classLabels[was] + "," + classLabels[recognizedAs] + "\0";
 		
 		new xacUDPTask().execute(strFeatureRow);
+		
+		return true;
 	}
 	
 	public static Object[] getFlattenedData(int numToSend) {

@@ -1,0 +1,12 @@
+package me.xiangchen.app.duetstudy;
+
+import android.content.Context;
+
+public class WristTilt extends TechniqueShell {
+
+	public WristTilt(Context context) {
+		super(context);
+		// TODO Auto-generated constructor stub
+	}
+
+}

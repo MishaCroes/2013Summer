@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 2 elements to &apos;duetOS/techniques/me.xiangchen.technique.touchsense&apos;&#x0D;&#x0A;- Original project: &apos;duetTouchSense&apos;&#x0D;&#x0A;- Destination element: &apos;duetOS/techniques/me.xiangchen.technique.touchsense&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     me.xiangchen.ml.TouchSenseClassifier.java&#x0D;&#x0A;     me.xiangchen.ml.xacFeatureMaker.java" description="Copy compilation units" destination="=duetOS/techniques&lt;me.xiangchen.technique.touchsense" element1="/src&lt;me.xiangchen.ml{TouchSenseClassifier.java" element2="/src&lt;me.xiangchen.ml{xacFeatureMaker.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1373059058654" units="2" version="1.0"/>
+</session>

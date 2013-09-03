@@ -69,8 +69,7 @@ public class DuetTech extends Activity implements SensorEventListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		DuetTechManager.setPhone(this);
-		DuetTechManager.initGestureManager()
-;		
+		DuetTechManager.initGestureManager();
 		// remove title bar
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		// remove notification bar
@@ -89,8 +88,7 @@ public class DuetTech extends Activity implements SensorEventListener {
 				return false;
 			}
 		});
-		
-		
+
 		mediator = new RelativeLayout(this);
 		mediator.setBackgroundColor(0xFF000000);
 
@@ -122,8 +120,8 @@ public class DuetTech extends Activity implements SensorEventListener {
 		flipToConfigure = new FlipToConfigure(this);
 		multiDeviceGesture = new MultiDeviceGesture(this);
 
-		techniques = new TechniqueShell[] { flipAndTap, wristTilt,
-				touchWithHandParts, handedness, bump, flipToConfigure, multiDeviceGesture };
+		techniques = new TechniqueShell[] { flipAndTap, touchWithHandParts,
+				handedness, bump, flipToConfigure, multiDeviceGesture };
 
 		// sensors
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -195,10 +193,13 @@ public class DuetTech extends Activity implements SensorEventListener {
 			int numTechniques = techniques.length;
 			if (idxTech >= 0) {
 				layout.removeView(techniques[idxTech]);
+				if(techniques[idxTech] == multiDeviceGesture) {
+					DuetTechManager.restoreWatchVisual();
+				}
 			} else {
 				layout.removeView(mediator);
 			}
-
+			
 			idxTech = (idxTech + 1) % numTechniques;
 			layout.addView(techniques[idxTech]);
 

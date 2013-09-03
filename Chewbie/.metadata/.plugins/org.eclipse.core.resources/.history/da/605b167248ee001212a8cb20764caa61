@@ -1,0 +1,336 @@
+package me.xiangchen.app.duetos;
+
+import me.xiangchen.app.duetapp.AppExtension;
+import me.xiangchen.ui.xacToast;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.os.Vibrator;
+import android.util.Log;
+
+public class LauncherManager {
+	public final static String LOGTAG = "DuetOS";
+	public final static float LAUNCHERWIDTH = 1080;
+	public final static float LAUNCHERHEIGHT = 1920;
+
+	public final static float MARGINRATIO = 0.05f;
+	public final static int NUMAPPSROW = 4;
+
+	public final static float MARGINWIDTH = LAUNCHERWIDTH * MARGINRATIO;
+	public final static float MARGINHEIGHT = LAUNCHERHEIGHT * MARGINRATIO;
+
+	public final static float APPWIDTH = (LAUNCHERWIDTH - MARGINWIDTH
+			* (NUMAPPSROW + 1))
+			/ NUMAPPSROW;
+	public final static float APPHEIGHT = APPWIDTH;
+
+	public final static int PHONEACCELFPSNORMAL = 10;
+	public final static int PHONEACCELFPSUI = 17;
+	public final static int PHONEACCELFPSGAME = 50;
+	public final static int PHONEACCELFPSFASTEST = 100;
+
+	public final static int NONE = -1;
+	public final static int SWIPEOPEN = 0;
+	public final static int SWIPECLOSE = 1;
+	public final static int DELTATIME = 750; // ms
+
+	public final static int PINCHOPEN = 0;
+	public final static int PINCHCLOSE = 1;
+	public final static int WATCHTOPHONE = 2;
+	public final static int PHONETOWATCH = 3;
+
+	public final static int REGULAR = 0;
+	public final static int DIM = 1;
+	public final static int ANCHOR = 2;
+	
+	public final static int NORMAL = 0;
+	public final static int BOLD = 1;
+
+	static int watchMode = REGULAR;
+	static int phoneMode = REGULAR;
+	
+	static Launcher phone;
+	static LauncherExtension watch;
+
+	static int crossState = REGULAR;
+
+	static class SyncGesture {
+		public SyncGesture() {
+			gesture = NONE;
+			timeStamp = 0;
+		}
+
+		public long timeStamp;
+		public int gesture;
+	}
+
+	static SyncGesture watchGesture = null;
+	static SyncGesture phoneGesture = null;
+
+	static int watchConfig;
+	
+	static boolean isPhoneMuted = false;
+	static boolean isWatchMuted = false;
+	
+	static xacToast toastPhone;
+	static xacToast toastWatch;
+	
+	static MediaPlayer mediaPlayer;
+
+	public static void setPhone(Launcher p) {
+		phone = p;
+		toastPhone = new xacToast(phone);
+		toastWatch = new xacToast(phone);
+		
+		AudioManager audioManager = (AudioManager)phone.getSystemService(Context.AUDIO_SERVICE);
+		audioManager.setSpeakerphoneOn(false);
+		audioManager.setRouting(AudioManager.MODE_NORMAL, AudioManager.ROUTE_EARPIECE, AudioManager.ROUTE_ALL);
+		phone.setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+		audioManager.setMode(AudioManager.MODE_IN_CALL);
+	}
+
+	public static void setWatch(LauncherExtension w) {
+		watch = w;
+	}
+	
+	public static xacToast getPhoneToast() {
+		return toastPhone;
+	}
+	
+	public static xacToast getWatchToast() {
+		return toastWatch;
+	}
+	
+	public static void initGestureManager() {
+		watchGesture = new SyncGesture();
+		phoneGesture = new SyncGesture();
+	}
+
+	public static LauncherExtension getWatch() {
+		return watch;
+	}
+
+	public static void setAppExtension(AppExtension appExt) {
+		if (watch != null) {
+			watch.setAppExtension(appExt);
+		}
+	}
+
+	public static AppExtension getAppExtension() {
+		if (phone != null && phone.activeApp != null) {
+			return phone.htAppExtensions.get(phone.activeApp);
+		} else
+			return null;
+	}
+
+	public static void setWatchConfig(int wc) {
+		watchConfig = wc;
+	}
+
+	public static void showNotificationOnPhone(int resId) {
+		if (phone.isLocked && !isPhoneMuted) {
+			toastPhone.setImage(resId);
+			toastPhone.kill(phone.getLayout());
+			toastPhone.fadeIn(phone.getLayout());
+		}
+	}
+	
+	public static void showNotificationOnWatch(int resId, boolean toBuzz) {
+		if(!isWatchMuted) {
+			toastWatch = new xacToast(phone);
+			toastWatch.setImage(resId);
+			toastWatch.fadeIn(null);
+			Bitmap bitmap = toastWatch.getBitmap();
+			if(watch != null) {
+			watch.updateVisual(bitmap, false);
+				if(toBuzz) {
+					watch.buzz(100);
+				}
+			}
+		}
+	}
+	
+	public static void showTime() {
+		if(watch != null) {
+			watch.showTime();
+		}
+	}
+
+	public static void resumeWatch() {
+		if (watch != null) {
+			watch.resume();
+		}
+	}
+
+	public static void updateWatchGesture(int gesture, long timeStamp) {
+		if (watchGesture != null) {
+			watchGesture.gesture = gesture;
+			watchGesture.timeStamp = timeStamp;
+			updateCrossDeviceGestures();
+		}
+	}
+
+	public static void updatePhoneGesture(int gesture, long timeStamp) {
+		if (phoneGesture != null) {
+			phoneGesture.gesture = gesture;
+			phoneGesture.timeStamp = timeStamp;
+			updateCrossDeviceGestures();
+
+		}
+	}
+
+	public static void updateCrossDeviceGestures() {
+		if (watchGesture == null || phoneGesture == null) {
+			return;
+		}
+
+		if (watchGesture.gesture == NONE || phoneGesture.gesture == NONE) {
+			return;
+		}
+
+		int dtGesture = (int) Math.abs(watchGesture.timeStamp
+				- phoneGesture.timeStamp);
+		if (dtGesture > DELTATIME) {
+			Log.d(LOGTAG, "" + dtGesture);
+			return;
+		}
+
+		if (watchGesture.gesture == SWIPEOPEN
+				&& phoneGesture.gesture == SWIPEOPEN) {
+			Log.d(LOGTAG, "swipe open");
+			updateOnCrossGesture(PINCHOPEN);
+		} else if (watchGesture.gesture == SWIPECLOSE
+				&& phoneGesture.gesture == SWIPECLOSE) {
+			Log.d(LOGTAG, "swipe close");
+			updateOnCrossGesture(PINCHCLOSE);
+		} else if (watchGesture.gesture == SWIPEOPEN
+				&& phoneGesture.gesture == SWIPECLOSE) {
+			Log.d(LOGTAG, "phone->watch");
+			updateOnCrossGesture(PHONETOWATCH);
+		} else if (watchGesture.gesture == SWIPECLOSE
+				&& phoneGesture.gesture == SWIPEOPEN) {
+			Log.d(LOGTAG, "watch->phone");
+			updateOnCrossGesture(WATCHTOPHONE);
+		}
+
+		phoneGesture.gesture = NONE;
+		watchGesture.gesture = NONE;
+	}
+
+	private static void updateOnCrossGesture(int crossGesture) {
+		isPhoneMuted = false;
+		isWatchMuted = false;
+		
+		boolean isPhoneToBeMuted = false;
+		boolean isWatchToBeMuted = false;
+		
+		switch (crossGesture) {
+		case PINCHOPEN:
+			isPhoneToBeMuted = false;
+			isWatchToBeMuted = false;
+			break;
+		case PINCHCLOSE:
+			isPhoneToBeMuted = true;
+			isWatchToBeMuted = true;
+			break;
+		case WATCHTOPHONE:
+			isPhoneToBeMuted = false;
+			isWatchToBeMuted = true;
+			break;
+		case PHONETOWATCH:
+			isPhoneToBeMuted = true;
+			isWatchToBeMuted = false;
+			break;
+		default:
+			break;
+		}
+
+		if(isPhoneToBeMuted) {
+			showNotificationOnPhone(R.drawable.mute);
+		} else {
+			showNotificationOnPhone(R.drawable.unmute);
+		}
+		
+		if(isWatchToBeMuted) {
+			showNotificationOnWatch(R.drawable.mute_small, false);
+		} else {
+			showNotificationOnWatch(R.drawable.unmute_small, true);
+		}
+		
+		isPhoneMuted = isPhoneToBeMuted;
+		isWatchMuted = isWatchToBeMuted;
+	}
+	
+	public static boolean getWatchMuteness() {
+		return isWatchMuted;
+	}
+
+	public static void updateToast() {
+		// update toast on the phone
+//		if (!toastPhone.isDead()) {
+			toastPhone.fadeOut();
+//		}
+		// update toast on the watch
+		if(toastWatch != null) {
+			toastWatch.fadeOut();
+			if(toastWatch.getAlpha() <= xacToast.LOWALPHA * 2) {
+				if(watch != null) {
+					watch.updateVisual(null, false);
+				}
+				toastWatch = null;
+			}
+		}
+	}
+	
+	public static Typeface getTypeface(int format) {
+		Typeface typeface = null; 
+		switch(format) {
+		case NORMAL:
+			typeface = Typeface.createFromAsset(phone.getAssets(), "fonts/HelveticaBQ-Light.otf");
+			break;
+		case BOLD:
+			typeface = Typeface.createFromAsset(phone.getAssets(), "fonts/HelveticaBQ-Bold.otf");
+		}
+		return typeface;
+	}
+	
+	public static void muteWatch() {
+		isWatchMuted = true;
+	}
+	
+	public static void playAudio(int resId) {
+		try {
+			if(mediaPlayer != null && mediaPlayer.isPlaying()) {
+				mediaPlayer.stop();
+			}
+			
+			mediaPlayer = MediaPlayer.create(phone.getBaseContext(), resId);
+			mediaPlayer.start();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	public static void vibrate(int duration) {
+		Vibrator vibrator = (Vibrator) phone.getSystemService(Context.VIBRATOR_SERVICE);
+		vibrator.vibrate(duration);
+	}
+	
+	public static void buzz() {
+		if(watch != null) {
+			watch.buzz(100);
+		}
+	}
+	
+	public static void showText(String text) {
+		if(watch != null) {
+			watch.showText(text);
+		}
+	}
+	
+	public static Bitmap getBitmap(int resId) {
+		return BitmapFactory.decodeResource(phone.getResources(), resId);
+	}
+}

@@ -19,6 +19,7 @@ public class EmailManager extends AppManager {
 	public final static int PINCHCLOSE = 1;
 	public final static int WATCHTOPHONE = 2;
 	public final static int PHONETOWATCH = 3;
+	public final static int TAP = 4;
 	
 	public final static int REGULAR = 0;
 	public final static int DIM = 1;

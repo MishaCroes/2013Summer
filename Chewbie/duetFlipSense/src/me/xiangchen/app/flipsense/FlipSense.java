@@ -15,20 +15,24 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class FlipSense extends Activity implements SensorEventListener {
 	
 	final public static String LOGTAG = "FlipSense";
-	final public static int PHONEACCELFPS = 17; // Hz
+	final public static int PHONEACCELFPS = 50; // Hz
 	final public static int FLIP = 0;
 	final public static int NOFLIP = 1;
-	final int FLIPTIMEOUT = 1000; // ms
+	final int FLIPTIMEOUT = 750; // ms
 	final String[] flipLabels = {"Flip", "NoFlip"};
 	
 	LinearLayout layout;
@@ -41,6 +45,8 @@ public class FlipSense extends Activity implements SensorEventListener {
 	Sensor sensorAccel;
 	Timer timer;
 
+	TextView txtHandParts;
+	
 	float alpha = 1.0f;
 	
 	int fps = 0;
@@ -49,6 +55,12 @@ public class FlipSense extends Activity implements SensorEventListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// remove title bar
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		// remove notification bar
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
 		label = NOFLIP;
 		xacFeatureMaker.createFeatureTable();
@@ -69,15 +81,37 @@ public class FlipSense extends Activity implements SensorEventListener {
 				int numRowsToSend = PHONEACCELFPS * FLIPTIMEOUT / 1000;
 				
 				if(isRecognition) {
-					label = 1 - doClassification(numRowsToSend);
-					setBackgroundColor(255 * (1 - label));
-					alpha = 1.0f * (1 - label);
+					label = doClassification(numRowsToSend);
+//					setBackgroundColor(255 * (1 - label));
+					if(label == 0) {
+						txtHandParts.setText("Flip and tap");
+					} else {
+						txtHandParts.setText("Normal tap");
+					}
+					alpha = 1.0f;// * (1 - label);
 				} else {
-					xacFeatureMaker.sendOffData(numRowsToSend, flipLabels);
+					if(xacFeatureMaker.sendOffData(numRowsToSend, flipLabels)) {
+						xacFeatureMaker.clearData();
+					}
 				}
 				return false;
 			}
 		});
+		
+		int widthTxtView = 1080;
+		int heightTxtView = 750;
+		txtHandParts = new TextView(this);
+		txtHandParts.setId(1);
+		txtHandParts.setTextSize(60);
+		txtHandParts.setBackgroundColor(Color.BLACK);
+		txtHandParts.setTextColor(Color.WHITE);
+		txtHandParts.setText("Unknow");
+		txtHandParts.layout(0, 0, widthTxtView, heightTxtView);
+		txtHandParts.setGravity(Gravity.CENTER);
+		
+		LinearLayout.LayoutParams paramsText = new LinearLayout.LayoutParams(
+				widthTxtView, heightTxtView);
+		layout.addView(txtHandParts, paramsText);
 		
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -89,7 +123,9 @@ public class FlipSense extends Activity implements SensorEventListener {
 					public void run() {
 						if(isRecognition) {
 							alpha *= 0.95f;
-							setBackgroundColor((int) (255 * (1 - label) * alpha));
+//							setBackgroundColor((int) (255 * (1 - label) * alpha));
+							txtHandParts.setTextColor(Color.argb((int) (alpha * 255), 255,
+									255, 255));
 							
 							if(alpha > 0.1f) {
 								Log.d(LOGTAG, (int) (255 * (1 - label) * alpha)+"");

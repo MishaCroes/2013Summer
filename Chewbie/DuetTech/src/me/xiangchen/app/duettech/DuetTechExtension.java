@@ -52,7 +52,7 @@ public class DuetTechExtension extends ControlExtension {
 
 		layout = new RelativeLayout(context);
 		textView = new TextView(context);
-		textView.setText("Duet tech");
+		textView.setText("Hacky sack\nain't dinner");
 		textView.setTextSize(9);
 		textView.setGravity(Gravity.CENTER);
 		textView.setTextColor(Color.WHITE);
@@ -150,8 +150,7 @@ public class DuetTechExtension extends ControlExtension {
 		}
 	}
 
-	private void updateVisual() {
-
+	public void updateVisual() {
 		bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bitmap);
 		layout.draw(canvas);
@@ -171,5 +170,9 @@ public class DuetTechExtension extends ControlExtension {
 	
 	public void updateVisual(Bitmap bitmap) {
 		showBitmap(bitmap);
+	}
+	
+	public void buzz(int duration) {
+		startVibrator(duration, 0, 1);
 	}
 }

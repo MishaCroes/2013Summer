@@ -13,6 +13,7 @@ public class MapManager extends AppManager {
 	private final static float VERTSHIFT = 0.50f;
 	private static Map phone = null;
 	private static MapExtension watch = null;
+	private static boolean isShifting = false;
 
 	public static void setPhone(Map p) {
 		phone = p;
@@ -78,6 +79,18 @@ public class MapManager extends AppManager {
 //	     v.draw(c);
 //	     return b;
 //	}
+	
+	public static void setShiftStatus(boolean status) {
+		isShifting = status;
+	}
+	
+	public static boolean getShiftStatus() {
+//		return isShifting;
+		if(phone != null) {
+			return phone.isShifted;
+		}
+		return false;
+	}
 
 	public static void doSelection(float xRatio, float yRatio) {
 		phone.doSelection(xRatio, yRatio);

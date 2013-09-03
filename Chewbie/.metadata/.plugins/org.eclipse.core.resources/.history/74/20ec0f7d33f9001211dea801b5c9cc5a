@@ -1,0 +1,62 @@
+package me.xiangchen.app.duetstudy;
+
+import java.util.Random;
+
+import android.content.Context;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.TextView;
+
+public class TechniqueShell extends View {
+
+	public final static Random random = new Random();
+	public final static int FLIPANDTAP = 0;
+	
+	protected TextView textView;
+	
+	protected int numBlocks;
+	protected int numTrialsPerBlock;
+	
+	protected int technique;
+	
+	protected int block;
+	protected int trial;
+	
+	public TechniqueShell(Context context) {
+		super(context);
+		textView = new TextView(context);
+	}
+	
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		int width = MeasureSpec.getSize(widthMeasureSpec);
+		int height = MeasureSpec.getSize(heightMeasureSpec);
+
+		setMeasuredDimension(width, height);
+	}
+	
+	public boolean doTouch(MotionEvent event) {
+		int action = event.getAction();
+		switch(action) {
+		case MotionEvent.ACTION_DOWN:
+			break;
+		case MotionEvent.ACTION_MOVE:
+			break;
+		case MotionEvent.ACTION_UP:
+			break;
+		}
+		
+		return false;
+	}
+	
+	public void doKeyDown(int keyCode, KeyEvent event) {
+		
+	}
+	
+	public void sendData() {
+		
+	}
+
+}

@@ -42,7 +42,7 @@ public class BumpSense extends Activity implements SensorEventListener {
 	final String LOGTAG = "BumpSense";
 	final int MAXTOUCHPOINTS = 1;
 	final int BUMPTIMEOUT = 500; //ms
-	final public static int PHONEACCELFPS = 100; //Hz
+	final public static int PHONEACCELFPS = 50; //Hz
 	
 	RelativeLayout layout;
 	BumpView bumpView;
@@ -67,6 +67,8 @@ public class BumpSense extends Activity implements SensorEventListener {
 	int fps = 0;
 	long lastSecond = 0;
 	
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -79,7 +81,7 @@ public class BumpSense extends Activity implements SensorEventListener {
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		sensorAccel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		sensorManager.registerListener(this, sensorAccel,
-				SensorManager.SENSOR_DELAY_FASTEST);
+				SensorManager.SENSOR_DELAY_GAME);
 		
 		Point size = new Point();
 		getWindowManager().getDefaultDisplay().getSize(size);
@@ -139,15 +141,7 @@ public class BumpSense extends Activity implements SensorEventListener {
 					public void run() {
 						// Your database code here
 						if (appMode == AppMode.RECOGNITION) {
-//							red *= 0.9f;
-////							if(red <= 0) {
-////								label = BumpManager.NOBUMP;
-////							}
-//							bumpView.setBackgroundColor(Color.argb(255, red, 0,
-//									0));
-							
-//							bumpView.setBackgroundColor(Color.BLACK);
-//							bumpView.setAlpha(bumpView.getAlpha() * 0.9f);
+
 							bumpView.invalidate();
 							BumpManager.syncDevices();
 						}

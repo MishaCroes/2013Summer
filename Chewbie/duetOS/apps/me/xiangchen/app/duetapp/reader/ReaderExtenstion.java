@@ -21,7 +21,11 @@ public class ReaderExtenstion extends AppExtension {
 	public final static int CLIPBOARD = 0;
 	public final static int MAINSCREEN = 1;
 	public final static int SHARESCREEN = 2;
-	public final static int NUMTEXTPERSCREEN = 5;
+	public final static int NUMTEXTPERSCREEN = 3;
+	
+	public final static int TOOLPALLETE = 0;
+	public final static int TEXTOPTION = 1;
+	public final static int NUMPANELS = 2;
 
 	int idxToolPallete = 0;
 	int[] bmpToolPallets = { R.drawable.tool_pallete_1,
@@ -36,6 +40,7 @@ public class ReaderExtenstion extends AppExtension {
 
 	boolean isQuasiMode = false;
 	int savedTool = xacSketchCanvas.NONE;
+	int newTool = xacSketchCanvas.NONE;
 	
 	public ReaderExtenstion() {
 		ReaderManager.setWatch(this);
@@ -44,26 +49,36 @@ public class ReaderExtenstion extends AppExtension {
 
 	@Override
 	public void doResume() {
-		showText("Reader");
+//		showText("Reader");
+		showToolPallete();
 	}
+	
+	int idxPanel;
 
 	@Override
 	public void doTouch(ControlTouchEvent event) {
 		int action = event.getAction();
-		if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTINNERWRIST) {
+		switch(idxPanel) {
+		case TOOLPALLETE:
 			switch (action) {
+			
 			case Control.Intents.TOUCH_ACTION_PRESS:
 				int width = getWidth();
 				int height = getHeight();
 				float x = event.getX();
 				float y = event.getY();
 				savedTool = ReaderManager.getTool();
+				newTool = -1;
 				switch (idxToolPallete) {
 				case 0:
 					if (x < width / 2 && y < height / 2) {
-						ReaderManager.setTool(xacSketchCanvas.PEN);
+//						ReaderManager.setTool(xacSketchCanvas.PEN);
+						newTool = xacSketchCanvas.PEN;
+						ReaderManager.setTool(newTool, false);
 					} else if (x > width / 2 && y < height / 2) {
-						ReaderManager.setTool(xacSketchCanvas.HIGHLIGHTER);
+//						ReaderManager.setTool(xacSketchCanvas.HIGHLIGHTER);
+						newTool = xacSketchCanvas.HIGHLIGHTER;
+						ReaderManager.setTool(newTool, false);
 					} else if (x > width / 2 && y > height / 2) {
 						ReaderManager.redo();
 					} else if (x < width / 2 && y > height / 2) {
@@ -88,18 +103,24 @@ public class ReaderExtenstion extends AppExtension {
 				break;
 			case Control.Intents.TOUCH_ACTION_RELEASE:
 				if(isQuasiMode) {
-					ReaderManager.setTool(savedTool);
+					ReaderManager.setTool(savedTool, false);
+				} else {
+					if(newTool >= 0) {
+						ReaderManager.setTool(newTool, true);
+					}
 				}
 				isQuasiMode = false;
 				break;
 			}
-			
+			break;
 		}
 	}
 
 	@Override
 	public void doSwipe(int direction) {
-		if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTINNERWRIST) {
+		
+		switch(idxPanel) {
+		case TOOLPALLETE:
 			switch (direction) {
 			case Control.Intents.SWIPE_DIRECTION_LEFT:
 				idxToolPallete = (idxToolPallete + NUMTOOLPALLETES - 1)
@@ -116,8 +137,17 @@ public class ReaderExtenstion extends AppExtension {
 								.getBitmap(bmpToolPallets[idxToolPallete]),
 						true);
 				break;
+			case Control.Intents.SWIPE_DIRECTION_UP:
+				idxPanel = (idxPanel + NUMPANELS - 1) % NUMPANELS;
+				updatePanel();
+				break;
+			case Control.Intents.SWIPE_DIRECTION_DOWN:
+				idxPanel = (idxPanel + 1) % NUMPANELS;
+				updatePanel();
+				break;
 			}
-		} else if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST) {
+			break;
+		case TEXTOPTION:
 			switch (direction) {
 			case Control.Intents.SWIPE_DIRECTION_LEFT:
 				idxTextOptionScreen++;
@@ -132,24 +162,85 @@ public class ReaderExtenstion extends AppExtension {
 			case Control.Intents.SWIPE_DIRECTION_UP:
 				if (idxTextOptionScreen == CLIPBOARD) {
 					idxClipboard -= NUMTEXTPERSCREEN;
+					idxClipboard = Math.max(0, idxClipboard);
 					showClipboard();
+				} else {
+					idxPanel = (idxPanel + NUMPANELS - 1) % NUMPANELS;
+					updatePanel();
 				}
 				break;
 			case Control.Intents.SWIPE_DIRECTION_DOWN:
 				if (idxTextOptionScreen == CLIPBOARD) {
 					idxClipboard += NUMTEXTPERSCREEN;
 					showClipboard();
+				} else {
+					idxPanel = (idxPanel + 1) % NUMPANELS;
+					updatePanel();
 				}
 				break;
 			}
+			break;
 		}
+		
+		buzz(100);
+			
+//		if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTINNERWRIST) {
+//			switch (direction) {
+//			case Control.Intents.SWIPE_DIRECTION_LEFT:
+//				idxToolPallete = (idxToolPallete + NUMTOOLPALLETES - 1)
+//						% NUMTOOLPALLETES;
+//				updateWatchVisual(
+//						LauncherManager
+//								.getBitmap(bmpToolPallets[idxToolPallete]),
+//						true);
+//				break;
+//			case Control.Intents.SWIPE_DIRECTION_RIGHT:
+//				idxToolPallete = (idxToolPallete + 1) % NUMTOOLPALLETES;
+//				updateWatchVisual(
+//						LauncherManager
+//								.getBitmap(bmpToolPallets[idxToolPallete]),
+//						true);
+//				break;
+//			case Control.Intents.SWIPE_DIRECTION_UP:
+//				break;
+//			case Control.Intents.SWIPE_DIRECTION_DOWN:
+//				break;
+//			}
+//		} else if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST) {
+//			switch (direction) {
+//			case Control.Intents.SWIPE_DIRECTION_LEFT:
+//				idxTextOptionScreen++;
+//				idxTextOptionScreen = Math.min(3, idxTextOptionScreen);
+//				updateTextOptionScreen(idxTextOptionScreen);
+//				break;
+//			case Control.Intents.SWIPE_DIRECTION_RIGHT:
+//				idxTextOptionScreen--;
+//				idxTextOptionScreen = Math.max(0, idxTextOptionScreen);
+//				updateTextOptionScreen(idxTextOptionScreen);
+//				break;
+//			case Control.Intents.SWIPE_DIRECTION_UP:
+//				if (idxTextOptionScreen == CLIPBOARD) {
+//					idxClipboard -= NUMTEXTPERSCREEN;
+//					showClipboard();
+//				}
+//				break;
+//			case Control.Intents.SWIPE_DIRECTION_DOWN:
+//				if (idxTextOptionScreen == CLIPBOARD) {
+//					idxClipboard += NUMTEXTPERSCREEN;
+//					showClipboard();
+//				}
+//				break;
+//			}
+//		}
 	}
 
 	private void updateTextOptionScreen(int idx) {
 		switch (idx) {
 		case CLIPBOARD:
 			if (textToClip != null) {
-				clipboard.add(textToClip);
+				if(textToClip.length() > 0) {
+					clipboard.add(textToClip);
+				}
 				textToClip = null;
 			}
 			showClipboard();
@@ -164,6 +255,7 @@ public class ReaderExtenstion extends AppExtension {
 	}
 
 	public void showToolPallete() {
+		idxPanel = TOOLPALLETE;
 		updateWatchVisual(
 				LauncherManager.getBitmap(bmpToolPallets[idxToolPallete]), false);
 	}
@@ -184,6 +276,10 @@ public class ReaderExtenstion extends AppExtension {
 	}
 
 	private void showClipboard() {
+//		if(clipboard.size() <= 0) {
+//			showText("The clipboard is empty");
+//			return;
+//		}
 		String shownText = "";
 		for (int i = 0; i < NUMTEXTPERSCREEN; i++) {
 			String clippedText = "          ";
@@ -191,10 +287,11 @@ public class ReaderExtenstion extends AppExtension {
 				clippedText = clipboard.get(idxClipboard + i);
 			}
 			
-			int lengthSubText = Math.min(clippedText.length(), 10);
+			int lengthSubText = Math.min(clippedText.length(), 25);
 			shownText += (i + idxClipboard + 1) + ". "
 					+ clippedText.substring(0, lengthSubText) + "...\n";
 		}
+		shownText = shownText.substring(0, shownText.length() - 1);
 		showText(shownText);
 	}
 
@@ -208,11 +305,12 @@ public class ReaderExtenstion extends AppExtension {
 	}
 
 	private void showTextOption() {
-		int lengthSubText = Math.min(selectedText.length(), 10);
+		idxPanel = TEXTOPTION;
+		int lengthSubText = Math.min(selectedText.length(), 40);
 		String subText = selectedText.substring(0, lengthSubText)
 				+ (selectedText.length() == lengthSubText ? "" : "...");
-		String option1 = ">> Add to clipboard";
-		String option2 = "<< Share this text";
+		String option1 = ">>> Clipboard";
+		String option2 = "<<< Share this";
 
 		showText(subText + "\n\n" + option1 + "\n" + option2);
 	}
@@ -221,5 +319,16 @@ public class ReaderExtenstion extends AppExtension {
 		selectedText = text;
 		textToClip = selectedText;
 		showTextOption();
+	}
+	
+	public void updatePanel() {
+		switch(idxPanel) {
+		case TOOLPALLETE:
+			showToolPallete();
+			break;
+		case TEXTOPTION:
+			showTextOption();
+			break;
+		}
 	}
 }
