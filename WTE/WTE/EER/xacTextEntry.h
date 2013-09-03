@@ -34,6 +34,7 @@ enum EntryState {
 @property NSString* subStrInput;
 @property UITextField *textField;
 @property BOOL isTrialEnded;
+@property long touchDownTime;
 
 - (void) update :(xacSwipe*) swipe;
 - (void) initVisualView :(UIView*) view;
@@ -41,7 +42,9 @@ enum EntryState {
 - (void) startSession;
 - (void) checkTimer;
 //- (void) loadSharedString;
-- (void) getWord :(int)sign;
+- (BOOL) getWord :(int)sign;
 - (void) readConfig;
-
+- (void) hideVisual :(BOOL)toHide;
+- (BOOL) isKeyboardReady;
+    
 @end

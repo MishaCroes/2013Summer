@@ -115,7 +115,7 @@ int idxSubString;
 int zoomLevel = 0;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-
+    _timeTouchDown = [self getCurrentTimeInMS];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -125,7 +125,13 @@ int zoomLevel = 0;
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     if([touches count] > MAXTOUCHPOINTS)
         return;
+    [_testText reportKLM];
     if(zoomLevel < MAXZOOMLEVEL) {
+        
+        _testText.actionStarted1 = _timeTouchDown;
+        _testText.actionEnded1 = [self getCurrentTimeInMS];
+        _testText.visualSearchStarted2 = [self getCurrentTimeInMS] + ANIMATIONDURATION * 1000;
+        
         for(UITouch *touch in [touches allObjects]) {
             
             CGPoint tchPnt = [touch locationInView:self];
@@ -136,9 +142,15 @@ int zoomLevel = 0;
         }
         zoomBoard.typedChar = @"";
     } else {
-        if(ptrCharZoomBoard == 0) {
-            [_testText resetTimer];
-        }
+        
+        _testText.actionStarted2 = _timeTouchDown;
+        _testText.actionEnded2 = [self getCurrentTimeInMS];
+//        _testText.visualSearchStarted1 = [self getCurrentTimeInMS] + ANIMATIONDURATION * 1000;
+        
+//        if(ptrCharZoomBoard == 0) {
+//            [_testText resetTimer];
+//        }
+        
         [zoomBoard zoomOut:pow(ZOOMFACTOR, zoomLevel)];
         zoomLevel = 0;
         NSLog(@"%@", zoomBoard.typedChar);
@@ -167,14 +179,30 @@ int zoomLevel = 0;
     [_testText update:nil :0];
 }
 
-- (void) getWord :(int)sign {
+- (BOOL) getWord :(int)sign {
     if(_trialFinished) {
         [self cleanUp];
-        if([_testText loadWord:sign]) {
+//        if([_testText loadWord:sign]) {
+        if(_testText.isWordLoaded) {
             _trialFinished = false;
+            [zoomBoard hideKeyboard:false];
+            _testText.visualSearchStarted1 = [self getCurrentTimeInMS];
+            [_testText resetTimer];
+            return true;
         }
     }
+    return false;
 }
+
+- (long) getCurrentTimeInMS
+{
+    NSTimeInterval time = ([[NSDate date] timeIntervalSince1970]);
+    long digits = (long)time; // this is the first 10 digits
+    int decimalDigits = (int)(fmod(time, 1) * 1000); // this will get the 3 missing digits
+    long timeStamp = (digits * 1000) + decimalDigits;
+    return timeStamp;
+}
+
 
 - (void) cleanUp {
     [charArrayZoomBoard removeAllObjects];
@@ -197,6 +225,7 @@ int zoomLevel = 0;
         
         if([_testText update:strInput :idxSubString]) {
             _trialFinished = true;
+            [zoomBoard hideKeyboard:true];
             [self cleanUp];
         }
         isThereNewInputZB = false;
@@ -207,6 +236,7 @@ int zoomLevel = 0;
 
 - (void) doBackSpace {
     NSLog(@"doBackSpace");
+    [_testText reportKLM];
     if(charArrayZoomBoard.count > 0) {
         [charArrayZoomBoard removeLastObject];
         if(ptrCharZoomBoard >= TEXTLENGTH / 2) {
@@ -219,19 +249,23 @@ int zoomLevel = 0;
 
 - (void) doSpace {
     NSLog(@"doSpace");
+    [_testText reportKLM];
     [self addTypedKey:@"_"];
     [self updateTextField];
 }
 
 - (void) doZoomOut {
+    [_testText reportKLM];
     NSLog(@"zoomlevel: %d", zoomLevel);
     if(zoomLevel > 0) {
         [zoomBoard zoomOut:pow(ZOOMFACTOR, zoomLevel)];
         zoomLevel = 0;
+        [_testText reportSoftError];
     }
 }
 
 - (void) doKeyboardSwitch {
+    [_testText reportKLM];
     NSLog(@"doKeyboardSwitch");
 }
 

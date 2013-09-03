@@ -59,16 +59,39 @@ bool isThereNewInput = false;
     switch (_state) {
         case NONE:
             _numTouch = swipe.touchPoints.count;
+            
+            /////////////////////////////////////////////////////////////////
             _firstSwipe = [self getCopyOf:swipe];
+            _testText.actionStarted1 = _touchDownTime;
+            _testText.actionEnded1 = [self getCurrentTimeInMS];
+            /////////////////////////////////////////////////////////////////
+            
+            /////////////////////////////////////////////////////////////////
             [self updateVisual:_firstSwipe.gesture];
+            _testText.visualSearchStarted2 = [self getCurrentTimeInMS];
+            /////////////////////////////////////////////////////////////////
+            
+            NSLog(@"%ld, %ld", _testText.actionEnded1, _testText.visualSearchStarted2);
+            
             _state = INPROGRESS;
             break;
         case INPROGRESS:
             _secondSwipe = [self getCopyOf:swipe];
             [self doTextEntry];
+            
+            /////////////////////////////////////////////////////////////////
             _secondSwipe = _firstSwipe = nil;
+            _testText.actionStarted2 = _touchDownTime;
+            _testText.actionEnded2 = [self getCurrentTimeInMS];
+            /////////////////////////////////////////////////////////////////
+            
             _state = DONE;
+            
+            /////////////////////////////////////////////////////////////////
             [self updateVisual:UNKNOWN];
+//            _testText.visualSearchStarted1 = [self getCurrentTimeInMS];
+            /////////////////////////////////////////////////////////////////
+            
             break;
         case DONE:
             _state = NONE;
@@ -100,6 +123,7 @@ bool isThereNewInput = false;
         }
         _state = NONE;
         _firstSwipe = nil;
+        [_testText reportSoftError];
     }
     // ,
     else if(_firstSwipe.gesture == SOUTHEAST && _secondSwipe.gesture == CENTER) {
@@ -296,6 +320,7 @@ bool isThereNewInput = false;
 
 - (void) initVisualView :(UIView*) view {
     imgView = [[UIImageView alloc] init];
+    [imgView setAlpha:0];
     imgView.image = [UIImage imageNamed:@"keyboard.png"];
     imgView.frame = CGRectMake(view.frame.size.width/4, view.frame.size.height/4, view.frame.size.width/2, view.frame.size.height/2);
     [view addSubview:imgView];
@@ -352,18 +377,38 @@ bool isThereNewInput = false;
 
 }
 
+- (void) hideVisual :(BOOL)toHide {
+    if(toHide) {
+        [imgView setAlpha:0];
+    } else {
+        [imgView setAlpha:1];
+    }
+}
+
+- (BOOL) isKeyboardReady {
+    return imgView.alpha == 1 ? true : false;
+}
+
 //- (void) startSession {
 //    [self cleanUp];
 //    [_testText update:nil :0];
 //}
 
-- (void) getWord :(int)sign {
+- (BOOL) getWord :(int)sign {
     if(_isTrialEnded) {
         [self cleanUp];
-        if([_testText loadWord:sign]) {
+        
+//        if([_testText loadWord:sign]) {
+        if(_testText.isWordLoaded) {
+            _testText.visualSearchStarted1 = [self getCurrentTimeInMS];
+            [self checkTimer];
             _isTrialEnded = false;
+            [self hideVisual:false];
+            return true;
         }
     }
+    
+    return false;
 }
 
 - (void) loadSharedString {

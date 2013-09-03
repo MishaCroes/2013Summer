@@ -17,8 +17,9 @@
 @property NSMutableDictionary *touchPoints;
 @property xacSwipe *swipe;
 @property xacTextEntry *textEntry;
+@property long touchDownTime;
 
-- (void) getWord :(int)sign;
+- (BOOL) getWord :(int)sign;
 - (void) loadSharedString;
 
 @end

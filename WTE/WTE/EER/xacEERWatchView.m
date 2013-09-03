@@ -39,7 +39,9 @@
     if([touches count] > MAXTOUCHPOINTS)
         return;
     
-    [_textEntry checkTimer];
+//    [_textEntry checkTimer];
+    
+    _textEntry.touchDownTime = [self getCurrentTimeInMS];
     
     for(UITouch *touch in [touches allObjects]) {
         
@@ -56,6 +58,11 @@
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    if(![_textEntry isKeyboardReady]) {
+        return;
+    }
+    
+    [_textEntry.testText reportKLM];
     for(UITouch *touch in [touches allObjects]) {
         
         CGPoint tchPnt = [touch locationInView:self];
@@ -64,11 +71,14 @@
         [_swipe endTouchPoint :tchPnt :key];
     }
     [_textEntry update:_swipe];
+    if(_textEntry.isTrialEnded) {
+        [_textEntry hideVisual:true];
+    }
     [_swipe cleanTouchPoint];
 }
 
-- (void) getWord :(int)sign {
-    [_textEntry getWord:sign];
+- (BOOL) getWord :(int)sign {
+    return [_textEntry getWord:sign];
 }
 
 - (long) getCurrentTimeInMS

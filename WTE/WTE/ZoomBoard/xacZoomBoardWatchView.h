@@ -16,7 +16,9 @@
 @property xacTestText* testText;
 @property UITextField* textField;
 @property BOOL trialFinished;
+@property long timeTouchDown;
+
 - (void) startSession;
-- (void) getWord :(int)sign;
+- (BOOL) getWord :(int)sign;
 
 @end

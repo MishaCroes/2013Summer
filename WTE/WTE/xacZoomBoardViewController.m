@@ -35,7 +35,7 @@ UIButton* btnLast;
     canvas.frame = CGRectMake(0, 0, _mainView.frame.size.height, _mainView.frame.size.width);
     [_mainView addSubview:canvas];
 
-    btnNext = [[UIButton alloc] initWithFrame:CGRectMake(oriX + WATCHWIDTH * 3/2, oriY + WATCHHEIGHT/2, WATCHWIDTH, WATCHHEIGHT/2)];
+    btnNext = [[UIButton alloc] initWithFrame:CGRectMake(oriX + WATCHWIDTH * 1/2, oriY + WATCHHEIGHT*2/3, WATCHWIDTH * 1.1, WATCHHEIGHT/2)];
     [btnNext setTitle:@"Start" forState:UIControlStateNormal];
     [btnNext setBackgroundColor:[UIColor blackColor]];
     [btnNext addTarget:self action:@selector(nextWord) forControlEvents:UIControlEventTouchUpInside];
@@ -48,9 +48,11 @@ UIButton* btnLast;
 //    [_mainView addSubview:btnLast];
     
     _watchView.testText = [[xacTestText alloc] initWithFrame:CGRectMake(oriX - WATCHWIDTH, oriY - WATCHHEIGHT/3, WATCHWIDTH * 8, WATCHHEIGHT / 3) :ZOOMBOARD];
+    _watchView.testText.btnStart = btnNext;
     [_mainView addSubview:_watchView.testText];
     [_watchView.testText loadWords];
     [_watchView.testText setBackgroundColor:[UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:0.75f]];
+    _watchView.testText.isWordLoaded = [_watchView.testText loadWord:1];
 //    _watchView.testText.technique = ZOOMBOARD;
 //    _watchView.testText = _testText;
     
@@ -70,7 +72,10 @@ UIButton* btnLast;
 }
 
 - (void) nextWord {
-    [_watchView getWord:1];
+    if([_watchView getWord:1]) {
+        btnNext.alpha = 0;
+        _watchView.testText.textField.alpha = 0;
+    }
 }
 
 - (void) lastWord {

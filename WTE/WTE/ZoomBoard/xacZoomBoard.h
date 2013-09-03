@@ -17,6 +17,7 @@
 - (void) zoomOut:(float)zoomFactor;
 
 - (void) startSession;
+- (void) hideKeyboard :(BOOL)toHide;
 
 @property bool readyToType;
 @property NSString *typedChar;

@@ -13,6 +13,6 @@
 @property NSString *strTable;
 
 - (void) addLine:(NSString*) line;
-- (void) writeToFile :(int) pId :(int) section;
+- (void) writeToFile :(int) pId :(int) section :(NSString*) prefix;
 
 @end

@@ -68,7 +68,7 @@ float centerY;
 
 - (void) zoom :(float)x :(float)y :(float)factor {
     CGAffineTransform tr = CGAffineTransformScale(self.transform, factor, factor);
-    [UIView animateWithDuration:0.1 delay:0 options:0 animations:^{
+    [UIView animateWithDuration:ANIMATIONDURATION delay:0 options:0 animations:^{
 
         self.center = CGPointMake(x, y);
                 self.transform = tr;
@@ -111,6 +111,29 @@ float centerY;
     return [super hitTest:point withEvent:event];
 }
 
+- (void) hideKeyboard :(BOOL)toHide {
+    if(toHide) {
+        for(UIButton* btn in lineOne) {
+            [btn setAlpha:0];
+        }
+        for(UIButton* btn in lineTwo) {
+            [btn setAlpha:0];
+        }
+        for(UIButton* btn in lineThree) {
+            [btn setAlpha:0];
+        }
+    } else {
+        for(UIButton* btn in lineOne) {
+            [btn setAlpha:1];
+        }
+        for(UIButton* btn in lineTwo) {
+            [btn setAlpha:1];
+        }
+        for(UIButton* btn in lineThree) {
+            [btn setAlpha:1];
+        }
+    }
+}
 
 - (void) initKeyBoard :(CGRect)frame {
     btnQ = [[UIButton alloc] init];
@@ -152,16 +175,16 @@ float centerY;
     keysTwo = [[NSArray alloc] initWithObjects:@"A", @"S", @"D", @"F", @"G", @"H", @"J", @"K", @"L", nil];
     keysThree = [[NSArray alloc] initWithObjects:@"Z", @"X", @"C", @"V", @"B", @"N", @"M", @",", @".", nil];
     
-    float marginHori = 0.05f;
-    float marginVert = 0.02f;
+    float marginHori = 0.075f;
+    float marginVert = 0.025f;
     
     float wKey = frame.size.width * (1 - marginHori * 2) / lineOne.count * (1 - marginHori) / 2;// * INITIALZOOMLEVEL * ZOOMFACTOR;
-    float wMargin = 0;//frame.size.width * (1 - marginHori * 2) / lineOne.count * marginHori / 2;
-    float hKey = frame.size.height * (1 - marginVert * 4) / 3 / 2;// * INITIALZOOMLEVEL * ZOOMFACTOR;
+    float wMargin = frame.size.width * (1 - marginHori * 2) / lineOne.count * marginHori / 2;
+    float hKey = wKey;// frame.size.height * (1 - marginVert * 4) / 3 / 2;// * INITIALZOOMLEVEL * ZOOMFACTOR;
     
     for (int i=0; i<lineOne.count; i++) {
         UIButton *btn = lineOne[i];
-        float left = frame.size.width / 4 + frame.size.width * marginHori + wMargin + (wKey+wMargin) * i;
+        float left = frame.size.width / 4.5f + frame.size.width * marginHori + wMargin + (wKey+wMargin) * i;
         float top = frame.size.height * marginVert * 0 - frame.size.height / 5;
         [btn setTitle:keysOne[i] forState:UIControlStateNormal];
         btn.titleLabel.font = [UIFont systemFontOfSize:ZOOMBOARDFONTSIZE];
@@ -176,7 +199,7 @@ float centerY;
     
     for (int i=0; i<lineTwo.count; i++) {
         UIButton *btn = lineTwo[i];
-        float left = frame.size.width / 4 + frame.size.width * marginHori + wMargin + (wKey+wMargin) * (i + 0.5f);
+        float left = frame.size.width / 4.5f + frame.size.width * marginHori + wMargin + (wKey+wMargin) * (i + 0.5f);
         float top = frame.size.height * marginVert * 1 + hKey * 1 - frame.size.height / 5;
         [btn setTitle:keysTwo[i] forState:UIControlStateNormal];
         btn.titleLabel.font = [UIFont systemFontOfSize:ZOOMBOARDFONTSIZE];
@@ -191,7 +214,7 @@ float centerY;
     
     for (int i=0; i<lineThree.count; i++) {
         UIButton *btn = lineThree[i];
-        float left = frame.size.width / 4 + frame.size.width * marginHori + wMargin + (wKey+wMargin) * (i + 0.5f);
+        float left = frame.size.width / 4.5f + frame.size.width * marginHori + wMargin + (wKey+wMargin) * (i + 0.5f);
         float top = frame.size.height * marginVert * 2 + hKey * 2 - frame.size.height / 5;
         [btn setTitle:keysThree[i] forState:UIControlStateNormal];
         btn.titleLabel.font = [UIFont systemFontOfSize:ZOOMBOARDFONTSIZE];
@@ -212,6 +235,8 @@ float centerY;
 //    [self zoomOut:INITIALZOOMLEVEL * ZOOMFACTOR];
 //    centerX = oldCenterX;
 //    centerY = oldCenterY;
+    
+    [self hideKeyboard:true];
 }
 
 @end

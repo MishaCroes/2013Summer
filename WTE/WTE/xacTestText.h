@@ -36,9 +36,23 @@
 @property long finishTimePerChar;
 @property int numCorrectChar;
 @property int errors;
+@property int softErrors;
+@property int keyStroke;
 @property int errorsPerChar;
+@property int softErrorsPerChar;
 @property xacFeatureTable* featureTable;
+@property xacFeatureTable* gomsTable;
 @property BOOL isBlockEnded;
+
+@property BOOL isWordLoaded;
+
+@property long visualSearchStarted1;
+@property long actionStarted1;
+@property long actionEnded1;
+@property long visualSearchStarted2;
+@property long actionStarted2;
+@property long actionEnded2;
+@property UIButton* btnStart;
 
 - (id)initWithFrame:(CGRect)frame :(int)technique;
 - (void) loadWords;
@@ -46,5 +60,6 @@
 - (BOOL) update :(NSString*) input :(int) idxSubStr;
 - (void) resetTimer;
 - (void) loadSharedString;
-
+- (void) reportSoftError;
+- (void) reportKLM;
 @end
