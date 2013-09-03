@@ -126,9 +126,10 @@ public class DuetTechManager {
 			}
 
 		}
-		
+
 		phone.multiDeviceGesture.sendOffData(recognizedAs);
-		phone.multiDeviceGesture.advance();
+		phone.multiDeviceGesture.feedback(recognizedAs);
+		phone.multiDeviceGesture.advance(recognizedAs);
 
 		phoneGesture.gesture = NONE;
 		watchGesture.gesture = NONE;

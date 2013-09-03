@@ -1,0 +1,12 @@
+package me.xiangchen.app.duetstudy;
+
+import android.content.Context;
+
+public class FlipToConfigure extends TechniqueShell {
+
+	public FlipToConfigure(Context context) {
+		super(context);
+		technique = FLIPTOCONFIGURE;
+	}
+
+}

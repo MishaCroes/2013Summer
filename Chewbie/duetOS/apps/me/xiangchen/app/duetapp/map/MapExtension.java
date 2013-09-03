@@ -35,9 +35,7 @@ public class MapExtension extends AppExtension {
 
 		switch (action) {
 		case Control.Intents.TOUCH_ACTION_PRESS:
-
-			break;
-		case Control.Intents.TOUCH_ACTION_RELEASE:
+		case Control.Intents.TOUCH_ACTION_LONGPRESS:
 			float xRatio = (event.getX() - width / 2) * 1.0f / width;
 			float yRatio = (event.getY() - height / 2) * 1.0f / height;
 			MapManager.doSelection(xRatio, yRatio);
@@ -48,19 +46,21 @@ public class MapExtension extends AppExtension {
 	@Override
 	public void doSwipe(int direction) {
 		
-//		int pointing = xacUpDownSenseFeatureMaker.doClassification();
+		int pointing = xacUpDownSenseFeatureMaker.doClassification();
 
-		if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST ||
-				LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRISTNOPHONE) {
-			buzz(500);
+//		if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST ||
+//				LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRISTNOPHONE) {
+//		if(pointing == xacUpDownSenseFeatureMaker.DOWN) {
+		if(!MapManager.getShiftStatus()) {
+			buzz(200);
 			Log.d(LOGTAG, "down swipe");
 //			if (LauncherManager.getWatchConfig() == xacAuthenticSenseFeatureMaker.LEFTBACKWRIST) {
 				MapManager.switchMapViews();
 //			}
 		} else {
 			buzz(100);
-			float xStep = getWidth() / 10;
-			float yStep = getHeight() / 10;
+			float xStep = getWidth() / 3;
+			float yStep = getHeight() / 3;
 			switch (direction) {
 			case Control.Intents.SWIPE_DIRECTION_LEFT:
 //				MapManager.doTranslation(-xStep, 0);
@@ -84,8 +84,8 @@ public class MapExtension extends AppExtension {
 	
 	@Override
 	public void doAccelerometer(float[] values) {
-//		xacUpDownSenseFeatureMaker.updateWatchAccel(values);
-//		xacUpDownSenseFeatureMaker.addWatchFeatureEntry();
+		xacUpDownSenseFeatureMaker.updateWatchAccel(values);
+		xacUpDownSenseFeatureMaker.addWatchFeatureEntry();
 		
 		xacTiltSenseFeatureMaker.updateWatchAccel(values);
 		xacTiltSenseFeatureMaker.addWatchFeatureEntry();

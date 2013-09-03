@@ -1,0 +1,44 @@
+package me.xiangchen.app.duetstudy;
+
+import me.xiangchen.technique.flipsense.xacFlipSenseFeatureMaker;
+import android.content.Context;
+import android.view.MotionEvent;
+
+public class FlipAndTap extends TechniqueShell{
+
+	
+	
+	public FlipAndTap(Context context) {
+		super(context);
+		technique = FLIPANDTAP;
+		
+		numClasses = 2;
+		classLabels = new int[] {xacFlipSenseFeatureMaker.FLIP, xacFlipSenseFeatureMaker.NOFLIP};
+		int numDataPointsPerClass = 50; 
+		numBlocks = 5;
+		numTrialsPerBlock = numClasses * numDataPointsPerClass / numBlocks;
+		
+		labelCounter = new int[numClasses];
+		radii = new float[numClasses];
+		for(int i=0; i<numClasses; i++) {
+			labelCounter[i] = 0;
+			radii[i] = 1;
+		}
+	}
+	
+	@Override
+	public boolean doTouch(MotionEvent event) {
+		int action = event.getAction();
+		switch(action) {
+		case MotionEvent.ACTION_DOWN:
+			break;
+		case MotionEvent.ACTION_MOVE:
+			break;
+		case MotionEvent.ACTION_UP:
+			break;
+		}
+		
+		return false;
+	}
+
+}

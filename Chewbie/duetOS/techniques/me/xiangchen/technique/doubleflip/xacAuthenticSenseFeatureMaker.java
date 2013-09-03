@@ -218,7 +218,7 @@ public class xacAuthenticSenseFeatureMaker {
 		}
 
 		switch (idxClass) {
-		case 0:
+		case 2:
 			label = INTHEWILD;
 			 Log.d(LOGTAG, "left back wrist");
 			break;
@@ -226,11 +226,11 @@ public class xacAuthenticSenseFeatureMaker {
 			label = LEFTBACKWRIST;
 			 Log.d(LOGTAG, "left inner wrist");
 			break;
-		case 2:
-			label = LEFTBACKWRISTNOPHONE;	// now only left
-			 Log.d(LOGTAG, "right back wrist");
-			break;
-		case 3:
+//		case 2:
+//			label = LEFTBACKWRISTNOPHONE;	// now only left
+//			 Log.d(LOGTAG, "right back wrist");
+//			break;
+		case 0:
 			label = LEFTINNERWRIST; // now only left
 			 Log.d(LOGTAG, "right inner wrist");
 			break;

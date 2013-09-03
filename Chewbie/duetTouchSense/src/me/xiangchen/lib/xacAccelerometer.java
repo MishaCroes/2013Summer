@@ -2,6 +2,8 @@ package me.xiangchen.lib;
 
 public class xacAccelerometer {
 	
+	final public static int NUMACCELAXES = 3;
+	
 	public xacAccelerometer() {
 		
 	}
@@ -14,5 +16,17 @@ public class xacAccelerometer {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+	
+	public float getX() {
+		return x;
+	}
+	
+	public float getY() {
+		return y;
+	}
+	
+	public float getZ() {
+		return z;
 	}
 }

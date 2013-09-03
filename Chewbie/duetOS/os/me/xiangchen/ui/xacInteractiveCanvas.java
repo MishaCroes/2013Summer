@@ -15,7 +15,7 @@ public class xacInteractiveCanvas extends View {
 	final public static int bgColorLight = 0xFFEADFD5;
 	final public static int bgColorDark = 0xFF472A2B;
 	final public static int fgColorGreen = 0xFF558c03;
-	final public static int bgColorGreen = 0xAA2FFE2F;
+	final public static int bgColorGreen = 0xFF2FFE2F;
 	final public static int fgColorYellow = 0xFFF4880C;
 	final public static int fgColorCream = 0xFFE3CC86;
 	final public static int fgColorRed = 0xFFA40C20;

@@ -1,5 +1,6 @@
 package me.xiangchen.app.duethandsense;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,6 +22,8 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,8 +31,11 @@ import android.widget.Toast;
 
 public class HandSense extends Activity implements SensorEventListener {
 
-	final static String[] touchLabels = { "Left", "Right" };
+	public final static String[] touchLabels = { "Right hand", "Left hand" };
+	public final static int TOUCHONSETTIME = 100; // ms
 	int idxHands = 0;
+	final public static int PHONEACCELFPS = 50; // Hz
+	final int HANDTIMEOUT = 500 + TOUCHONSETTIME; // ms
 
 	boolean isRecognition = true;
 
@@ -43,9 +49,18 @@ public class HandSense extends Activity implements SensorEventListener {
 	SensorManager sensorManager;
 	Sensor sensorAccel;
 
+	long timeTouchDown;
+
+	int handedness;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// remove title bar
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		// remove notification bar
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		xacFeatureMaker.setLabel(idxHands);
 		xacFeatureMaker.createFeatureTable();
@@ -55,18 +70,39 @@ public class HandSense extends Activity implements SensorEventListener {
 		layout.setOnTouchListener(new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View view, MotionEvent event) {
-				if (!isRecognition) {
-					xacFeatureMaker.sendOffData(5, touchLabels);
-					xacFeatureMaker.clearData();
+
+				 Calendar calendar = Calendar.getInstance();
+				 long curTime = calendar.getTimeInMillis();
+
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					timeTouchDown = curTime;
+					handedness = -1;
+					return true;
 				} else {
-					Object[] features = xacFeatureMaker.getFlattenedData(5);
+					if (curTime - timeTouchDown < TOUCHONSETTIME) {
+						return true;
+					}
+				}
+
+				int numRowsToSend = PHONEACCELFPS * HANDTIMEOUT / 1000;
+
+				if (!isRecognition) {
+					if (xacFeatureMaker.sendOffData(numRowsToSend, null,
+							touchLabels)) {
+						xacFeatureMaker.clearData();
+						return false;
+					}
+				} else {
+					if(handedness == -1) {
+					Object[] features = xacFeatureMaker.getFlattenedData(
+							numRowsToSend, null);
 					if (features != null) {
 						alphaText = 255;
 						try {
-							int idxClass = (int) HandSenseClassifier
+							handedness = (int) HandSenseClassifier
 									.classify(features);
-							if (idxClass >= 0) {
-								txtHands.setText(touchLabels[idxClass]);
+							if (handedness >= 0) {
+								txtHands.setText(touchLabels[handedness]);
 							} else {
 								txtHands.setText("Unknown");
 							}
@@ -77,15 +113,17 @@ public class HandSense extends Activity implements SensorEventListener {
 					} else {
 						txtHands.setText("Wait...");
 					}
+					return false;
+					}
 				}
-				return false;
+				return true;
 			}
 		});
 
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		sensorAccel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		sensorManager.registerListener(this, sensorAccel,
-				SensorManager.SENSOR_DELAY_FASTEST);
+				SensorManager.SENSOR_DELAY_GAME);
 
 		int widthButton = 500;
 		int heightButton = 360;
@@ -104,20 +142,17 @@ public class HandSense extends Activity implements SensorEventListener {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				idxHands = (idxHands + 1) % touchLabels.length;
-				xacFeatureMaker.setLabel(idxHands);
-				btnHands.setText(touchLabels[idxHands]);
 
 			}
 		});
 
-		int widthTxtView = 500;
-		int heightTxtView = 360;
+		int widthTxtView = 1080;
+		int heightTxtView = 750;
 		txtHands = new TextView(this);
 		txtHands.setId(1);
-		txtHands.setTextSize(36);
-		txtHands.setBackgroundColor(Color.WHITE);
-		txtHands.setTextColor(Color.BLACK);
+		txtHands.setTextSize(60);
+		txtHands.setBackgroundColor(Color.BLACK);
+		txtHands.setTextColor(Color.WHITE);
 		txtHands.setText("Unknow");
 		txtHands.layout(widthButton, 0, widthTxtView, heightTxtView);
 		txtHands.setGravity(Gravity.CENTER);
@@ -127,7 +162,7 @@ public class HandSense extends Activity implements SensorEventListener {
 		// RelativeLayout.LayoutParams.WRAP_CONTENT);
 				widthButton, heightButton);
 		// paramsButton.addRule(RelativeLayout.LEFT_OF, 1);
-		layout.addView(btnHands, paramsButton);
+		//layout.addView(btnHands, paramsButton);
 
 		LinearLayout.LayoutParams paramsText = new LinearLayout.LayoutParams(
 		// RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -150,7 +185,7 @@ public class HandSense extends Activity implements SensorEventListener {
 						if (isRecognition) {
 							alphaText *= 0.95f;
 							txtHands.setTextColor(Color
-									.argb(alphaText, 0, 0, 0));
+									.argb(alphaText, 255, 255, 255));
 						}
 					}
 				});
@@ -193,6 +228,11 @@ public class HandSense extends Activity implements SensorEventListener {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		switch (keyCode) {
+		case KeyEvent.KEYCODE_VOLUME_UP:
+			idxHands = (idxHands + 1) % touchLabels.length;
+			xacFeatureMaker.setLabel(idxHands);
+			btnHands.setText(touchLabels[idxHands]);
+			break;
 		case KeyEvent.KEYCODE_VOLUME_DOWN:
 			toggleMode();
 			break;
@@ -217,6 +257,6 @@ public class HandSense extends Activity implements SensorEventListener {
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
 		xacFeatureMaker.updatePhoneAccel(event.values);
-		xacFeatureMaker.addFeatureEntry();
+		xacFeatureMaker.addPhoneFeatureEntry();
 	}
 }

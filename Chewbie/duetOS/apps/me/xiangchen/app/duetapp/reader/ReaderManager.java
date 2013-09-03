@@ -1,14 +1,16 @@
 package me.xiangchen.app.duetapp.reader;
 
 import me.xiangchen.app.duetapp.AppManager;
+import me.xiangchen.app.duetos.LauncherManager;
+import me.xiangchen.app.duetos.R;
 import me.xiangchen.ui.xacSketchCanvas;
 
 public class ReaderManager extends AppManager {
 
-	public static void setTool(int tool) {
+	public static void setTool(int tool, boolean feedback) {
 		if (phone != null) {
 			Reader reader = (Reader) phone;
-			reader.setTool(tool);
+			reader.setTool(tool, feedback);
 		}
 	}
 
@@ -16,6 +18,7 @@ public class ReaderManager extends AppManager {
 		if (phone != null) {
 			Reader reader = (Reader) phone;
 			reader.undo();
+//			LauncherManager.showNotificationOnUnlockedPhone(R.drawable.undo);
 		}
 	}
 
@@ -23,6 +26,7 @@ public class ReaderManager extends AppManager {
 		if (phone != null) {
 			Reader reader = (Reader) phone;
 			reader.redo();
+//			LauncherManager.showNotificationOnUnlockedPhone(R.drawable.redo);
 		}
 	}
 

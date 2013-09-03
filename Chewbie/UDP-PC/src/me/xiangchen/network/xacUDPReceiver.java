@@ -6,7 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class xacUDPReceiver implements Runnable {
-	final String ipToSend = "10.142.224.68";
+	final String ipToSend = "10.142.224.73";
 	String strBuffer = "";
 
 	@Override

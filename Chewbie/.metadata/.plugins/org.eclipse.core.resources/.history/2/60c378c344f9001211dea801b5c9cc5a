@@ -1,0 +1,28 @@
+package me.xiangchen.app.duetstudy;
+
+import android.content.Context;
+import android.view.MotionEvent;
+
+public class FlipAndTap extends TechniqueShell{
+
+	public FlipAndTap(Context context) {
+		super(context);
+		technique = FLIPANDTAP;
+	}
+	
+	@Override
+	public boolean doTouch(MotionEvent event) {
+		int action = event.getAction();
+		switch(action) {
+		case MotionEvent.ACTION_DOWN:
+			break;
+		case MotionEvent.ACTION_MOVE:
+			break;
+		case MotionEvent.ACTION_UP:
+			break;
+		}
+		
+		return false;
+	}
+
+}

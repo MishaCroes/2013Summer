@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move element &apos;xacFeatureMaker.java&apos; to &apos;duetHandSense/src/me.xiangchen.recycle&apos;&#x0D;&#x0A;- Original project: &apos;duetHandSense&apos;&#x0D;&#x0A;- Destination element: &apos;duetHandSense/src/me.xiangchen.recycle&apos;&#x0D;&#x0A;- Original element: &apos;me.xiangchen.ml.xacFeatureMaker.java&apos;" description="Move compilation unit" destination="/src&lt;me.xiangchen.recycle" element1="/src&lt;me.xiangchen.ml{xacFeatureMaker.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" patterns="*" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="false" stamp="1371589809836" units="1" version="1.0"/>
+</session>

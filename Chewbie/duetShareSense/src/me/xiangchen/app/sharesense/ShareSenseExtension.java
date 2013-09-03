@@ -34,7 +34,7 @@ public class ShareSenseExtension extends ControlExtension {
 
 	public final static int PRIVATE = 0;
 	public final static int PUBLIC = 1;
-	public final static String[] classmodes = { "Private", "Public" };
+	public final static String[] classmodes = { "Down", "Down" };
 	// public final static String[] displayedInfo = {
 	// "You have 5 missed calls from Tiffany", ""}
 	int mode;
@@ -95,28 +95,6 @@ public class ShareSenseExtension extends ControlExtension {
 				int numRowsToSend = WATCHACCELFPS;
 				if (isRecognition) {
 
-//					runningSumAccel *= 0.95;
-//					counter *= 0.95;
-//
-//					float sumAccel = (float) (Math.sqrt(values[0] * values[0]
-//							+ values[1] * values[1] + values[2] * values[2]) - 9.8f);
-//					runningSumAccel += sumAccel;
-//					counter++;
-//
-//					Calendar lCDateTime = Calendar.getInstance();
-//					long curTime = lCDateTime.getTimeInMillis();
-//
-//					float spike = (float) (sumAccel - (runningSumAccel + 1)
-//							/ (counter + 1));
-//					// Log.d(LOGTAG, "" + spike);
-//
-//					if (Math.abs(spike) > accelMotion) {
-//						timeMotion = curTime;
-//					}
-
-//					if (timeMotion != 0
-//							&& curTime - timeMotion >= numRowsToSend * 1000
-//									/ WATCHACCELFPS) {
 						mode = doClassification(numRowsToSend);
 						// textView.setText(classmodes[mode]);
 						showDisplayedInfo(mode);
@@ -126,12 +104,8 @@ public class ShareSenseExtension extends ControlExtension {
 //					}
 
 				} else {
-					if (xacFeatureMaker.sendOffData(numRowsToSend, classmodes)) {
-						Log.d(LOGTAG, "data sent");
-						xacFeatureMaker.clearData();
-					}
+					
 				}
-
 			}
 		};
 	}
@@ -219,33 +193,37 @@ public class ShareSenseExtension extends ControlExtension {
 
 	@Override
 	public void onSwipe(int direction) {
-		switch (direction) {
-		case Control.Intents.SWIPE_DIRECTION_UP:
-			mode = PUBLIC;
-			if (isRecognition) {
-				// rotate display to public
-				// updateDisplay();
-				isSharing = true;
-			} else {
-				// switch to public mode training
-				xacFeatureMaker.setLabel(mode);
-				textView.setText(classmodes[mode]);
-				// updateDisplay();
-			}
-			break;
-		case Control.Intents.SWIPE_DIRECTION_DOWN:
-			mode = PRIVATE;
-			if (isRecognition) {
-				// rotate display to private
-				isSharing = false;
-			} else {
-				// switch to private mode training
-				xacFeatureMaker.setLabel(mode);
-				textView.setText(classmodes[mode]);
-				// updateDisplay();
-			}
-			break;
+		if (xacFeatureMaker.sendOffData(WATCHACCELFPS, classmodes)) {
+			Log.d(LOGTAG, "data sent");
+			xacFeatureMaker.clearData();
 		}
+//		switch (direction) {
+//		case Control.Intents.SWIPE_DIRECTION_UP:
+//			mode = PUBLIC;
+//			if (isRecognition) {
+//				// rotate display to public
+//				// updateDisplay();
+//				isSharing = true;
+//			} else {
+//				// switch to public mode training
+//				xacFeatureMaker.setLabel(mode);
+//				textView.setText(classmodes[mode]);
+//				// updateDisplay();
+//			}
+//			break;
+//		case Control.Intents.SWIPE_DIRECTION_DOWN:
+//			mode = PRIVATE;
+//			if (isRecognition) {
+//				// rotate display to private
+//				isSharing = false;
+//			} else {
+//				// switch to private mode training
+//				xacFeatureMaker.setLabel(mode);
+//				textView.setText(classmodes[mode]);
+//				// updateDisplay();
+//			}
+//			break;
+//		}
 
 		updateDisplay();
 	}
@@ -287,7 +265,7 @@ public class ShareSenseExtension extends ControlExtension {
 
 		return PUBLIC;
 	}
-
+	
 	public static int getSupportedControlWidth(Context context) {
 		return context.getResources().getDimensionPixelSize(
 				R.dimen.smart_watch_control_width);

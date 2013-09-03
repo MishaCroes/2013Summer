@@ -28,7 +28,7 @@ import android.widget.Toast;
 public class AuthenticSense extends Activity implements SensorEventListener {
 
 	public final static String LOGTAG = "AuthenticSense";
-	public final static int PHONEACCELFPS = 100;
+	public final static int PHONEACCELFPS = 50;
 
 	RelativeLayout layout;
 	Button btnAuthen;
@@ -46,7 +46,7 @@ public class AuthenticSense extends Activity implements SensorEventListener {
 	boolean isLocked = true;
 	boolean isTouching = false;
 
-	int numRowsToSend = 500 / (1000 / PHONEACCELFPS);
+//	int numRowsToSend = 500 / (1000 / PHONEACCELFPS);
 
 	Timer timer;
 	int red = 255;
@@ -83,9 +83,29 @@ public class AuthenticSense extends Activity implements SensorEventListener {
 			@Override
 			public void onClick(View arg0) {
 				AuthenticManager.toggleLabel();
-				btnTraining
-						.setText(AuthenticManager.getLabel() == AuthenticManager.INTHEWILD ? "In the wild"
-								: "Authenticated");
+				int label = AuthenticManager.getLabel();
+
+				switch (label) {
+				case AuthenticManager.INTHEWILD:
+					btnTraining.setText("In the wild");
+					break;
+				case AuthenticManager.LEFTBACKWRIST:
+					btnTraining.setText("Left back wrist");
+					break;
+				case AuthenticManager.LEFTINNERWRIST:
+					btnTraining.setText("Left inner wrist");
+					break;
+				case AuthenticManager.RIGHTBACKWRIST:
+					btnTraining.setText("Right back wrist");
+					break;
+				case AuthenticManager.RIGHTINNERWRIST:
+					btnTraining.setText("Right inner wrist");
+					break;
+				case AuthenticManager.LEFTBACKWRISTNOPHONE:
+					btnTraining.setText("Left back wrist no phone");
+					break;
+				}
+
 			}
 		});
 
@@ -109,7 +129,7 @@ public class AuthenticSense extends Activity implements SensorEventListener {
 						red = isLocked ? 255 : 0;
 						green = 255 - red;
 					} else {
-						xacFeatureMaker.sendOffData(numRowsToSend,
+						xacFeatureMaker .sendOffData(AuthenticManager.NUMROWPHONEAUTHEN,
 								AuthenticManager.classLabels);
 						xacFeatureMaker.clearData();
 					}
@@ -228,8 +248,8 @@ public class AuthenticSense extends Activity implements SensorEventListener {
 		if (isTouching
 				&& curTime - timeAuthen > AuthenticManager.AUTHENTICACTIONTIMEOUT) {
 			if (AuthenticManager.isRecognition()) {
-				int label = doClassification(numRowsToSend);
-				if (label == AuthenticManager.AUTHENTICATED) {
+				int label = doClassification(AuthenticManager.NUMROWPHONEAUTHEN);
+				if (label != AuthenticManager.INTHEWILD) {
 					isLocked = !isLocked;
 					textView.setText(isLocked ? "Locked!"
 							: "5 missed calls from Tiffany");
@@ -254,12 +274,14 @@ public class AuthenticSense extends Activity implements SensorEventListener {
 			}
 		}
 
-		switch (idxClass) {
-		case 0:
-			return AuthenticManager.AUTHENTICATED;
-		case 1:
-			return AuthenticManager.INTHEWILD;
-		}
+//		switch (idxClass) {
+//		case 0:
+//			return AuthenticManager.HANDAUTHENTICATED;
+//		case 1:
+//			return AuthenticManager.INTHEWILD;
+//		case 2:
+//			return AuthenticManager.WATCHAUTHENTICATED;
+//		}
 
 		return idxClass;
 	}

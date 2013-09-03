@@ -40,12 +40,13 @@ public class Email extends App {
 	public final static int HEIGHTEMAIL = 320;
 	public final static int NUMSTARTINGEMAILS = 9;
 	public final static int TAPOFFSETTHRES = 25;
+	public final static int EMAILNOTIFICATIONTIMEOUT = 1000; // ms
 
 	final static int NUMROWSHANDPARTS = LauncherManager.PHONEACCELFPSGAME
 			* xacTouchSenseFeatureMaker.TOUCHTIMEOUT / 1000;
 	private static final float APPWIDTH = 1080;
 
-	public final static int EMAILFREQUENCY = 2;
+	public final static int EMAILFREQUENCY = 1;
 
 	int cntEmail = 0;
 
@@ -117,25 +118,29 @@ public class Email extends App {
 			"Chan Wing Yan - Guo zuo tan yai zao mou si la\nDan o, sam yi!",
 			"Stephen Chow - Actually, my flims are all tragedies\nDear Anthony, I know you’ve been seeing my films. Just want to point out that actually they are all tragedies, not commedies.",
 			"Nobita Nobi - I need a new tool ... \nHey, Doraemon, I need a new tool to help me finish my summer internship project. I need something to help me automatically write application on a" };
-	
+
 	int[] emailSnapshots = { R.drawable.email_snapshot_0,
 			R.drawable.email_snapshot_1, R.drawable.email_snapshot_2,
 			R.drawable.email_snapshot_3, R.drawable.email_snapshot_4,
 			R.drawable.email_snapshot_5, R.drawable.email_snapshot_6,
 			R.drawable.email_snapshot_7, R.drawable.email_snapshot_8 };
-	
-	int[] emailBodies = { R.drawable.email_body_0,
-			R.drawable.email_body_1, R.drawable.email_body_2,
-			R.drawable.email_body_3, R.drawable.email_body_4,
-			R.drawable.email_body_5, R.drawable.email_body_6,
-			R.drawable.email_body_7, R.drawable.email_body_8 };
-	
+
+	int[] emailBodies = { R.drawable.email_body_0, R.drawable.email_body_1,
+			R.drawable.email_body_2, R.drawable.email_body_3,
+			R.drawable.email_body_4, R.drawable.email_body_5,
+			R.drawable.email_body_6, R.drawable.email_body_7,
+			R.drawable.email_body_8 };
+
 	Hashtable<xacShape, String> htEmailText;
 
 	xacPhoneGesture pressAndHold;
 	int isHold;
 
 	int handedness = xacHandSenseFeatureMaker.UNKNOWN;
+
+	long timeNotified = 0;
+
+	int watchMode;
 
 	public Email(Context context) {
 		super(context);
@@ -151,7 +156,7 @@ public class Email extends App {
 
 		openedEmailLayout = new LinearLayout(context);
 		openedEmailLayout.setBackgroundColor(xacInteractiveCanvas.fgColorCream);
-//		openedEmailLayout.setBackgroundResource(R.drawable.email_body_1);
+		// openedEmailLayout.setBackgroundResource(R.drawable.email_body_1);
 		textViewEmail = new TextView(context);
 		textViewEmail.setTextSize(24);
 		textViewEmail.setTextColor(xacInteractiveCanvas.bgColorDark);
@@ -201,24 +206,43 @@ public class Email extends App {
 
 	@Override
 	public void runOnUIThread() {
-		int watchMode = xacShareSenseFeatureMaker.doClassification();
-		if ((random.nextInt() + 97) % (Launcher.TIMERFPS * EMAILFREQUENCY) == 0
-				&& cntEmail <= 40) {
-			// addEmail();
-			// updateInboxVisual();
-
-			LauncherManager.showNotificationOnLockedPhone(R.drawable.email);
-
-			if (LauncherManager.isPhoneLocked()) {
+		int oldWatchMode = watchMode;
+		watchMode = xacShareSenseFeatureMaker.doClassification();
+		long curTime = Calendar.getInstance().getTimeInMillis();
+		if (LauncherManager.isPhoneLocked()) {
+//			if ((random.nextInt() + 97) % (Launcher.TIMERFPS * EMAILFREQUENCY) == 0
+//					&& cntEmail <= 40) {
+//				// addEmail();
+//				// updateInboxVisual();
+//
+//				LauncherManager.showNotificationOnLockedPhone(R.drawable.email);
+//
+//				if (LauncherManager.isPhoneLocked()) {
+//					if (watchMode == xacShareSenseFeatureMaker.PRIVATE) {
+//						LauncherManager.showNotificationOnWatch(
+//								R.drawable.email_small, true);
+//					} else {
+//						LauncherManager.buzz(100);
+//					}
+//
+//					timeNotified = curTime;
+//				}
+//				numUnnotifiedEmail++;
+//				canvas.invalidate();
+//			}
+		} else {
+			if (oldWatchMode != watchMode) {
 				if (watchMode == xacShareSenseFeatureMaker.PRIVATE) {
-					LauncherManager.showNotificationOnWatch(
-							R.drawable.email_small, true);
-				} else {
-					LauncherManager.buzz(100);
+					if (curTime - timeNotified >= EMAILNOTIFICATIONTIMEOUT) {
+						// if (!LauncherManager.isWatchNotificationAlive()) {
+						String strUnread = unreadEmails.size()
+								+ " unread emails";
+						LauncherManager.showText(strUnread);
+					}
+				} else if (watchMode == xacShareSenseFeatureMaker.PUBLIC) {
+					LauncherManager.showTime();
 				}
 			}
-			numUnnotifiedEmail++;
-			canvas.invalidate();
 		}
 
 		prevWatchMode = watchMode;
@@ -231,7 +255,7 @@ public class Email extends App {
 		buttons = new ArrayList<Button>();
 
 		btnMarkRead = new Button(context);
-		btnMarkRead.setText("Mark as read");
+		btnMarkRead.setText("Mark as (un)read");
 		btnMarkRead.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -239,7 +263,7 @@ public class Email extends App {
 					// email.setTypeface(LauncherManager
 					// .getTypeface(LauncherManager.NORMAL));
 					// email.setColor(Color.argb(256, 256, 256, 256));
-					email.setAlpha(200);
+					email.toggleAlpha();// .setAlpha(200);
 				}
 				canvas.invalidate();
 			}
@@ -390,13 +414,17 @@ public class Email extends App {
 			yTouchDown = coords.y;
 
 			handedness = xacHandSenseFeatureMaker.UNKNOWN;
-//			if (handedness == xacHandSenseFeatureMaker.UNKNOWN) {
-//				handedness = xacHandSenseFeatureMaker.calculateHandedness();
-//				Log.d(LOGTAG, handedness == xacHandSenseFeatureMaker.NOWATCH ? "no watch" : "watch");
-//			}
+			// if (handedness == xacHandSenseFeatureMaker.UNKNOWN) {
+			// handedness = xacHandSenseFeatureMaker.calculateHandedness();
+			// Log.d(LOGTAG, handedness == xacHandSenseFeatureMaker.NOWATCH ?
+			// "no watch" : "watch");
+			// }
 
 			break;
 		case MotionEvent.ACTION_MOVE:
+			dTouchX += Math.abs(xCur - xPrev);
+			dTouchY += Math.abs(yCur - yPrev);
+
 			if (isHold != xacPhoneGesture.YES) {
 				isHold = pressAndHold.update(event);
 			}
@@ -404,39 +432,61 @@ public class Email extends App {
 			if (handedness == xacHandSenseFeatureMaker.UNKNOWN) {
 				handedness = xacHandSenseFeatureMaker.calculateHandedness();
 				xacHandSenseFeatureMaker.clearData();
-				Log.d(LOGTAG, handedness == xacHandSenseFeatureMaker.NOWATCH ? "no watch" : "watch");
+				Log.d(LOGTAG,
+						handedness == xacHandSenseFeatureMaker.NOWATCH ? "no watch"
+								: "watch");
 			}
 
-			switch (handPart) {
-			case xacTouchSenseFeatureMaker.KNUCKLE:
-				break;
-			case xacTouchSenseFeatureMaker.PAD:
-			case xacTouchSenseFeatureMaker.SIDE:
-			default:
-				float speedRatio = 0.75f;
-				float dy = (yCur - yPrev) * speedRatio;
+			else {
+				if ((handedness == xacHandSenseFeatureMaker.WATCH && handPart != xacTouchSenseFeatureMaker.KNUCKLE)
+						|| handedness == xacHandSenseFeatureMaker.NOWATCH) {
+					float speedRatio = 0.75f;
+					float dy = (yCur - yPrev) * speedRatio;
 
-				float dx = (xCur - xPrev) * 50;
-				dy *= Math.max(0, 1 - Math.abs(dx) / APPWIDTH);
+					float dx = (xCur - xPrev) * 50;
+					dy *= Math.max(0, 1 - Math.abs(dx) / APPWIDTH);
 
-				if (dScrollY + (-dy) < 0) {
-					dy *= 0.001f;
+					if (dScrollY + (-dy) < 0) {
+						dy *= 0.001f;
+					}
+					dScrollY += (-dy);
+					// Log.d(LOGTAG, "scroll by " + dy);
+
+					// canvas.scrollContentsBy(0, dy);
+					canvas.setOffsets(0, dy * 1.5f);
+
+					canvas.invalidate();
+					dScrollY = Math.max(0, dScrollY);
 				}
-				dScrollY += (-dy);
-				// Log.d(LOGTAG, "scroll by " + dy);
-
-				// canvas.scrollContentsBy(0, dy);
-				canvas.setOffsets(0, dy);
-
-				canvas.invalidate();
-				dScrollY = Math.max(0, dScrollY);
-
-				dTouchX += Math.abs(xCur - xPrev);
-				dTouchY += Math.abs(yCur - yPrev);
-				break;
-
 			}
 
+			// switch (handPart) {
+			// case xacTouchSenseFeatureMaker.KNUCKLE:
+			// break;
+			// case xacTouchSenseFeatureMaker.PAD:
+			// case xacTouchSenseFeatureMaker.SIDE:
+			// default:
+			// float speedRatio = 0.75f;
+			// float dy = (yCur - yPrev) * speedRatio;
+			//
+			// float dx = (xCur - xPrev) * 50;
+			// dy *= Math.max(0, 1 - Math.abs(dx) / APPWIDTH);
+			//
+			// if (dScrollY + (-dy) < 0) {
+			// dy *= 0.001f;
+			// }
+			// dScrollY += (-dy);
+			// // Log.d(LOGTAG, "scroll by " + dy);
+			//
+			// // canvas.scrollContentsBy(0, dy);
+			// canvas.setOffsets(0, dy * 1.5f);
+			//
+			// canvas.invalidate();
+			// dScrollY = Math.max(0, dScrollY);
+			//
+			// break;
+			//
+			// }
 			break;
 		case MotionEvent.ACTION_UP:
 			if (isHold == xacPhoneGesture.YES) {
@@ -470,9 +520,8 @@ public class Email extends App {
 							hitEmail.toggleStroke(20);
 							canvas.invalidate();
 							break;
-						}
-						else {
-							LauncherManager.doAndriodToast("no watch"); 
+						} else {
+							LauncherManager.doAndriodToast("no watch");
 						}
 					case xacTouchSenseFeatureMaker.PAD:
 					case xacTouchSenseFeatureMaker.SIDE:
@@ -484,14 +533,16 @@ public class Email extends App {
 						appLayout.addView(openedEmailLayout, paramsOpened);
 						int idxOpenedEmail = allEmails.indexOf(hitEmail);
 						try {
-							openedEmailLayout.setBackgroundResource(emailBodies[idxOpenedEmail]);
-						} catch(Exception e) {
-							LauncherManager.doAndriodToast("your email cannot be loaded.");
+							openedEmailLayout
+									.setBackgroundResource(emailBodies[idxOpenedEmail]);
+						} catch (Exception e) {
+							LauncherManager
+									.doAndriodToast("your email cannot be loaded.");
 						}
 						unreadEmails.remove(hitEmail);
 						// hitEmail.setTypeface(LauncherManager
 						// .getTypeface(LauncherManager.NORMAL));
-						hitEmail.setAlpha(180);
+						hitEmail.setAlpha(255 - xacShape.DEFAULTALPHA);
 						openedEmail = hitEmail;
 
 						break;
@@ -509,7 +560,7 @@ public class Email extends App {
 				}
 				canvas.setOffsets(0, 0);
 			}
-			
+
 			break;
 		}
 
@@ -552,7 +603,7 @@ public class Email extends App {
 	public String getSup() {
 		int cntUnread = unreadEmails.size();
 		if (cntUnread > 0) {
-			sup =htEmailText.get(unreadEmails.get(cntUnread - 1));
+			sup = htEmailText.get(unreadEmails.get(cntUnread - 1));
 		} else {
 			sup = "Inbox zero :)";
 		}

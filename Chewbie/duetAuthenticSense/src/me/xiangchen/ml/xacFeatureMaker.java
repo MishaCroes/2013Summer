@@ -110,7 +110,7 @@ public class xacFeatureMaker {
 		// 1. the phone's
 		for(int i=lockedPntrEntryPhone-numToSendPhone; i<lockedPntrEntryPhone; i++) {
 			for(int j=0; j<numFeatures; j++) {
-				strFeatureRow += String.format("%.2f", featureTablePhone[i][j]) + ",";
+				strFeatureRow += String.format("%.1f", featureTablePhone[i][j]) + ",";
 			}
 		}
 		

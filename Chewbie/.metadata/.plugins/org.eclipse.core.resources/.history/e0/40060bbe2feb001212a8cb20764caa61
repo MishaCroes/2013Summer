@@ -1,0 +1,30 @@
+package me.xiangchen.app.duetapp.call;
+
+import me.xiangchen.app.duetapp.AppManager;
+import me.xiangchen.app.duetos.LauncherManager;
+import me.xiangchen.app.duetos.R;
+
+public class CallManager extends AppManager {
+	static Call phone;
+	static CallExtension watch;
+	
+	static int idxVoiceMail = -1;
+	static int[] voiceMails = {R.raw.ground_rules, R.raw.no_annoying_sounds, R.raw.listen_up,
+			R.raw.so_fluffy, R.raw.ground_rules, R.raw.stuffed_crust};
+	
+	public static void setPhone(Call p) {
+		phone = p;
+	}
+	
+	public static void setWatch(CallExtension w) {
+		watch = w;
+	}
+	
+	public static void playNextVoiceMail() {
+		LauncherManager.playAudio(voiceMails[++idxVoiceMail]);	
+	}
+	
+	public static void playLastVoiceMail() {
+		LauncherManager.playAudio(voiceMails[--idxVoiceMail]);
+	}
+}

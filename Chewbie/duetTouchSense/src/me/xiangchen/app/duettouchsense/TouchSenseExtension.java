@@ -1,6 +1,5 @@
 package me.xiangchen.app.duettouchsense;
 
-import me.xiangchen.lib.xacAccelerometer;
 import me.xiangchen.ml.xacFeatureMaker;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,6 +21,8 @@ import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorMan
 public class TouchSenseExtension extends ControlExtension {
 
 	final static String LOG_TAG = "TouchSense";
+	final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.ARGB_8888;
+	final public static int WATCHACCELFPS = 10;
 	
 	int width;
 	int height;
@@ -29,7 +30,7 @@ public class TouchSenseExtension extends ControlExtension {
 	AccessorySensor sensor = null;
 	AccessorySensorEventListener listener;
 	
-	xacAccelerometer accel;
+//	xacAccelerometer accel;
 	
 	Context context;
 	
@@ -54,19 +55,20 @@ public class TouchSenseExtension extends ControlExtension {
 		textView.layout(0, 0, width, height);
 		layout.addView(textView);
 		
-		accel = new xacAccelerometer();
+//		accel = new xacAccelerometer();
 		
 		AccessorySensorManager manager = new AccessorySensorManager(context, hostAppPackageName);
         sensor = manager.getSensor(Sensor.SENSOR_TYPE_ACCELEROMETER);
         
-        xacFeatureMaker.createFeatureTable(3);
+//        xacFeatureMaker.createFeatureTable(3);
         
 		listener = new AccessorySensorEventListener() {
 
 	        public void onSensorEvent(AccessorySensorEvent sensorEvent) {
 	        	float[] values = sensorEvent.getSensorValues();
-	        	accel.update(values[0], values[1], values[2]);
-	        	xacFeatureMaker.addFeatureEntry(values, 0);
+//	        	accel.update(values[0], values[1], values[2]);
+	        	xacFeatureMaker.updateWatchAccel(values);
+	        	xacFeatureMaker.addWatchFeatureEntry();
 	        }
 	    };
 	}
@@ -84,6 +86,12 @@ public class TouchSenseExtension extends ControlExtension {
                 Log.d(LOG_TAG, "Failed to register listener");
             }
         }
+        
+        bitmap = Bitmap.createBitmap(width, height, BITMAP_CONFIG);
+		canvas = new Canvas(bitmap);
+		layout.draw(canvas);
+		
+		showBitmap(bitmap);
     }
 	
 	@Override

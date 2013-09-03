@@ -1,0 +1,18 @@
+package me.xiangchen.app.duetapp.call;
+
+import me.xiangchen.app.duetapp.AppExtension;
+import me.xiangchen.technique.posturesense.xacPostureSenseFeatureMaker;
+
+public class CallExtension extends AppExtension {
+
+	@Override
+	public void doResume() {
+		showText("Call");
+	}
+	
+	@Override
+	public void doAccelerometer(float[] values) {
+		xacPostureSenseFeatureMaker.updateWatchAccel(values);
+		xacPostureSenseFeatureMaker.addWatchFeatureEntry();
+	}
+}

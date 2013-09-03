@@ -21,6 +21,7 @@ import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorMan
 
 public class HandSenseExtension extends ControlExtension {
 
+	final public static int WATCHACCELFPS = 10;
 	final String LOGTAG = "HandSense";
 	final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.ARGB_8888;
 	
@@ -59,8 +60,8 @@ public class HandSenseExtension extends ControlExtension {
 
 	        public void onSensorEvent(AccessorySensorEvent sensorEvent) {
 	        	float[] values = sensorEvent.getSensorValues();
-//	        	xacFeatureMaker.accelWatch.update(values[0], values[1], values[2]);
 	        	xacFeatureMaker.updateWatchAccel(values);
+	        	xacFeatureMaker.addWatchFeatureEntry();
 	        }
 	    };
 	}

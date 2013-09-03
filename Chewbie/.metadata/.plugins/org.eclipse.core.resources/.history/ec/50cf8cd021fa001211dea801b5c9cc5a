@@ -1,0 +1,14 @@
+package me.xiangchen.app.duetstudy;
+
+import android.content.Context;
+
+public class TouchWithHandParts extends TechniqueShell {
+
+	public TouchWithHandParts(Context context) {
+		super(context);
+		technique = TOUCHWITHHANDPARTS;
+		
+		tvStatus.setText("Touch with hand parts");
+	}
+
+}

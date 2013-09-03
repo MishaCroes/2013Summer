@@ -1,0 +1,177 @@
+package me.xiangchen.ui;
+
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Typeface;
+
+public class xacShape {
+
+	final public static int OVAL = 0;
+	final public static int ROUNDRECT = 1; 
+	final public static int TEXTBOX = 2;
+	final public static int BITMAP = 3;
+	
+	final static int DEFAULTALPHA = 192;
+	
+	float xCenter;
+	float yCenter;
+	float width;
+	float height;
+	Paint fillPaint;
+	Paint strokePaint;
+	Paint textPaint;
+	int type;
+	int alpha = DEFAULTALPHA;
+	String text = "";
+	int colorStroke = 0xFFFFFFFF;
+	Bitmap bitmap;
+	
+	public xacShape(int type) {
+		fillPaint = new Paint();
+		fillPaint.setAlpha(alpha);
+		fillPaint.setDither(true);
+		fillPaint.setAntiAlias(true);
+		fillPaint.setStyle(Paint.Style.FILL);
+		
+		strokePaint = new Paint();
+		strokePaint.setColor(Color.TRANSPARENT);
+		strokePaint.setStyle(Paint.Style.STROKE);
+		strokePaint.setStrokeJoin(Paint.Join.ROUND);
+		strokePaint.setStrokeCap(Paint.Cap.ROUND);
+		strokePaint.setStrokeWidth(3);
+		
+		textPaint = new Paint();
+		textPaint.setColor(Color.BLACK);
+		textPaint.setStyle(Paint.Style.FILL);
+		textPaint.setStrokeJoin(Paint.Join.ROUND);
+		textPaint.setStrokeCap(Paint.Cap.ROUND);
+		textPaint.setTextSize(64);
+		
+		this.type = type;
+	}
+	
+	public void setBitmap(Bitmap bmp) {
+		bitmap = bmp;
+	}
+	
+	public void setPosition(float x, float y) {
+		xCenter = x;
+		yCenter = y;
+	}
+	
+	public void offset(float dx, float dy) {
+		xCenter += dx;
+		yCenter += dy;
+	}
+	
+	public float getX() {
+		return xCenter;
+	}
+
+	public float getY() {
+		return yCenter;
+	}
+
+	public void setSize(float w, float h) {
+		width = w;
+		height = h;
+	}
+	
+	public float getW() {
+		return width;
+	}
+
+	public float getH() {
+		return height;
+	}
+	
+	public void scale(float s) {
+		width *= s;
+		height *= s;
+	}
+
+	public void setColor(int color) {
+		fillPaint.setColor(color);
+	}
+	
+	public void setStrokeColor(int color) {
+		colorStroke = color;
+	}
+	
+	public void toggleAlpha() {
+		alpha = 255 - alpha;
+		fillPaint.setAlpha(alpha);
+	}
+	
+	public Paint getPaint() {
+		return fillPaint;
+	}
+	
+	public int getType() {
+		return type;
+	}
+	
+	public void draw(Canvas canvas) {
+		RectF rectF = new RectF();
+		float marginWidth = rectF.width() * 0.02f;
+		float marginHeight = rectF.width() * 0.06f;
+		rectF.set(xCenter-width/2, yCenter-height/2, xCenter+width/2, yCenter+height/2);
+		switch(type) {
+		case OVAL:
+			canvas.drawOval(rectF, fillPaint);
+			canvas.drawOval(rectF, strokePaint);
+			break;
+		case ROUNDRECT:
+			canvas.drawRoundRect(rectF, rectF.width() / 6, rectF.height() / 6, fillPaint);
+			canvas.drawRoundRect(rectF, rectF.width() / 6, rectF.height() / 6, strokePaint);
+			break;
+		case TEXTBOX:
+			canvas.drawRect(rectF, fillPaint);
+			canvas.drawRect(rectF, strokePaint);
+			canvas.drawText(text, rectF.left + marginWidth, rectF.top + marginHeight, textPaint);
+			break;
+		case BITMAP:
+			canvas.drawRoundRect(rectF, rectF.width() / 6, rectF.height() / 6, fillPaint);
+			canvas.drawRoundRect(rectF, rectF.width() / 6, rectF.height() / 6, strokePaint);
+			canvas.drawBitmap(bitmap, rectF.left + marginWidth, rectF.top + marginHeight, new Paint());
+		}
+	}
+	
+	public void setText(String str) {
+		text = str;
+	}
+	
+	public void setTextColor(int color) {
+		textPaint.setColor(color);
+	}
+	
+	public void setTypeface(Typeface tf) {
+		textPaint.setTypeface(tf);
+	}
+	
+	public boolean hitTest(float x, float y) {
+		return (Math.abs(x - xCenter) < width/2 && Math.abs(y - yCenter) < height/2);
+	}
+	
+	public boolean isIn(RectF rectF) {
+		return !(xCenter-width < rectF.left || xCenter+width > rectF.right ||
+				yCenter-height < rectF.top || yCenter+height > rectF.bottom);
+	}
+	
+	public boolean isOut(RectF rectF) {
+		return (xCenter+width < rectF.left || xCenter-width > rectF.right ||
+				yCenter+height < rectF.top || yCenter-height > rectF.bottom);
+	}
+	
+	public void toggleStroke() {
+		strokePaint.setColor(strokePaint.getColor() == colorStroke ? Color.TRANSPARENT : colorStroke);
+	}
+	
+	public void toggleStroke(int w) {
+		strokePaint.setStrokeWidth(w);
+		strokePaint.setColor(strokePaint.getColor() == colorStroke ? Color.TRANSPARENT : colorStroke);
+	}
+}

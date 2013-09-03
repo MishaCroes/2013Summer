@@ -1,0 +1,134 @@
+package me.xiangchen.app.duetstudy;
+
+import java.util.Calendar;
+
+import me.xiangchen.lib.xacPhoneGesture;
+import me.xiangchen.technique.bumpsense.xacBumpSenseFeatureMaker;
+import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
+import android.content.Context;
+import android.util.Log;
+import android.view.MotionEvent;
+
+public class Bump extends TechniqueShell {
+
+	public static final int BUMPTIMEOUT = 1500;
+	xacPhoneGesture pressAndHold;
+	long timeFromHold;
+	public Bump(Context context) {
+		super(context);
+		technique = BUMP;
+		
+		numClasses = 2;
+		classLabels = new int[] {xacBumpSenseFeatureMaker.BUMP, xacBumpSenseFeatureMaker.NOBUMP};
+		int numDataPointsPerClass = 10; 
+		numBlocks = 5;
+		numTrialsPerBlock = numClasses * numDataPointsPerClass / numBlocks;
+		
+		tvStatus.setText("Bump");
+	}
+
+	@Override
+	public boolean doTouch(MotionEvent event) {
+
+		// boolean retValue = false;
+		isTouching = true;
+		int action = event.getAction();
+
+		if (!isBreak) {
+//			if (isReadyForNextTrial) {
+
+				if (isStarted) {
+					long curTime = Calendar.getInstance().getTimeInMillis();
+
+					switch (action) {
+					case MotionEvent.ACTION_DOWN:
+						pressAndHold.update(event);
+						timeFromHold = -1;
+
+						break;
+					case MotionEvent.ACTION_MOVE:
+						if (pressAndHold.getResult() != pressAndHold.YES) {
+							pressAndHold.update(event);
+							xacBumpSenseFeatureMaker.clearData();
+							isReadyForNextTrial = false;
+						} else {
+							if (timeFromHold < 0) {
+								label = nextClassLabel(false);
+								setCues();
+								timeFromHold = curTime;
+							} else {
+								if (curTime - timeFromHold > BUMPTIMEOUT) {
+									if (xacBumpSenseFeatureMaker.isDataReady()) {
+										int bumpResult = xacBumpSenseFeatureMaker.calculateBumping();
+										xacBumpSenseFeatureMaker.setLabels(label, bumpResult);
+										xacBumpSenseFeatureMaker.sendOffData();
+										xacBumpSenseFeatureMaker.clearData();
+										isReadyForNextTrial = false;
+										Log.d(LOGTAG, label + " : " + bumpResult);
+										tvCue.setText("Release");
+									}
+								}
+							}
+						}
+						break;
+					case MotionEvent.ACTION_UP:
+						break;
+					}
+				}
+			
+
+			if (action == MotionEvent.ACTION_UP) {
+				if (isStarted) {
+					
+					trial++;
+					
+					if (trial == numTrialsPerBlock) {
+						block++;
+						isBreak = true;
+						if (block == numBlocks) {
+							tvCue.setText("End of technique");
+						} else {
+							tvCue.setText("End of block");
+						}
+					} else {
+						tvCue.setText("Please wait ...");
+					}					
+				} else {
+					isStarted = true;
+					block = 0;
+					trial = 0;
+				}
+				
+				xacBumpSenseFeatureMaker.clearData();
+				isReadyForNextTrial = false;
+				isTouching = false;
+			}
+		}
+
+		return true;
+	}
+	
+	@Override
+	public void runOnTimer() {
+		if (!isBreak && !isTouching) {
+			if (!xacBumpSenseFeatureMaker.isDataReady()) {
+				tvCue.setText("Please wait ...");
+				isReadyForNextTrial = false;
+				// Log.d(LOGTAG, "wait...");
+			} else {
+				if (!isReadyForNextTrial) {
+					if (isStarted) {
+						label = nextClassLabel(false);
+						tvCue.setText("Press and hold");
+						setStatus();
+					} else {
+						tvCue.setText("Tap to start...");
+					}
+
+					isReadyForNextTrial = true;
+					// Log.d(LOGTAG, "ready");
+				}
+			}
+		}
+	}
+}

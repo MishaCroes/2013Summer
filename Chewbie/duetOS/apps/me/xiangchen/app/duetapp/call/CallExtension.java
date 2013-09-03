@@ -3,6 +3,8 @@ package me.xiangchen.app.duetapp.call;
 import java.util.Hashtable;
 
 import me.xiangchen.app.duetapp.AppExtension;
+import me.xiangchen.app.duetos.LauncherManager;
+import me.xiangchen.app.duetos.R;
 import me.xiangchen.technique.posturesense.xacPostureSenseFeatureMaker;
 import me.xiangchen.technique.sharesense.xacShareSenseFeatureMaker;
 
@@ -16,6 +18,7 @@ public class CallExtension extends AppExtension {
 
 	int posture;
 	final String[] appExtensions = { "Contact", "Email", "Calendar" };
+	int[] appExtIcons = {R.drawable.contact_small, R.drawable.email_small, R.drawable.calendar_small};
 	int idxAppExts = 0;
 	Hashtable<String, Integer> htIdxItems;
 
@@ -23,9 +26,10 @@ public class CallExtension extends AppExtension {
 	String[][][] appScreens;
 
 	String[] emailText = {
-			"Nobita Nobi - I need a new tool ... \nHey, Doraemon, I need a new tool to help me finish my summer internship project. I need something to help me automatically write application on a",
-			"Stephen Chow - Actually, my flims are all tragedies\nDear Anthony, I know you’ve been seeing my films. Just want to point out that actually they are all tragedies, not commedies.",
-			"Chan Wing Yan - Guo zuo tan yai zao mou si la\nDan o, sam yi!" };
+			"Nobita Nobi\n Subject: I need a new tool ... \nHey, Doraemon, I need a new tool to help me finish my summer internship project. I need something to help me automatically write application on a",
+			"Stephen Chow\nSubject: Flims = tragedies   \nDear Anthony, I know you’ve been seeing my films. Just want to point out that actually they are all tragedies, not commedies. Hope you get a better understanding of them.",
+			"Chan Wing Yan\nSubject: Hello             \nGuo zuo tan yai zao mou si la\nDan o, sam yi!",
+			"Nobita Nobi\nSubject: I need a new tool ...  \nHey, Doraemon, I need a new tool to help me finish my summer internship project. I need something to help me automatically write application on a"};
 
 	public CallExtension() {
 
@@ -36,16 +40,16 @@ public class CallExtension extends AppExtension {
 		}
 
 		int numApps = appExtensions.length;
-		int numItems = 3;
+		// int numItems = 3;
 
 		appScreens = new String[numApps][][];
 		for (int i = 0; i < numApps; i++) {
 			switch (i) {
 			case CALENDAR:
 				appScreens[i] = new String[3][1];
-				appScreens[i][0][0] = "9am Group meeting";
-				appScreens[i][1][0] = "1pm Conference call";
-				appScreens[i][2][0] = "4pm Dentist's appointment";
+				appScreens[i][0][0] = "9am Group meeting                                ";
+				appScreens[i][1][0] = "1pm Conference call (Kevin's skype: kevinminion) ";
+				appScreens[i][2][0] = "4pm Dentist's appointment                        ";
 				break;
 			case EMAIL:
 				int numEmails = emailText.length;
@@ -53,9 +57,13 @@ public class CallExtension extends AppExtension {
 				for (int j = 0; j < numEmails; j++) {
 					// appScreens[i][j] = new String[numPages];
 					int numPages = appScreens[i][j].length;
-					int numCharPerPage = 40;
-					for (int k = 0, start = 0; k < numPages && start < emailText[j].length(); k++, start+=numCharPerPage) {
-						appScreens[i][j][k] = emailText[j].substring(start, Math.min(emailText[j].length() - 1, start+numCharPerPage));
+					int numCharPerPage = 60;
+					for (int k = 0, start = 0; k < numPages
+							&& start < emailText[j].length(); k++, start += numCharPerPage) {
+						appScreens[i][j][k] = emailText[j].substring(
+								start,
+								Math.min(emailText[j].length() - 1, start
+										+ numCharPerPage));
 					}
 				}
 				break;
@@ -66,9 +74,9 @@ public class CallExtension extends AppExtension {
 				appScreens[i][2][0] = "Gru the Vilian\n+01 492 100\ngru@despicable.me";
 				break;
 			}
-			
+
 		}
-		
+
 	}
 
 	@Override
@@ -102,11 +110,23 @@ public class CallExtension extends AppExtension {
 	}
 
 	public void showAppExtension() {
-//		String strAppItem = appExtensions[idxAppExts] + " #"
-//				+ (htIdxItems.get(appExtensions[idxAppExts]) + 1);
+		// String strAppItem = appExtensions[idxAppExts] + " #"
+		// + (htIdxItems.get(appExtensions[idxAppExts]) + 1);
 		Integer idxItem = htIdxItems.get(appExtensions[idxAppExts]);
-		String strAppItem = appExtensions[idxAppExts] + "\n" + appScreens[idxAppExts][idxItem][0].substring(0, 10) + "...";
-		showText(strAppItem);
+
+		if (idxItem == 0) {
+			updateWatchVisual(
+					LauncherManager.getBitmap(appExtIcons[idxAppExts]), false);
+		} else {
+			String strAppItem = appScreens[idxAppExts][idxItem][0];
+			String strAppItemShort = "["
+					+ appExtensions[idxAppExts]
+					+ "]\n"
+					+ strAppItem
+							.substring(0, Math.min(strAppItem.length(), 40))
+					+ "";
+			showText(strAppItemShort);
+		}
 	}
 
 	public void nextAppExtension() {
@@ -123,7 +143,7 @@ public class CallExtension extends AppExtension {
 	public void nextItem() {
 		Integer idxItem = htIdxItems.get(appExtensions[idxAppExts]);
 		idxItem++;
-		idxItem = Math.min(appScreens[idxAppExts].length - 1, idxItem);
+		idxItem = Math.min(appScreens[idxAppExts].length, idxItem);
 		htIdxItems.put(appExtensions[idxAppExts], idxItem);
 		showAppExtension();
 	}
@@ -138,7 +158,8 @@ public class CallExtension extends AppExtension {
 
 	public void scrollDownApp() {
 		Integer idxItem = htIdxItems.get(appExtensions[idxAppExts]);
-		idxInApp = Math.min(idxInApp + 1, appScreens[idxAppExts][idxItem].length - 1);
+		idxInApp = Math.min(idxInApp + 1,
+				appScreens[idxAppExts][idxItem].length - 1);
 		showText(appScreens[idxAppExts][idxItem][idxInApp]);
 	}
 

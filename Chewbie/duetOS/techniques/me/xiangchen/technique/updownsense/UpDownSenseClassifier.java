@@ -6,16 +6,16 @@ public class UpDownSenseClassifier {
 	    throws Exception {
 
 	    double p = Double.NaN;
-	    p = UpDownSenseClassifier.N2dec3ffd81(i);
+	    p = UpDownSenseClassifier.N136bf0aa2(i);
 	    return p;
 	  }
-	  static double N2dec3ffd81(Object []i) {
+	  static double N136bf0aa2(Object []i) {
 	    double p = Double.NaN;
-	    if (i[2] == null) {
+	    if (i[29] == null) {
 	      p = 0;
-	    } else if (((Double) i[2]).doubleValue() <= 0.77) {
+	    } else if (((Double) i[29]).doubleValue() <= 0.61) {
 	      p = 0;
-	    } else if (((Double) i[2]).doubleValue() > 0.77) {
+	    } else if (((Double) i[29]).doubleValue() > 0.61) {
 	      p = 1;
 	    } 
 	    return p;

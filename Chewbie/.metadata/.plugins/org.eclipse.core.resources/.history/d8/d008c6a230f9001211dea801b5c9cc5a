@@ -1,0 +1,5 @@
+package me.xiangchen.app.duetstudy;
+
+public class WristTilt extends TechniqueShell {
+
+}

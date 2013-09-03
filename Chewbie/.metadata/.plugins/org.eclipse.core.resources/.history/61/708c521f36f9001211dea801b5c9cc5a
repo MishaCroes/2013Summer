@@ -1,0 +1,126 @@
+package me.xiangchen.app.duettech;
+
+import me.xiangchen.app.duetstudy.FlipAndTap;
+import me.xiangchen.app.duetstudy.TechniqueShell;
+import me.xiangchen.app.duetstudy.WristTilt;
+import android.app.Activity;
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+public class DuetTech extends Activity {
+
+	public final static int PHONEACCELFPSGAME = 50;
+	public final static int FONTSIZE = 32;
+	public final static int SCREENWIDTH = 480;
+	public final static int SCREENHEIGHT = 240;
+	public final static int TEXTWIDTH = 480;
+	public final static int TEXTHEIGHT = 240;
+	
+	RelativeLayout mediator;
+	TextView tvMediating;
+	
+	FlipAndTap flipAndTap;
+	WristTilt wristTilt;
+	
+	TechniqueShell[] techniques; 
+	int idxTech = -1;
+	
+	RelativeLayout layout;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		// remove title bar
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		// remove notification bar
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		
+		layout = new RelativeLayout(this);
+		layout.setOnTouchListener(new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				if(idxTech >= 0) {
+					return techniques[idxTech].doTouch(event);
+				}
+				return false;
+			}
+		});
+		
+		mediator = new RelativeLayout(this);
+		mediator.setBackgroundColor(0xFF000000);
+		
+		tvMediating = new TextView(this);
+		tvMediating.setTextSize(FONTSIZE);
+		tvMediating.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/HelveticaBQ-Light.otf"));
+		tvMediating.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+//		tvMediating.layout(0, 0, TEXTWIDTH, TEXTHEIGHT);
+		RelativeLayout.LayoutParams paramsMediating = new RelativeLayout.LayoutParams(TEXTWIDTH, TEXTHEIGHT);
+//				RelativeLayout.LayoutParams.WRAP_CONTENT,
+//				RelativeLayout.LayoutParams.MATCH_PARENT);
+		int left = (int) (SCREENWIDTH / 2.618);
+		int top = (int) (SCREENHEIGHT * 1.618 / 2.618);
+		tvMediating.layout(left, top, left + TEXTWIDTH, top + TEXTHEIGHT);
+		tvMediating.setText("Duet");
+		mediator.addView(tvMediating, paramsMediating);
+		layout.addView(mediator);
+		
+		flipAndTap = new FlipAndTap(this);
+//		flipAndTap.setBackgroundColor(0xFFFFFF00);
+		
+		wristTilt = new WristTilt(this);
+//		wristTilt.setBackgroundColor(0xFFFF00FF);
+		
+		techniques = new TechniqueShell[]{flipAndTap, wristTilt};
+		
+		setContentView(layout);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.duet_tech, menu);
+		return true;
+	}
+	
+//	public static void doAndriodToast(String text) {
+//		Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+//	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_VOLUME_UP:
+			
+			break;
+		case KeyEvent.KEYCODE_VOLUME_DOWN:
+			// next technique
+			int numTechniques = techniques.length;
+			if(idxTech >= 0) {
+				layout.removeView(techniques[idxTech]);
+			} else {
+				layout.removeView(mediator);
+			}
+			
+			idxTech = (idxTech + 1) % numTechniques;
+			layout.addView(techniques[idxTech]);
+			
+			break;
+		}
+
+		return true;
+	}
+
+}

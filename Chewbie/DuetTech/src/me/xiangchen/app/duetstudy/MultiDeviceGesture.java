@@ -116,7 +116,15 @@ public class MultiDeviceGesture extends TechniqueShell {
 		new xacUDPTask().execute(strFeatureRow);
 	}
 
-	public void advance() {
+	public void feedback(int recognizedAs) {
+		if(label == recognizedAs) {
+			DuetTechManager.buzzWatch(100);
+		} else {
+			DuetTechManager.buzzWatch(750);
+		}
+	}
+	
+	public void advance(int recognizedAs) {
 //		long curTime = Calendar.getInstance().getTimeInMillis();
 //		tvCue.setText("Please wait...");
 //		tvCue.invalidate();
@@ -124,7 +132,14 @@ public class MultiDeviceGesture extends TechniqueShell {
 //			Log.d(LOGTAG, "waiting");
 //		}
 		
-		DuetTechManager.buzzWatch(100);
+//		DuetTechManager.buzzWatch(100);
+	
+		if(block == 0) {
+			if(label != recognizedAs) {
+				return;
+			}
+		}
+		
 		++trial;
 		if (trial == numTrialsPerBlock) {
 			block++;

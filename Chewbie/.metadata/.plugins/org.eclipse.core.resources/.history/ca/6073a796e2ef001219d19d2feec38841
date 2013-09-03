@@ -1,0 +1,27 @@
+package me.xiangchen.app.duetapp.reader;
+
+import me.xiangchen.app.duetapp.AppManager;
+
+public class ReaderManager extends AppManager {
+	
+	public static void setTool(int tool) {
+		if(phone != null) {
+			Reader reader = (Reader)phone;
+			reader.setTool(tool);
+		}
+	}
+	
+	public static void undo() {
+		if(phone != null) {
+			Reader reader = (Reader)phone;
+			reader.undo();
+		}
+	}
+	
+	public static void redo() {
+		if(phone != null) {
+			Reader reader = (Reader)phone;
+			reader.redo();
+		}
+	}
+}

@@ -10,7 +10,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Vibrator;
 import android.util.Log;
@@ -41,11 +40,13 @@ public class LauncherManager {
 	public final static int SWIPEOPEN = 0;
 	public final static int SWIPECLOSE = 1;
 	public final static int DELTATIME = 750; // ms
+	public final static int ORDERTIME = DELTATIME / 2;
 
 	public final static int PINCHOPEN = 0;
 	public final static int PINCHCLOSE = 1;
 	public final static int WATCHTOPHONE = 2;
 	public final static int PHONETOWATCH = 3;
+	public final static int TAP = 4;
 
 	public final static int REGULAR = 0;
 	public final static int DIM = 1;
@@ -201,6 +202,14 @@ public class LauncherManager {
 		}
 	}
 	
+	public static boolean isWatchNotificationAlive() {
+		if(toastWatch != null) {
+			return !toastWatch.isDead();
+		} else {
+			return false;
+		}
+	}
+	
 	public static void showTime() {
 		if(watch != null) {
 			watch.showTime();
@@ -273,6 +282,36 @@ public class LauncherManager {
 			vibrate(200);
 			updateOnCrossGesture(WATCHTOPHONE);
 		}
+		
+		if (watchGesture.gesture == TAP) {
+//			int dt = (int) (watchGesture.timeStamp - phoneGesture.timeStamp);
+			if (Math.abs(dtGesture) < ORDERTIME) {
+				if (phoneGesture.gesture == SWIPEOPEN) {
+//					Log.d(LOGTAG, "by tap: swipe open");
+					vibrate(500);
+					buzz(500);
+					updateOnCrossGesture(SWIPEOPEN);
+				} else if (phoneGesture.gesture == SWIPECLOSE) {
+//					Log.d(LOGTAG, "by tap: swipe close");
+					vibrate(100);
+					buzz(100);
+					updateOnCrossGesture(SWIPECLOSE);
+				}
+			} else if(dtGesture < -ORDERTIME) {
+//				Log.d(LOGTAG, "by tap: watch->phone");
+				buzz(200);
+				wait(500);
+				vibrate(200);
+				updateOnCrossGesture(WATCHTOPHONE);
+			} else if(dtGesture > ORDERTIME) {
+//				Log.d(LOGTAG, "by tap: phone->watch");
+				vibrate(200);
+				wait(500);
+				buzz(200);
+				updateOnCrossGesture(PHONETOWATCH);
+			}
+
+		}
 
 		phoneGesture.gesture = NONE;
 		watchGesture.gesture = NONE;
@@ -308,14 +347,18 @@ public class LauncherManager {
 
 		if(isPhoneToBeMuted) {
 			showNotificationOnLockedPhone(R.drawable.mute);
+//			showNotificationOnLockedPhone(R.drawable.phone_close);
 		} else {
 			showNotificationOnLockedPhone(R.drawable.unmute);
+//			showNotificationOnLockedPhone(R.drawable.phone_open);
 		}
 		
 		if(isWatchToBeMuted) {
 			showNotificationOnWatch(R.drawable.mute_small, false);
+//			showNotificationOnWatch(R.drawable.watch_close, false);
 		} else {
 			showNotificationOnWatch(R.drawable.unmute_small, true);
+//			showNotificationOnWatch(R.drawable.unmute_small, true);
 		}
 		
 		isPhoneMuted = isPhoneToBeMuted;
@@ -433,6 +476,7 @@ public class LauncherManager {
 	public static void doAndriodToast(String text) {
 		Toast.makeText(phone, text, Toast.LENGTH_SHORT).show();
 	}
+	
 	
 	public static Bitmap getBitmapFromResource(int resId) {
 		BitmapFactory.Options options = new BitmapFactory.Options();

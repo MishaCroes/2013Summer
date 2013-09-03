@@ -1,0 +1,15 @@
+package me.xiangchen.app.duetstudy;
+
+import android.content.Context;
+
+public class Handedness extends TechniqueShell {
+	public static final int HANDEDNESSTIMEOUT  = 100; // ms
+	
+	public Handedness(Context context) {
+		super(context);
+		technique = HANDEDNESS;
+		
+		tvStatus.setText("Handedness");
+	}
+
+}

@@ -98,7 +98,7 @@ public class UDPPC{
 		String strTime = cal.getTime().toString();
 		strTime = strTime.replace(':', '-');
 		strTime = strTime.replace(' ', '_');
-		String fileName = "C:/data/duetToucSense" + strTime + ".csv";
+		String fileName = "C:/data/duet-" + strTime + ".csv";
 		try {
 			FileWriter fstream = new FileWriter(fileName);
 			BufferedWriter out = new BufferedWriter(fstream);

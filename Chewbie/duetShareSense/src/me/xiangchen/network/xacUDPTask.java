@@ -9,7 +9,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class xacUDPTask extends AsyncTask<String, Void, Void> {
-	final static String ipToSend = "10.142.224.68";
+	final static String ipToSend = "10.142.224.73";
 
 	@Override
 	protected Void doInBackground(String... arg0) {

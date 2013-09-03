@@ -1,0 +1,16 @@
+package me.xiangchen.app.duettech;
+
+import android.content.Context;
+
+public class DuetTechExtension extends ControlExtension{
+
+	public static int getSupportedControlWidth(Context context) {
+		return context.getResources().getDimensionPixelSize(
+				R.dimen.smart_watch_control_width);
+	}
+
+	public static int getSupportedControlHeight(Context context) {
+		return context.getResources().getDimensionPixelSize(
+				R.dimen.smart_watch_control_height);
+	}
+}

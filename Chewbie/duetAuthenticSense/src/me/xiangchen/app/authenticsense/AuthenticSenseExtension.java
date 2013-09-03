@@ -164,13 +164,14 @@ public class AuthenticSenseExtension extends ControlExtension {
 					timeAuthen = curTime;
 					if (AuthenticManager.isRecognition()) {
 						int label = doClassification(AuthenticManager.NUMROWPHONEAUTHEN);
-						if (label == AuthenticManager.AUTHENTICATED) {
+						if (label != AuthenticManager.INTHEWILD) {
 							isLocked = !isLocked;
 						}
 					} else {
 						xacFeatureMaker.sendOffData(
 								AuthenticManager.NUMROWPHONEAUTHEN,
 								AuthenticManager.classLabels);
+						xacFeatureMaker.clearData();
 					}
 				}
 			}
@@ -195,12 +196,14 @@ public class AuthenticSenseExtension extends ControlExtension {
 			}
 		}
 
-		switch (idxClass) {
-		case 0:
-			return AuthenticManager.AUTHENTICATED;
-		case 1:
-			return AuthenticManager.INTHEWILD;
-		}
+//		switch (idxClass) {
+//		case 0:
+//			return AuthenticManager.HANDAUTHENTICATED;
+//		case 1:
+//			return AuthenticManager.INTHEWILD;
+//		case 2:
+//			return AuthenticManager.WATCHAUTHENTICATED;
+//		}
 
 		return idxClass;
 	}

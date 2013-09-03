@@ -10,7 +10,7 @@ import me.xiangchen.app.duetos.R;
 import me.xiangchen.lib.xacPhoneGesture;
 import me.xiangchen.technique.bumpsense.xacBumpSenseFeatureMaker;
 import me.xiangchen.technique.doubleflip.xacAuthenticSenseFeatureMaker;
-import me.xiangchen.technique.tiltsense.xacTiltSenseFeatureMaker;
+import me.xiangchen.technique.updownsense.xacUpDownSenseFeatureMaker;
 import me.xiangchen.ui.xacInteractiveCanvas;
 import me.xiangchen.ui.xacShape;
 import android.annotation.SuppressLint;
@@ -33,15 +33,16 @@ public class Map extends App {
 	public final static int NUMTARGETS = 100;
 	public final static float DIMTARGET = 25;
 	public final static int SELECTRATIO = 3;
-	public final static int SHIFTWIDTH = 128;
-	public final static int SHIFTHEIGHT = 128;
+	public final static int SHIFTWIDTH = 96;
+	public final static int SHIFTHEIGHT = 96;
 	public final static float SCALERATE = 1.5f;
 	public final static float TRANSLATERATE = 0.5f;
 	public final static float INITMAPSCALE = 1.0f;
 	public final static float TAPTHRS = 50;
 	public final static int SHIFTTIMEOUT = 500; // ms
 	public final static int BUMPZOOMTIMEOUT = 750; // ms
-
+	public final static int MAXZOOMLEVEL = 5;
+	
 	xacInteractiveCanvas canvas;
 
 	static Random random = new Random();
@@ -155,6 +156,7 @@ public class Map extends App {
 //					zoomCenterY = mapView.getHeight() / 2;
 
 					zoomFactor += 0.5 * SCALERATE;
+					zoomFactor = Math.min(zoomFactor, MAXZOOMLEVEL);
 
 					mapLayout.setPivotX(xTouchDown);
 					mapLayout.setPivotY(yTouchDown);
@@ -213,16 +215,17 @@ public class Map extends App {
 	public void doSelection(float xRatio, float yRatio) {
 		float dx = SHIFTWIDTH * xRatio;
 		float dy = SHIFTHEIGHT * yRatio;
-		selectTarget(xTouchDown + dx, yTouchDown + dy);
+		selectTarget(xShift + dx, yShift + dy);
 		MapManager.shift(mapLayout, xShift, yShift, SHIFTWIDTH, SHIFTHEIGHT);
 	}
 
 	private void selectTarget(float x, float y) {
-		int rectWidth = 16;
+		int rectWidth = 10;
 		ArrayList<xacShape> shapes = canvas.getTouchedShapesByRect(x, y,
 				rectWidth);
 		for (xacShape shape : shapes) {
 			shape.toggleStroke();
+			break;
 		}
 		canvas.invalidate();
 		// MapManager.shift(mapLayout, xTouchDown, yTouchDown, SHIFTWIDTH,
@@ -288,6 +291,7 @@ public class Map extends App {
 					if(isBumped == xacBumpSenseFeatureMaker.BUMP) {
 						zoomFactor -= 0.5 * SCALERATE;
 						zoomFactor = Math.max(1.0f, zoomFactor);
+						zoomFactor = Math.min(zoomFactor, MAXZOOMLEVEL);
 
 						mapLayout.setPivotX(xTouchDown);
 						mapLayout.setPivotY(yTouchDown);
@@ -351,6 +355,7 @@ public class Map extends App {
 				zoomFactor = zoomFactor * (1 - expFactor) + zoomFactorNew
 						* expFactor;
 				zoomFactor = Math.max(1.0f, zoomFactor);
+				zoomFactor = Math.min(zoomFactor, MAXZOOMLEVEL);
 
 				mapLayout.setPivotX((xTouchDown + xTouchDown2) / 2);
 				mapLayout.setPivotY((yTouchDown + yTouchDown2) / 2);
@@ -389,6 +394,7 @@ public class Map extends App {
 			pinchDist = 0;
 			MapManager.unshift();
 			canvas.invalidate();
+			isShifted = false;
 			break;
 		}
 
@@ -457,5 +463,8 @@ public class Map extends App {
 		
 		xacBumpSenseFeatureMaker.updatePhoneAccel(values);
 		xacBumpSenseFeatureMaker.addPhoneFeatureEntry();
+		
+		xacUpDownSenseFeatureMaker.updatePhoneAccel(values);
+		xacUpDownSenseFeatureMaker.addPhoneFeatureEntry();
 	}
 }
