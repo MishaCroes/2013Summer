@@ -146,6 +146,11 @@ bool isThereNewInput = false;
             ptrCharEER--;
         }
     }
+    else if(_firstSwipe.gesture == NORTH && _secondSwipe.gesture == NORTH) {
+        if(imgView != nil) {
+            [self updateVisual:UNKNOWN];
+        }
+    }
     // the others
     else {
         NSString *strFirstSwipe = [_gestureMap objectForKey:[NSNumber numberWithInt:_firstSwipe.gesture]];
@@ -370,6 +375,8 @@ bool isThereNewInput = false;
         case NORTHWEST:
             imgView.image = [UIImage imageNamed:@"QWE.png"];
             break;
+        case SYMBOARD:
+            imgView.image = [UIImage imageNamed:@".png"];
         default:
             imgView.image = [UIImage imageNamed:@"keyboard.png"];
             break;

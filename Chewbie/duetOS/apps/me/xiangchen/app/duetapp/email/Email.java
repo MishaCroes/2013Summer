@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+@SuppressLint("NewApi")
 public class Email extends App {
 
 	public final static String LOGTAG = "DuetOS";
@@ -39,7 +40,7 @@ public class Email extends App {
 	public final static int DIMMARGIN = (WIDTHAPP - WIDTHEMAIL) / 2;
 	public final static int HEIGHTEMAIL = 320;
 	public final static int NUMSTARTINGEMAILS = 9;
-	public final static int TAPOFFSETTHRES = 25;
+	public final static int TAPOFFSETTHRES = 100;
 	public final static int EMAILNOTIFICATIONTIMEOUT = 1000; // ms
 
 	final static int NUMROWSHANDPARTS = LauncherManager.PHONEACCELFPSGAME
@@ -109,14 +110,14 @@ public class Email extends App {
 			"Nobita Nobi - I need a new tool ... " };
 
 	String[] emailTexts = {
-			"Super Villian Gru - Next project: stealing the Great Wall\nMy Fellow Minions! I have come to realize that we haven’t done a project for a while. I suggest our next goal is to steal the Great Wall from China!",
+			"Super Villian Gru - Next project: stealing the Great Wall\nMy Fellow Minions! I have come to realize that we havenï¿½t done a project for a while. I suggest our next goal is to steal the Great Wall from China!",
 			"McKinsey & Company - Game changes: Five opportunities for US growth\nThe US economy is struggling to find a new formula for vigorous growth. But all growth opportunities are not created equal.",
 			"The Minions Mailing List - Gelato!\nPello, geto gelato. wako lato pero no rah do. Yibalajema! Gelato gapple, gelato banana, gelato chocolato.",
-			"The Rolling Stones - Wait for our '60 and counting'\nDear supporters, I hope you had a good time enjoying our “50 and counting” concert series. We just want you know that this is not the finishing line.",
-			"Marshall Eriksen - A video of the AWESOME night!\nHi guys, I thought I’d share this piece of incredible video of our last night’s double date. Check out how Lily is making a face!",
+			"The Rolling Stones - Wait for our '60 and counting'\nDear supporters, I hope you had a good time enjoying our ï¿½50 and countingï¿½ concert series. We just want you know that this is not the finishing line.",
+			"Marshall Eriksen - A video of the AWESOME night!\nHi guys, I thought Iï¿½d share this piece of incredible video of our last nightï¿½s double date. Check out how Lily is making a face!",
 			"Denny Crane - Denny Crane. Lock and load.\nDenny Crane. Denny Crane. Denny Crane. Denny Crane. Denny Crane. Denny Crane. Denny Crane. Denny Crane. Denny Crane",
 			"Chan Wing Yan - Guo zuo tan yai zao mou si la\nDan o, sam yi!",
-			"Stephen Chow - Actually, my flims are all tragedies\nDear Anthony, I know you’ve been seeing my films. Just want to point out that actually they are all tragedies, not commedies.",
+			"Stephen Chow - Actually, my flims are all tragedies\nDear Anthony, I know youï¿½ve been seeing my films. Just want to point out that actually they are all tragedies, not commedies.",
 			"Nobita Nobi - I need a new tool ... \nHey, Doraemon, I need a new tool to help me finish my summer internship project. I need something to help me automatically write application on a" };
 
 	int[] emailSnapshots = { R.drawable.email_snapshot_0,
@@ -249,6 +250,7 @@ public class Email extends App {
 		prevNumUnnotified = numUnnotifiedEmail;
 	}
 
+	@SuppressLint("NewApi")
 	private void dispatchButtons(Context context) {
 		layoutButtons = new RelativeLayout(context);
 
@@ -460,33 +462,6 @@ public class Email extends App {
 				}
 			}
 
-			// switch (handPart) {
-			// case xacTouchSenseFeatureMaker.KNUCKLE:
-			// break;
-			// case xacTouchSenseFeatureMaker.PAD:
-			// case xacTouchSenseFeatureMaker.SIDE:
-			// default:
-			// float speedRatio = 0.75f;
-			// float dy = (yCur - yPrev) * speedRatio;
-			//
-			// float dx = (xCur - xPrev) * 50;
-			// dy *= Math.max(0, 1 - Math.abs(dx) / APPWIDTH);
-			//
-			// if (dScrollY + (-dy) < 0) {
-			// dy *= 0.001f;
-			// }
-			// dScrollY += (-dy);
-			// // Log.d(LOGTAG, "scroll by " + dy);
-			//
-			// // canvas.scrollContentsBy(0, dy);
-			// canvas.setOffsets(0, dy * 1.5f);
-			//
-			// canvas.invalidate();
-			// dScrollY = Math.max(0, dScrollY);
-			//
-			// break;
-			//
-			// }
 			break;
 		case MotionEvent.ACTION_UP:
 			if (isHold == xacPhoneGesture.YES) {
@@ -526,6 +501,7 @@ public class Email extends App {
 					case xacTouchSenseFeatureMaker.PAD:
 					case xacTouchSenseFeatureMaker.SIDE:
 					default:
+						LauncherManager.doAndriodToast("no knuckle");
 						String titleEmail = htEmails.get(hitEmail);
 						String textEmail = htEmailText.get(hitEmail);
 						// textViewEmail.setTypeface(LauncherManager.getTypeface(LauncherManager.BOLD));
@@ -549,6 +525,7 @@ public class Email extends App {
 					}
 				}
 			} else {
+//				LauncherManager.doAndriodToast("swiping");
 				if (coords.x < xTouchDown && coords.y > yTouchDown) {
 					// Log.d(LOGTAG, "swipe close");
 					EmailManager.updatePhoneGesture(EmailManager.SWIPECLOSE,
@@ -608,5 +585,14 @@ public class Email extends App {
 			sup = "Inbox zero :)";
 		}
 		return sup;
+	}
+	
+	@SuppressLint("NewApi")
+	public void freeze(boolean flag) {
+		if(flag) {
+			canvas.setAlpha(0.1f);
+		} else {
+			canvas.setAlpha(1.0f);
+		}
 	}
 }

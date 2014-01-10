@@ -238,4 +238,10 @@ public class EmailManager extends AppManager {
 	private static void updateWatchVisual() {
 		
 	}
+	
+	public static void freezeInterface(boolean flag) {
+		
+		phone.freeze(flag);
+		
+	}
 }

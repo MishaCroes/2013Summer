@@ -458,6 +458,8 @@ public class Launcher extends Activity implements SensorEventListener {
 
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
+//			curtain.getParent().requestDisallowInterceptTouchEvent(true);
+//			Log.d(LOGTAG, "touch down");
 			distX = 0;
 			distY = 0;
 			xTouchDown = curCoord.x;
@@ -466,6 +468,7 @@ public class Launcher extends Activity implements SensorEventListener {
 			pressAndHold.update(event);
 			break;
 		case MotionEvent.ACTION_MOVE:
+//			Log.d(LOGTAG, "touch move");
 			distX += Math.abs(curCoord.x - xPrev);
 			distY += Math.abs(curCoord.y - yPrev);
 			if (isHold != xacPhoneGesture.YES) {
@@ -473,7 +476,7 @@ public class Launcher extends Activity implements SensorEventListener {
 			}
 			break;
 		case MotionEvent.ACTION_UP:
-
+//			Log.d(LOGTAG, "touch up");
 			if (isHold == xacPhoneGesture.YES && Math.max(distX, distY) < TAPTHRS) {
 				int watchConfig = xacAuthenticSenseFeatureMaker
 						.calculateAuthentication();
@@ -483,8 +486,11 @@ public class Launcher extends Activity implements SensorEventListener {
 					isLocked = false;
 					lastUsageTime = curTime;
 					unLockScreen();
+				} else {
+//					LauncherManager.doAndriodToast("cannot unlock phone");
 				}
 			} else {
+				LauncherManager.doAndriodToast("swiping");
 				if (curCoord.x < xTouchDown && curCoord.y > yTouchDown) {
 					// Log.d(LOGTAG, "swipe close");
 					LauncherManager.updatePhoneGesture(EmailManager.SWIPECLOSE,
@@ -496,6 +502,10 @@ public class Launcher extends Activity implements SensorEventListener {
 				}
 			}
 			break;
+		case MotionEvent.ACTION_CANCEL:
+			Log.d(LOGTAG, "touch canceled");
+			break;
+			
 		}
 
 		xPrev = curCoord.x;

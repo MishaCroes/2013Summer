@@ -31,7 +31,7 @@ UIButton* btnLast;
     [_mainView addSubview:_watchView];
     
     canvas = [[UIImageView alloc] init];
-    canvas.image = [UIImage imageNamed:@"hand-watch.png"];
+//    canvas.image = [UIImage imageNamed:@"hand-watch.png"];
     canvas.frame = CGRectMake(0, 0, _mainView.frame.size.height, _mainView.frame.size.width);
     [_mainView addSubview:canvas];
     
@@ -54,11 +54,12 @@ UIButton* btnLast;
     [_watchView.textEntry.testText setBackgroundColor:[UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:0.75f]];
     [_watchView.textEntry readConfig];
     _watchView.textEntry.testText.isWordLoaded = [_watchView.textEntry.testText loadWord:1];
+    [_watchView.textEntry.testText setAlpha:0];
 
 //    _watchView.textEntry.testText = _testText;
 //    _watchView.textEntry.testText.technique = SWIPEBOARD;
     
-    _watchView.textEntry.textField = [[UITextField alloc] initWithFrame:CGRectMake(oriX - WATCHWIDTH, oriY, WATCHWIDTH * 8, WATCHHEIGHT / 3)];
+    _watchView.textEntry.textField = [[UITextField alloc] initWithFrame:CGRectMake(oriX, oriY, WATCHWIDTH * 8, WATCHHEIGHT / 3)];
     _watchView.textEntry.textField.textAlignment = NSTextAlignmentLeft;
     [_watchView.textEntry.textField setUserInteractionEnabled:NO];
     [_watchView.textEntry.textField setBackgroundColor:[UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:0.75f]];

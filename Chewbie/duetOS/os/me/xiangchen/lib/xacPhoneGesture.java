@@ -17,7 +17,7 @@ public class xacPhoneGesture {
 	
 	public final static int INTRVLDOUBLETAP = 500; //ms
 	public final static int HOLDTIMEOUT = 500; //ms
-	public final static int HOLDTOUCHSIZE = 150; // px
+	public final static int HOLDTOUCHSIZE = 250; // px
 	
 	int type;
 	

@@ -11,12 +11,15 @@ import me.xiangchen.technique.handsense.xacHandSenseFeatureMaker;
 import me.xiangchen.technique.sharesense.xacShareSenseFeatureMaker;
 import me.xiangchen.technique.touchsense.xacTouchSenseFeatureMaker;
 import me.xiangchen.ui.xacToast;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.sonyericsson.extras.liveware.aef.control.Control;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlTouchEvent;
 
+@SuppressLint("NewApi")
 public class EmailExtension extends AppExtension {
 
 	xacToast toast;
@@ -49,6 +52,12 @@ public class EmailExtension extends AppExtension {
 		
 		xacAuthenticSenseFeatureMaker.updateWatchAccel(values);
 		xacAuthenticSenseFeatureMaker.addWatchFeatureEntry();
+		
+//		if(norm(values) > 10) {
+//			EmailManager.freezeInterface(norm(values) > 10);
+//		}
+		
+//		Log.d(LauncherManager.LOGTAG, String.format("%.2f", norm(values)));
 	}
 	
 	@Override
@@ -105,5 +114,15 @@ public class EmailExtension extends AppExtension {
 				updateWatchVisual(null, false);
 			}
 		}
+	}
+	
+	private float norm(float[] values) {
+		float tmp = 0;
+
+		for (int i = 0; i < values.length; i++) {
+			tmp += values[i] * values[i];
+		}
+
+		return (float) Math.sqrt(tmp);
 	}
 }

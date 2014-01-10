@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sonyericsson.extras.liveware.aef.control.Control;
+import com.sonyericsson.extras.liveware.aef.registration.Registration;
 import com.sonyericsson.extras.liveware.aef.sensor.Sensor;
 import com.sonyericsson.extras.liveware.extension.util.R;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
@@ -77,7 +78,7 @@ public class LauncherExtension extends ControlExtension {
 
 		AccessorySensorManager manager = new AccessorySensorManager(context,
 				hostAppPackageName);
-		sensor = manager.getSensor(Sensor.SENSOR_TYPE_ACCELEROMETER);
+		sensor = manager.getSensor(Registration.SensorTypeValue.ACCELEROMETER);
 
 		listener = new AccessorySensorEventListener() {
 
@@ -111,8 +112,9 @@ public class LauncherExtension extends ControlExtension {
 		// Start listening for sensor updates.
 		if (sensor != null) {
 			try {
-				sensor.registerFixedRateListener(listener,
-						Sensor.SensorRates.SENSOR_DELAY_FASTEST);
+				sensor.registerListener(listener,
+                        Sensor.SensorRates.SENSOR_DELAY_FASTEST,
+                        Sensor.SensorInterruptMode.SENSOR_INTERRUPT_ENABLED);
 			} catch (AccessorySensorException e) {
 //				Log.d(LOGTAG, "Failed to register listener");
 //				LauncherManager.doAndriodToast("Failed to register listener");
@@ -172,7 +174,7 @@ public class LauncherExtension extends ControlExtension {
 			return;
 		}
 
-		bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+		bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
 		canvas = new Canvas(bitmap);
 		if (isSharing) {
 			Matrix matrix = new Matrix();
