@@ -1,0 +1,101 @@
+package me.xiangchen.app.chewbie;
+
+import me.xiangchen.ml.xacFeatureMaker;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.view.Gravity;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.sonyericsson.extras.liveware.aef.sensor.Sensor;
+import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensor;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorEvent;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorEventListener;
+import com.sonyericsson.extras.liveware.extension.util.sensor.AccessorySensorManager;
+
+public class ChewbieExtension extends ControlExtension {
+
+	public String LOG_ID = "Chewbie";
+	int width;
+	int height;
+	
+	RelativeLayout layout;
+	Canvas canvas;
+	Bitmap bitmap;
+	TextView textView;
+	
+	AccessorySensor sensor = null;
+	AccessorySensorEventListener listener;
+	
+	public ChewbieExtension(Context context, String hostAppPackageName) {
+		super(context, hostAppPackageName);
+		
+		width = getSupportedControlWidth(context);
+		height = getSupportedControlHeight(context);
+		
+		layout = new RelativeLayout(context);
+		textView = new TextView(context);
+		textView.setText("Hello watch!");
+		textView.setTextSize(9);
+		textView.setGravity(Gravity.CENTER);
+		textView.setTextColor(Color.WHITE);
+		textView.layout(0, 0, width, height);
+		layout.addView(textView);
+		
+		AccessorySensorManager manager = new AccessorySensorManager(context,
+				hostAppPackageName);
+		sensor = manager.getSensor(Sensor.SENSOR_TYPE_ACCELEROMETER);
+
+		listener = new AccessorySensorEventListener() {
+
+			public void onSensorEvent(AccessorySensorEvent sensorEvent) {
+				float[] values = sensorEvent.getSensorValues();
+				Log.d(LOG_ID, values[0] + "," + values[1] + ", " + values[2]);
+//				xacFeatureMaker.updateWatchAccel(values);
+//				xacFeatureMaker.addWatchFeatureEntry();
+//				int numRowsToSend = WATCHACCELFPS;
+//				if (isRecognition) {
+//
+//						mode = doClassification(numRowsToSend);
+//						// textView.setText(classmodes[mode]);
+//						showDisplayedInfo(mode);
+//						updateDisplay();
+//						// startVibrator(100, 0, 1);
+//						timeMotion = 0;
+////					}
+//
+//				} else {
+//					
+//				}
+			}
+		};
+	}
+	
+	@Override
+	public void onResume() {
+		updateVisual();
+	}
+	
+	private void updateVisual() {
+
+		bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+		canvas = new Canvas(bitmap);
+		layout.draw(canvas);
+
+		showBitmap(bitmap);
+	}
+	
+	public static int getSupportedControlWidth(Context context) {
+		return context.getResources().getDimensionPixelSize(
+				R.dimen.smart_watch_control_width);
+	}
+
+	public static int getSupportedControlHeight(Context context) {
+		return context.getResources().getDimensionPixelSize(
+				R.dimen.smart_watch_control_height);
+	}
+
+}

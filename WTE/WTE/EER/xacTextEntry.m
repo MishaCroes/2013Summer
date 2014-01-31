@@ -45,6 +45,8 @@ bool isThereNewInput = false;
         
         _isTrialEnded = true;
         
+        _keyboardType = ALPHABET;
+        
     }
     return self;
 }
@@ -63,12 +65,12 @@ bool isThereNewInput = false;
             /////////////////////////////////////////////////////////////////
             _firstSwipe = [self getCopyOf:swipe];
             _testText.actionStarted1 = _touchDownTime;
-            _testText.actionEnded1 = [self getCurrentTimeInMS];
+            _testText.actionEnded1 = [self getTime];
             /////////////////////////////////////////////////////////////////
             
             /////////////////////////////////////////////////////////////////
             [self updateVisual:_firstSwipe.gesture];
-            _testText.visualSearchStarted2 = [self getCurrentTimeInMS];
+            _testText.visualSearchStarted2 = [self getTime];
             /////////////////////////////////////////////////////////////////
             
             NSLog(@"%ld, %ld", _testText.actionEnded1, _testText.visualSearchStarted2);
@@ -82,7 +84,7 @@ bool isThereNewInput = false;
             /////////////////////////////////////////////////////////////////
             _secondSwipe = _firstSwipe = nil;
             _testText.actionStarted2 = _touchDownTime;
-            _testText.actionEnded2 = [self getCurrentTimeInMS];
+            _testText.actionEnded2 = [self getTime];
             /////////////////////////////////////////////////////////////////
             
             _state = DONE;
@@ -146,11 +148,15 @@ bool isThereNewInput = false;
             ptrCharEER--;
         }
     }
-    else if(_firstSwipe.gesture == NORTH && _secondSwipe.gesture == NORTH) {
-        if(imgView != nil) {
-            [self updateVisual:UNKNOWN];
-        }
-    }
+    // switch keyboard
+//    else if(_firstSwipe.gesture == NORTH && _secondSwipe.gesture == NORTH) {
+//        if(imgView != nil) {
+//            [self updateVisual:SWITCHBOARD];
+//        }
+//        _state = NONE;
+//        _firstSwipe = nil;
+//
+//    }
     // the others
     else {
         NSString *strFirstSwipe = [_gestureMap objectForKey:[NSNumber numberWithInt:_firstSwipe.gesture]];
@@ -202,13 +208,19 @@ bool isThereNewInput = false;
     [_textField setText:[_strInput stringByAppendingString:cursorEER]];
 }
 
-- (long) getCurrentTimeInMS
-{
-    NSTimeInterval time = ([[NSDate date] timeIntervalSince1970]);
-    long digits = (long)time; // this is the first 10 digits
-    int decimalDigits = (int)(fmod(time, 1) * 1000); // this will get the 3 missing digits
-    long timeStamp = (digits * 1000) + decimalDigits;
-    return timeStamp;
+//- (long) getCurrentTimeInMS
+//{
+//    NSTimeInterval time = ([[NSDate date] timeIntervalSince1970]);
+//    long digits = (long)time; // this is the first 10 digits
+//    int decimalDigits = (int)(fmod(time, 1) * 1000); // this will get the 3 missing digits
+//    long timeStamp = (digits * 1000) + decimalDigits;
+//    return timeStamp;
+//}
+
+- (long) getTime {
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    return (time.tv_sec * 1000) + (time.tv_usec / 1000);
 }
 
 - (void) updateTimeOut {
@@ -216,7 +228,7 @@ bool isThereNewInput = false;
         _state = NONE;
     }
     else {
-        long currTime = [self getCurrentTimeInMS];
+        long currTime = [self getTime];
         if(currTime - _firstSwipe.timeStamp > BTWNTIMEOUT) {
             
             if(_state == INPROGRESS) {
@@ -234,6 +246,8 @@ bool isThereNewInput = false;
 
 - (void) updatecursorEER {
     cursorEER = [cursorEER isEqualToString:@"_"] ? @" " : @"_";
+    [_textField setText:[_strInput stringByAppendingString:cursorEER]];
+//    NSLog(@"%@", cursorEER);
 
 }
 
@@ -272,7 +286,7 @@ bool isThereNewInput = false;
 - (void) readConfig {
     NSString *path = [[NSBundle mainBundle] pathForResource:@"participant-section" ofType:@"txt"];
     NSString *strFile = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
-    int len = strFile.length;
+//    int len = strFile.length;
     NSLog(@"%@", strFile);
     NSRange textRange = [strFile rangeOfString:@","];
     for ( int idxComma = textRange.location, i = 0;textRange.location != NSNotFound; i++)
@@ -332,8 +346,8 @@ bool isThereNewInput = false;
 }
 
 - (void) initTextField :(UIView*) view {
-    float W = view.frame.size.width;
-    float H = view.frame.size.height;
+//    float W = view.frame.size.width;
+//    float H = view.frame.size.height;
     
 //    textField = [[UITextField alloc] initWithFrame:CGRectMake(W * TEXTFIELDORIX, H * TEXTFIELDORIY, W * TEXTFIELDWIDTHRATIO, H * TEXTFIELDHEIGHTRATIO)];
 //    textField.textAlignment = NSTextAlignmentLeft;
@@ -375,9 +389,23 @@ bool isThereNewInput = false;
         case NORTHWEST:
             imgView.image = [UIImage imageNamed:@"QWE.png"];
             break;
-        case SYMBOARD:
-            imgView.image = [UIImage imageNamed:@".png"];
+//        case SWITCHBOARD:
+//            if(_keyboardType == ALPHABET) {
+////                imgView.image = [UIImage imageNamed:@"ASD.png"];
+//                _keyboardType = SYMNUM;
+//            } else {
+////                 imgView.image = [UIImage imageNamed:@"keyboard.png"];
+//                _keyboardType = ALPHABET;
+//            }
+//            break;
         default:
+//            if(_keyboardType == ALPHABET) {
+//                imgView.image = [UIImage imageNamed:@"sym-keyboard"];
+////                _keyboardType = SYMNUM;
+//            } else {
+//                imgView.image = [UIImage imageNamed:@"keyboard.png"];
+////                _keyboardType = ALPHABET;
+//            }
             imgView.image = [UIImage imageNamed:@"keyboard.png"];
             break;
     }
@@ -407,7 +435,7 @@ bool isThereNewInput = false;
         
 //        if([_testText loadWord:sign]) {
         if(_testText.isWordLoaded) {
-            _testText.visualSearchStarted1 = [self getCurrentTimeInMS];
+            _testText.visualSearchStarted1 = [self getTime];
             [self checkTimer];
             _isTrialEnded = false;
             [self hideVisual:false];

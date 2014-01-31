@@ -35,6 +35,7 @@ enum EntryState {
 @property UITextField *textField;
 @property BOOL isTrialEnded;
 @property long touchDownTime;
+@property int keyboardType;
 
 - (void) update :(xacSwipe*) swipe;
 - (void) initVisualView :(UIView*) view;

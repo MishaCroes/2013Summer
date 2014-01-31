@@ -1,0 +1,23 @@
+package me.xiangchen.app.chewbie;
+
+public class ChewbieManager {
+	
+	static ChewbieTrainer phone;
+	static ChewbieExtension watch;
+	
+	
+	public static void setPhone(ChewbieTrainer p) {
+		phone = p;
+	}
+	
+	public static void setWatch(ChewbieExtension w) {
+		watch = w;
+	}
+	
+	public static void sendData() {
+		if(p != null) {
+			p.sendData();
+		}
+	}
+	
+}

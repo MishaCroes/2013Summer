@@ -10,17 +10,32 @@
 
 @implementation xacEERWatchView
 
+
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-        // Initialization code
+        
         _touchPoints = [[NSMutableDictionary alloc] init];        
         _swipe = [[xacSwipe alloc] init];
         _textEntry = [[xacTextEntry alloc] init];
         [_textEntry initVisualView:self];
 //        [_textEntry initTextField:self];
 //        [self setBackgroundColor:[UIColor redColor]];
+
+        
+        if(CONDITION == SWIPEBOARD){
+            _strTechnique = @"Swipeboard";
+            _strParticipant = [NSString stringWithFormat:@"%d", PARTICIPANT];
+            _timeStarted = [self getCurrentTimeInMS];
+
+            
+            [NSTimer scheduledTimerWithTimeInterval:1.0f
+                                             target:self
+                                           selector:@selector(updateInfoView)
+                                           userInfo:nil
+                                            repeats:YES];
+        }
         
     }
     return self;
@@ -51,6 +66,10 @@
         [_swipe addTouchPoint :tchPnt :key];
         [_touchPoints setObject:touch forKey:key];
     }
+    
+//    if(_textEntry.testText.block >= 1) {
+//        [self updateInfoView];
+//    }
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -75,6 +94,8 @@
         [_textEntry hideVisual:true];
     }
     [_swipe cleanTouchPoint];
+    
+    
 }
 
 - (BOOL) getWord :(int)sign {
@@ -96,6 +117,35 @@
 
 - (void) loadSharedString {
 //    [_textEntry loadSharedString];
+}   
+
+// #2014Spring
+- (void) updateInfoView {
+//    if(_textEntry.testText.block >= 1) {
+        if(_infoView != NULL) {
+            int section = _textEntry.testText.section;
+            int block = _textEntry.testText.block + 1;
+            int trial = _textEntry.testText.trial + 1;
+            
+            int timeElapsed = ([self getCurrentTimeInMS] - _timeStarted) / 1000;
+            NSString *strMin = [NSString stringWithFormat:@"%d", timeElapsed/60];
+            if(strMin.length < 2) {
+                strMin = [NSString stringWithFormat:@"0%@", strMin];
+            }
+            NSString *strSec =[NSString stringWithFormat:@"%d", timeElapsed%60];
+            if(strSec.length < 2) {
+                strSec = [NSString stringWithFormat:@"0%@", strSec];
+            }
+            
+            if(_textEntry.testText.block >= 1) {
+                [_infoView setText:[NSString stringWithFormat:@"%@: Participant #%@\nSection %d Block %d/%d Trial %d/%d\nTime elapsed: %@:%@"
+                                , _strTechnique, _strParticipant, section, block-1, NUMBLOCKS-1, trial, NUMTRIALS, strMin, strSec]];
+            } else {
+                [_infoView setText:[NSString stringWithFormat:@"%@: Participant #%@\nSection %d Practice block\nTime elapsed: %@:%@"
+                                    , _strTechnique, _strParticipant, section, strMin, strSec]];
+            }
+        }
+//    }
 }
 
 @end

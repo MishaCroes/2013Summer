@@ -17,8 +17,14 @@
 @property UITextField* textField;
 @property BOOL trialFinished;
 @property long timeTouchDown;
+@property UITextView *infoView;
+@property NSString *strTechnique;
+@property NSString *strParticipant;
+@property long timeStarted;
+@property NSString* strInput;
 
 - (void) startSession;
 - (BOOL) getWord :(int)sign;
+- (void) updateInfoView;
 
 @end

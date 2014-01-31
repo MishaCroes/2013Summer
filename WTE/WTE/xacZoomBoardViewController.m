@@ -14,14 +14,15 @@
 
 @implementation xacZoomBoardViewController
 
-UIImageView *canvas;
-UIButton* btnNext;
-UIButton* btnLast;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    
+    if(CONDITION == SWIPEBOARD){
+        return;
+    }
     
     float oriX = (_mainView.frame.size.height - WATCHWIDTH) * WATCHORIX;
     float oriY = (_mainView.frame.size.width - WATCHHEIGHT) * WATCHORIY;
@@ -30,16 +31,22 @@ UIButton* btnLast;
     [_watchView setBackgroundColor:[UIColor whiteColor]];
     [_mainView addSubview:_watchView];
     
-    canvas = [[UIImageView alloc] init];
-    canvas.image = [UIImage imageNamed:@"hand-watch.png"];
-    canvas.frame = CGRectMake(0, 0, _mainView.frame.size.height, _mainView.frame.size.width);
-    [_mainView addSubview:canvas];
+    _canvas = [[UIImageView alloc] init];
+    _canvas.image = [UIImage imageNamed:@"hand-watch-small.png"];
+//    [_canvas setAlpha:0.5f];
+    _canvas.frame = CGRectMake(0, 0, _mainView.frame.size.height, _mainView.frame.size.width);
+    [_mainView addSubview:_canvas];
 
-    btnNext = [[UIButton alloc] initWithFrame:CGRectMake(oriX + WATCHWIDTH * 1/2, oriY + WATCHHEIGHT*2/3, WATCHWIDTH * 1.1, WATCHHEIGHT/2)];
-    [btnNext setTitle:@"Start" forState:UIControlStateNormal];
-    [btnNext setBackgroundColor:[UIColor blackColor]];
-    [btnNext addTarget:self action:@selector(nextWord) forControlEvents:UIControlEventTouchUpInside];
-    [_mainView addSubview:btnNext];
+    _infoView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, _mainView.frame.size.width / 4, 50)];
+    [_infoView setText:@""];
+    [_mainView addSubview:_infoView];
+    _watchView.infoView = _infoView;
+    
+    _btnNext = [[UIButton alloc] initWithFrame:CGRectMake(oriX + WATCHHEIGHT*1/2, oriY + WATCHHEIGHT*2/3, WATCHWIDTH * 1.1, WATCHHEIGHT/2)];
+    [_btnNext setTitle:@"Start" forState:UIControlStateNormal];
+    [_btnNext setBackgroundColor:[UIColor blackColor]];
+    [_btnNext addTarget:self action:@selector(nextWord) forControlEvents:UIControlEventTouchUpInside];
+    [_mainView addSubview:_btnNext];
     
 //    btnLast = [[UIButton alloc] initWithFrame:CGRectMake(oriX + WATCHWIDTH + WATCHWIDTH / 3, oriY, WATCHWIDTH / 3, WATCHHEIGHT / 3)];
 //    [btnLast setTitle:@"-" forState:UIControlStateNormal];
@@ -47,8 +54,13 @@ UIButton* btnLast;
 //    [btnLast addTarget:self action:@selector(lastWord) forControlEvents:UIControlEventTouchUpInside];
 //    [_mainView addSubview:btnLast];
     
-    _watchView.testText = [[xacTestText alloc] initWithFrame:CGRectMake(oriX - WATCHWIDTH, oriY - WATCHHEIGHT/3, WATCHWIDTH * 8, WATCHHEIGHT / 3) :ZOOMBOARD];
-    _watchView.testText.btnStart = btnNext;
+    int widthTestText = WATCHWIDTH * 7;
+    int heightTestText = WATCHHEIGHT / 3;
+    int leftTestText = oriX - WATCHWIDTH;
+    int topTestText = oriY - WATCHHEIGHT/3;
+    
+    _watchView.testText = [[xacTestText alloc] initWithFrame:CGRectMake(leftTestText, topTestText, widthTestText, heightTestText) :ZOOMBOARD];
+    _watchView.testText.btnStart = _btnNext;
     [_mainView addSubview:_watchView.testText];
     [_watchView.testText loadWords];
     [_watchView.testText setBackgroundColor:[UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:0.75f]];
@@ -73,7 +85,11 @@ UIButton* btnLast;
 
 - (void) nextWord {
     if([_watchView getWord:1]) {
-        btnNext.alpha = 0;
+//        [_watchView update_infoView];
+        if(_watchView.testText.block >= 1) {
+            [_watchView updateInfoView];
+        }
+        _btnNext.alpha = 0;
         _watchView.testText.textField.alpha = 0;
     }
 }

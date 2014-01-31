@@ -24,8 +24,8 @@ float leftZoomBoard;
 float topZoomBoard;
 
 bool isThereNewInputZB = false;
-NSString* strInput;
-NSString* subStrInput;
+
+NSString* sub_strInput;
 int idxSubString;
 
 
@@ -94,6 +94,20 @@ int idxSubString;
                                        selector:@selector(updatecursorZoomBoard)
                                        userInfo:nil
                                         repeats:YES];
+        
+        if(CONDITION == ZOOMBOARD) {
+            _strTechnique =  @"Zoomboard";
+            _strParticipant = [NSString stringWithFormat:@"%d", PARTICIPANT];
+            _timeStarted = [self getCurrentTimeInMS];
+
+            [NSTimer scheduledTimerWithTimeInterval:1.0f
+                                             target:self
+                                           selector:@selector(updateInfoView)
+                                           userInfo:nil
+                                            repeats:YES];
+        } else {
+            
+        }
         
         _trialFinished = true;
 
@@ -170,6 +184,7 @@ int zoomLevel = 0;
 
 - (void) updatecursorZoomBoard {
     cursorZoomBoard = [cursorZoomBoard isEqualToString:@"_"] ? @" " : @"_";
+    [_textField setText:[_strInput stringByAppendingString:cursorZoomBoard]];
     [self updateTextField];
 }
 
@@ -208,22 +223,22 @@ int zoomLevel = 0;
     [charArrayZoomBoard removeAllObjects];
     ptrCharZoomBoard = 0;
     idxSubString = 0;
-    strInput = @"";
-    [_textField setText:[strInput stringByAppendingString:cursorZoomBoard]];
+    _strInput = @"";
+    [_textField setText:[_strInput stringByAppendingString:cursorZoomBoard]];
 }
 
 - (void) updateTextField {
     if(isThereNewInputZB) {
         
-        strInput = @"";
+        _strInput = @"";
         for(NSString *str in charArrayZoomBoard) {
-            strInput = [strInput stringByAppendingString:str];
+            _strInput = [_strInput stringByAppendingString:str];
         }
         
-//        int lenAvailableSubstr = MAX(0, MIN((int)(strInput.length - idxSubString), TEXTLENGTH));
-//        subStrInput = [strInput substringWithRange:(NSRange){idxSubString, lenAvailableSubstr}];
+//        int lenAvailableSubstr = MAX(0, MIN((int)(_strInput.length - idxSubString), TEXTLENGTH));
+//        sub_strInput = [_strInput substringWithRange:(NSRange){idxSubString, lenAvailableSubstr}];
         
-        if([_testText update:strInput :idxSubString]) {
+        if([_testText update:_strInput :idxSubString]) {
             _trialFinished = true;
             [zoomBoard hideKeyboard:true];
             [self cleanUp];
@@ -231,7 +246,7 @@ int zoomLevel = 0;
         isThereNewInputZB = false;
     }
     
-    [_textField setText:[strInput stringByAppendingString:cursorZoomBoard]];
+    [_textField setText:[_strInput stringByAppendingString:cursorZoomBoard]];
 }
 
 - (void) doBackSpace {
@@ -268,5 +283,35 @@ int zoomLevel = 0;
     [_testText reportKLM];
     NSLog(@"doKeyboardSwitch");
 }
+
+// #2014Spring
+- (void) updateInfoView {
+    //    if(_testText.block >= 1) {
+    if(_infoView != NULL) {
+        int section = _testText.section;
+        int block = _testText.block + 1;
+        int trial = _testText.trial + 1;
+        
+        int timeElapsed = ([self getCurrentTimeInMS] - _timeStarted) / 1000;
+        NSString *strMin = [NSString stringWithFormat:@"%d", timeElapsed/60];
+        if(strMin.length < 2) {
+            strMin = [NSString stringWithFormat:@"0%@", strMin];
+        }
+        NSString *strSec =[NSString stringWithFormat:@"%d", timeElapsed%60];
+        if(strSec.length < 2) {
+            strSec = [NSString stringWithFormat:@"0%@", strSec];
+        }
+        
+        if(_testText.block >= 1) {
+            [_infoView setText:[NSString stringWithFormat:@"%@: Participant #%@\nSection %d Block %d/%d Trial %d/%d\nTime elapsed: %@:%@"
+                                , _strTechnique, _strParticipant, section, block-1, NUMBLOCKS-1, trial, NUMTRIALS, strMin, strSec]];
+        } else {
+            [_infoView setText:[NSString stringWithFormat:@"%@: Participant #%@\nSection %d Practice block\nTime elapsed: %@:%@"
+                                , _strTechnique, _strParticipant, section, strMin, strSec]];
+        }
+    }
+    //    }
+}
+
 
 @end

@@ -1,7 +1,0 @@
-package me.xiangchen.app.eerv2;
-
-import com.sony.smallapp.SmallApplication;
-
-public class EERv2 extends SmallApplication {
-
-}

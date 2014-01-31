@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
+	<section name="ChooseWorkspaceDialogSettings">
+		<item value="277" key="DIALOG_Y_ORIGIN"/>
+		<item value="423" key="DIALOG_X_ORIGIN"/>
+	</section>
 	<section name="ExternalProjectImportWizard">
 		<item value="false" key="WizardProjectsImportPage.STORE_ARCHIVE_SELECTED"/>
 		<item value="false" key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID"/>
+	</section>
+	<section name="WORKBENCH_SETTINGS">
+		<list key="ENABLED_TRANSFERS">
+		</list>
 	</section>
 	<section name="SaveAsDialogSettings">
 		<item value="525" key="DIALOG_WIDTH"/>
@@ -13,9 +21,9 @@
 	</section>
 	<section name="CleanDialogSettings">
 		<item value="500" key="DIALOG_WIDTH"/>
-		<item value="557" key="DIALOG_Y_ORIGIN"/>
+		<item value="523" key="DIALOG_Y_ORIGIN"/>
 		<item value="377" key="DIALOG_HEIGHT"/>
-		<item value="1319" key="DIALOG_X_ORIGIN"/>
+		<item value="940" key="DIALOG_X_ORIGIN"/>
 		<item value="true" key="TOGGLE_SELECTED"/>
 	</section>
 	<section name="NewWizardAction">

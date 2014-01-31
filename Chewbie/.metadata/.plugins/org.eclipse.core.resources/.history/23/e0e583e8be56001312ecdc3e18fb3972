@@ -1,0 +1,35 @@
+package me.xiangchen.app.chewbie;
+
+import com.sonyericsson.extras.liveware.extension.util.ExtensionService;
+import com.sonyericsson.extras.liveware.extension.util.registration.RegistrationInformation;
+
+public class ChewbieExtensionService extends ExtensionService {
+
+	public static final String EXTENSION_KEY = "me.xiangchen.app.chewbie.key";
+	
+	public ChewbieExtensionService() {
+		super(EXTENSION_KEY);
+	}
+	
+	@Override
+	public void onCreate() {
+	 super.onCreate();
+	}
+	
+	@Override
+	protected RegistrationInformation getRegistrationInformation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected boolean keepRunningWhenConnected() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public ControlExtension createControlExtension(String hostAppPackageName) {
+	 return new ChewbieExtension(this, hostAppPackageName);
+	}
+}

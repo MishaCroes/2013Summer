@@ -18,8 +18,13 @@
 @property xacSwipe *swipe;
 @property xacTextEntry *textEntry;
 @property long touchDownTime;
+@property UITextView *infoView;
+@property NSString *strTechnique;
+@property NSString *strParticipant;
+@property long timeStarted;
 
 - (BOOL) getWord :(int)sign;
 - (void) loadSharedString;
+- (void) updateInfoView;
 
 @end

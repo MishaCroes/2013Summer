@@ -7,12 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "WTEConstants.h"
 
 @interface xacFeatureTable : NSObject
 
 @property NSString *strTable;
 
 - (void) addLine:(NSString*) line;
-- (void) writeToFile :(int) pId :(int) section :(NSString*) prefix;
+- (void) writeToFile :(int*) technique :(int) pId :(int) section :(NSString*) logType;
 
 @end

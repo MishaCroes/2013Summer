@@ -82,9 +82,15 @@
         _gesture = [gesIndex intValue];
     }
     
-    _timeStamp = [self getCurrentTimeInMS];
+    _timeStamp = [self getTime];
     
     return _gesture;
+}
+
+- (long) getTime {
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    return (time.tv_sec * 1000) + (time.tv_usec / 1000);
 }
 
 - (void) printStroke :(int)stroke {
@@ -128,17 +134,17 @@
     [_touchPoints removeAllObjects];
 }
 
-- (long) getCurrentTimeInMS
-{
-    NSTimeInterval time = ([[NSDate date] timeIntervalSince1970]);
-    long digits = (long)time; // this is the first 10 digits
-    int decimalDigits = (int)(fmod(time, 1) * 1000); // this will get the 3 missing digits
-    long timeStamp = (digits * 1000) + decimalDigits;
-    return timeStamp;
-}
+//- (long) getCurrentTimeInMS
+//{
+//    NSTimeInterval time = ([[NSDate date] timeIntervalSince1970]);
+//    long digits = (long)time; // this is the first 10 digits
+//    int decimalDigits = (int)(fmod(time, 1) * 1000); // this will get the 3 missing digits
+//    long timeStamp = (digits * 1000) + decimalDigits;
+//    return timeStamp;
+//}
 
-- (NSString*) strGesture {
-    
-}
+//- (NSString*) strGesture {
+//    
+//}
 
 @end

@@ -14,6 +14,9 @@
 
 @property (strong, nonatomic) IBOutlet UIView *mainView;
 @property xacEERWatchView *watchView;
-//@property xacTestText* testText;
+@property UIImageView *canvas;
+@property UIButton* btnNext;
+@property UIButton* btnLast;
+@property UITextView *infoView;
 
 @end

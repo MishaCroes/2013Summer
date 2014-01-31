@@ -16,4 +16,9 @@
 //@property xacTestText* testText;
 @property UITextField* textField;
 
+@property UIImageView *canvas;
+@property UIButton* btnNext;
+@property UIButton* btnLast;
+@property UITextView *infoView;
+
 @end

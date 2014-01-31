@@ -24,6 +24,7 @@
 #define WEST        6
 #define NORTHWEST   7
 #define CENTER      8
+#define SWITCHBOARD    9
 
 @interface xacSwipe : NSObject
 

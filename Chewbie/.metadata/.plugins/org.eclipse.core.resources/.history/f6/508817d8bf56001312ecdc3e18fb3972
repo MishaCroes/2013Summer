@@ -1,0 +1,39 @@
+package me.xiangchen.app.chewbie;
+
+import android.content.ContentValues;
+
+import com.sonyericsson.extras.liveware.extension.util.registration.RegistrationInformation;
+
+public class ChewbieRegistrationInformation extends RegistrationInformation {
+
+	@Override
+	public int getRequiredNotificationApiVersion() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ContentValues getExtensionRegistrationConfiguration() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getRequiredWidgetApiVersion() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getRequiredControlApiVersion() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getRequiredSensorApiVersion() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}

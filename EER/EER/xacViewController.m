@@ -62,10 +62,6 @@
         NSString* key = [NSString stringWithFormat:@"%d", [touch hash]];
         [_swipe endTouchPoint :[touch locationInView:_watchScreenView] :key];
     }
-    
-//    [_swipe getGesture];
-    
-    
     [_textEntry update:_swipe];
     [_swipe cleanTouchPoint];
 //    NSLog(@"%ld", [self getCurrentTimeInMS]);

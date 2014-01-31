@@ -25,7 +25,7 @@
     _strTable = [_strTable stringByAppendingString: [NSString stringWithFormat:@"%@\n", line]];
 }
 
-- (void) writeToFile:(int) pId :(int) section :(NSString*) prefix
+- (void) writeToFile:(int*) technique :(int) pId :(int) section :(NSString*) logType
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 
@@ -39,7 +39,8 @@
     NSDateFormatter* dateTimeFormatter = [[NSDateFormatter alloc] init];
     [dateTimeFormatter setDateFormat:@"yyyy-MM-dd_hh:mm:ss"];
     NSString *strDateTime = [dateTimeFormatter stringFromDate:[NSDate date]];
-    NSString *docName = [NSString stringWithFormat:@"[%@]WatchTextEntry-Participant%d-Section%d-%@.csv", prefix, pId, section, strDateTime];
+    NSString *strTechnique = technique == SWIPEBOARD ? @"Swipeboard" : @"Zoomboard";
+    NSString *docName = [NSString stringWithFormat:@"[%@]%@-Participant%d-Section%d-%@.csv", logType, strTechnique, pId, section, strDateTime];
     NSString *docFile = [docDir stringByAppendingPathComponent: docName];
 
     [_strTable writeToFile:docFile atomically:NO encoding:NSUTF8StringEncoding error:nil];

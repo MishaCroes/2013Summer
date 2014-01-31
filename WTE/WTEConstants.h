@@ -21,8 +21,8 @@
 
 #define ZOOMBOARDFONTSIZE 5
 
-#define WATCHORIX 0.45f //0.3950f
-#define WATCHORIY 0.4f //0.4100f
+#define WATCHORIX 0.3990f
+#define WATCHORIY 0.4250f
 
 #define TEXTFIELDORIX 0.00f
 #define TEXTFIELDORIY 0.20f
@@ -33,14 +33,16 @@
 #define TEXTLENGTH 36
 
 #define NUMTRAININGTRIALS 5
-#define NUMBLOCKS 7
+#define NUMBLOCKS 2+1
 #define NUMTRIALS 12
 
 #define BREAKTIME 10
 
-#define CONDITION ZOOMBOARD
+#define INTERNAL 300
+#define PILOT 200
+#define REALTRIALS 100
 
-#define PARTICIPANT 8
+#define PARTICIPANT INTERNAL+1
 #define SECTION EVALUATIONONE
 
 #define SUMMARIZATION 0
@@ -52,6 +54,17 @@
 #define ZOOMFACTOR 4.0f / MAXZOOMLEVEL
 
 #define ANIMATIONDURATION 0.1
+
+#define ALPHABET 0
+#define SYMNUM 1
+
+////////////////////////////////////
+// only these need changes
+//#define CONDITION ZOOMBOARD
+#define CONDITION SWIPEBOARD
+#define PARTICIPANT INTERNAL+1
+#define SECTION EVALUATIONONE
+////////////////////////////////////
 
 #endif
 

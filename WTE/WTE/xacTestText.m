@@ -45,6 +45,7 @@ NSString* attrNamesGOMS = @"participant_id,technique,section_id,block_id,trial_i
         
         _isBlockEnded = false;
         
+        _section = SECTION;
         _technique = technique;
         if(_technique == CONDITION) {
             [NSTimer scheduledTimerWithTimeInterval:1 / timerRate
@@ -107,7 +108,9 @@ NSString* attrNamesGOMS = @"participant_id,technique,section_id,block_id,trial_i
     }
     
 //    NSString* subCurWord = [_curWord substringWithRange:(NSRange){idxSubStr, MIN(_curWord.length - idxSubStr, MIN(_curWord.length, TEXTLENGTH * 3))}];
-    [_textField setText:_curWord];
+    if(_block <= NUMBLOCKS) {
+        [_textField setText:_curWord];
+    }
     
     
     NSMutableAttributedString* attString = [[NSMutableAttributedString alloc]initWithString:_curWord];
@@ -157,7 +160,7 @@ NSString* attrNamesGOMS = @"participant_id,technique,section_id,block_id,trial_i
         _errorsPerChar = 0;
         _softErrorsPerChar = 0;
         
-        _visualSearchStarted1 = [self getCurrentTimeInMS];
+        _visualSearchStarted1 = [self getTime];
         
     } else {
         
@@ -190,24 +193,24 @@ NSString* attrNamesGOMS = @"participant_id,technique,section_id,block_id,trial_i
     return false;
 }
 
-- (void) readConfig {
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"participant-section" ofType:@"txt"];
-    NSString *strFile = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
-    int len = strFile.length;
-    NSLog(@"%@", strFile);
-    NSRange textRange = [strFile rangeOfString:@","];
-    for ( int idxComma = textRange.location, i = 0;textRange.location != NSNotFound; i++)
-    {
-        NSString *strFeat = [strFile substringToIndex:idxComma];
-        if(i == 0) {
-            _participantId = [strFeat intValue];
-        } else if(i == 1) {
-            _section = [strFeat intValue];
-        }
-        strFile = [strFile substringFromIndex:idxComma + 1];
-        textRange = [strFile rangeOfString:@","];
-    }
-}
+//- (void) readConfig {
+//    NSString *path = [[NSBundle mainBundle] pathForResource:@"participant-section" ofType:@"txt"];
+//    NSString *strFile = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+////    int len = strFile.length;
+//    NSLog(@"%@", strFile);
+//    NSRange textRange = [strFile rangeOfString:@","];
+//    for ( int idxComma = textRange.location, i = 0;textRange.location != NSNotFound; i++)
+//    {
+//        NSString *strFeat = [strFile substringToIndex:idxComma];
+//        if(i == 0) {
+//            _participantId = [strFeat intValue];
+//        } else if(i == 1) {
+//            _section = [strFeat intValue];
+//        }
+//        strFile = [strFile substringFromIndex:idxComma + 1];
+//        textRange = [strFile rangeOfString:@","];
+//    }
+//}
 
 - (void) showBreakTimer {
     if(SECTION == TRAINING) {
@@ -221,6 +224,8 @@ NSString* attrNamesGOMS = @"participant_id,technique,section_id,block_id,trial_i
     }
     
     if(_block >= NUMBLOCKS) {
+        _textField.alpha = 1;
+        [_textField setText:@"End of section"];
         return;
     } else {
         if((int)breakTime < BREAKTIME) {
@@ -230,8 +235,13 @@ NSString* attrNamesGOMS = @"participant_id,technique,section_id,block_id,trial_i
             NSString* strMin = [NSString stringWithFormat:@"0%d", minute];
             NSString* strSec = [NSString stringWithFormat:second < 10 ? @"0%d" : @"%d", second];
             _textField.alpha = 1;
-            NSString* strTimeRemained = [NSString stringWithFormat:@"End of Block #%d, %@:%@ left before next block can be started", _block, strMin, strSec];
-            [_textField setText:strTimeRemained];
+            if(_block >= 2) {
+                NSString* strTimeRemained = [NSString stringWithFormat:@"End of Block #%d, %@:%@ left before next block starts", _block, strMin, strSec];
+                [_textField setText:strTimeRemained];
+            } else {
+                NSString* strTimeRemained = [NSString stringWithFormat:@"End of practice block, %@:%@ left before next block starts" , strMin, strSec];
+                [_textField setText:strTimeRemained];
+            }
             
             breakTime += 1.0f / timerRate;
             
@@ -240,7 +250,7 @@ NSString* attrNamesGOMS = @"participant_id,technique,section_id,block_id,trial_i
                 _isWordLoaded = [self loadWord:1];
 
             }
-        }
+        } 
 //        else 
     }
 }
@@ -251,17 +261,18 @@ NSString* attrNamesGOMS = @"participant_id,technique,section_id,block_id,trial_i
     
     if( (_block == 0 && _trial== NUMTRAININGTRIALS) || (_block > 0 && _trial == NUMTRIALS)) {
         _trial = 0;
-        [_featureTable writeToFile :PARTICIPANT :SECTION :@"PERF"];
-        [_gomsTable writeToFile:PARTICIPANT :SECTION :@"GOMS"];
-        if(_block + 1 == NUMBLOCKS) {
+        [_featureTable writeToFile :CONDITION :PARTICIPANT :SECTION :@"PERF"];
+        [_gomsTable writeToFile :CONDITION :PARTICIPANT :SECTION :@"GOMS"];
+        if(_block == NUMBLOCKS) {
             [_textField setText:@"End of section."];
-        } else {
+        }
+//        else {
             ++_block;
             // show take a break text
 //            [_textField setText:@"End of block."];
             _isBlockEnded = true;
             breakTime = 0;
-        }
+//        }
         return false;
     }
     
@@ -283,8 +294,6 @@ NSString* attrNamesGOMS = @"participant_id,technique,section_id,block_id,trial_i
     _textField.alpha = 1;
     
     return true;
-    
-    
 }
 
 - (void) loadSharedString {
@@ -345,13 +354,13 @@ NSString* attrNamesGOMS = @"participant_id,technique,section_id,block_id,trial_i
     NSLog(@"KLM: %d", _keyStroke);
 }
 
-- (long) getCurrentTimeInMS
-{
-    NSTimeInterval time = ([[NSDate date] timeIntervalSince1970]);
-    long digits = (long)time; // this is the first 10 digits
-    int decimalDigits = (int)(fmod(time, 1) * 1000); // this will get the 3 missing digits
-    long timeStamp = (digits * 1000) + decimalDigits;
-    return timeStamp;
-}
+//- (long) getCurrentTimeInMS
+//{
+//    NSTimeInterval time = ([[NSDate date] timeIntervalSince1970]);
+//    long digits = (long)time; // this is the first 10 digits
+//    int decimalDigits = (int)(fmod(time, 1) * 1000); // this will get the 3 missing digits
+//    long timeStamp = (digits * 1000) + decimalDigits;
+//    return timeStamp;
+//}
 
 @end

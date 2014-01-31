@@ -1,0 +1,7 @@
+package me.xiangchen.app.chewbie;
+
+public class ChewbieManager {
+	static void sendData() {
+		
+	}
+}

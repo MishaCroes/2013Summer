@@ -11,30 +11,41 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
-        public static final int smart_watch_text_color_grey=0x7f050000;
-        public static final int smart_watch_text_color_orange=0x7f050001;
-        public static final int smart_watch_text_color_white=0x7f050002;
+        public static final int smart_watch_2_text_color_grey=0x7f060003;
+        public static final int smart_watch_2_text_color_orange=0x7f060004;
+        public static final int smart_watch_2_text_color_white=0x7f060005;
+        public static final int smart_watch_text_color_grey=0x7f060000;
+        public static final int smart_watch_text_color_orange=0x7f060001;
+        public static final int smart_watch_text_color_white=0x7f060002;
     }
     public static final class dimen {
-        public static final int headset_pro_control_height=0x7f040002;
-        public static final int headset_pro_control_width=0x7f040001;
-        public static final int headset_pro_text_size=0x7f040000;
-        public static final int smart_watch_control_height=0x7f040004;
-        public static final int smart_watch_control_width=0x7f040003;
-        public static final int smart_watch_text_size_normal=0x7f04000b;
-        public static final int smart_watch_text_size_small=0x7f04000c;
+        public static final int headset_pro_control_height=0x7f050002;
+        public static final int headset_pro_control_width=0x7f050001;
+        public static final int headset_pro_text_size=0x7f050000;
+        public static final int smart_watch_2_control_height=0x7f050012;
+        public static final int smart_watch_2_control_width=0x7f050011;
+        public static final int smart_watch_2_statusbar_height=0x7f050013;
+        public static final int smart_watch_2_text_size_large=0x7f050016;
+        public static final int smart_watch_2_text_size_medium=0x7f050017;
+        public static final int smart_watch_2_text_size_small=0x7f050018;
+        public static final int smart_watch_2_widget_height=0x7f050015;
+        public static final int smart_watch_2_widget_width=0x7f050014;
+        public static final int smart_watch_control_height=0x7f050004;
+        public static final int smart_watch_control_width=0x7f050003;
+        public static final int smart_watch_text_size_normal=0x7f05000b;
+        public static final int smart_watch_text_size_small=0x7f05000c;
         /**  Badge only contain numbers and is language independant. 
          */
-        public static final int smart_watch_text_size_widget_badge=0x7f040010;
-        public static final int smart_watch_text_size_widget_name=0x7f04000d;
-        public static final int smart_watch_text_size_widget_text=0x7f04000f;
-        public static final int smart_watch_text_size_widget_time=0x7f04000e;
-        public static final int smart_watch_widget_height_inner=0x7f040008;
-        public static final int smart_watch_widget_height_outer=0x7f040006;
-        public static final int smart_watch_widget_text_background_height=0x7f04000a;
-        public static final int smart_watch_widget_text_background_width=0x7f040009;
-        public static final int smart_watch_widget_width_inner=0x7f040007;
-        public static final int smart_watch_widget_width_outer=0x7f040005;
+        public static final int smart_watch_text_size_widget_badge=0x7f050010;
+        public static final int smart_watch_text_size_widget_name=0x7f05000d;
+        public static final int smart_watch_text_size_widget_text=0x7f05000f;
+        public static final int smart_watch_text_size_widget_time=0x7f05000e;
+        public static final int smart_watch_widget_height_inner=0x7f050008;
+        public static final int smart_watch_widget_height_outer=0x7f050006;
+        public static final int smart_watch_widget_text_background_height=0x7f05000a;
+        public static final int smart_watch_widget_text_background_width=0x7f050009;
+        public static final int smart_watch_widget_width_inner=0x7f050007;
+        public static final int smart_watch_widget_width_outer=0x7f050005;
     }
     public static final class drawable {
         public static final int badge_counter=0x7f020000;
@@ -65,34 +76,34 @@ public final class R {
     public static final class string {
         /**  Action Toast, shown on accessory 
          */
-        public static final int action_event_1=0x7f060005;
+        public static final int action_event_1=0x7f040005;
         /**  At least one dummy resource is needed to satisfy aapt.
     Otherwise it complains about no res folder. 
          */
-        public static final int app_name=0x7f060000;
-        public static final int clear_failure=0x7f060010;
-        public static final int clear_success=0x7f06000f;
+        public static final int app_name=0x7f040000;
+        public static final int clear_failure=0x7f040010;
+        public static final int clear_success=0x7f04000f;
         /**  Configuration text shown in preferences 
          */
-        public static final int configuration_text=0x7f060002;
+        public static final int configuration_text=0x7f040002;
         /**  Extension name, shown in preferences 
          */
-        public static final int extension_name=0x7f060003;
-        public static final int preference_activity_title=0x7f060001;
-        public static final int preference_key_clear=0x7f06000e;
-        public static final int preference_key_is_active=0x7f06000b;
-        public static final int preference_key_read_me=0x7f060008;
-        public static final int preference_option_clear=0x7f06000c;
-        public static final int preference_option_clear_txt=0x7f06000d;
-        public static final int preference_option_is_active=0x7f06000a;
-        public static final int preference_option_read_me=0x7f060007;
-        public static final int preference_option_read_me_txt=0x7f060009;
+        public static final int extension_name=0x7f040003;
+        public static final int preference_activity_title=0x7f040001;
+        public static final int preference_key_clear=0x7f04000e;
+        public static final int preference_key_is_active=0x7f04000b;
+        public static final int preference_key_read_me=0x7f040008;
+        public static final int preference_option_clear=0x7f04000c;
+        public static final int preference_option_clear_txt=0x7f04000d;
+        public static final int preference_option_is_active=0x7f04000a;
+        public static final int preference_option_read_me=0x7f040007;
+        public static final int preference_option_read_me_txt=0x7f040009;
         /**  Name of source, shown in preferences 
          */
-        public static final int source_name=0x7f060004;
+        public static final int source_name=0x7f040004;
         /**  Text that is read before the display name on accessories that supports text to speech 
          */
-        public static final int text_to_speech=0x7f060006;
+        public static final int text_to_speech=0x7f040006;
     }
     public static final class style {
         /** 

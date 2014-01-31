@@ -1,0 +1,58 @@
+package me.xiangchen.app.chewbie;
+
+import me.xiangchen.ml.xacFeatureMaker;
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.widget.Toast;
+
+public class ChewbieTrainer extends Activity {
+
+	public int NUMMODES 	= 4;
+	public int INATTENTIVE 	= NUMMODES - 1;
+	public int PERIPHERAL 	= NUMMODES - 2;
+	public int VIEWING 		= NUMMODES - 3;
+	public int INTIMATE 	= NUMMODES - 4;
+	public int UNKNOWN 		= NUMMODES;
+	
+	public static String[] strModes = {"Intimate", "Viewing", "Peripheral", "Inattentive", "Unknown"};
+	
+	public static int mode = UNKNOWN;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		xacFeatureMaker.createFeatureTable();
+		
+		xacFeatureMaker.setLabel(mode);
+		setContentView(R.layout.activity_chewbie_trainer);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.chewbie_trainer, menu);
+		return true;
+	}
+	
+	public void sendData() {
+		
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_VOLUME_UP:
+			mode = (mode + 1) % NUMMODES;
+			break;
+		case KeyEvent.KEYCODE_VOLUME_DOWN:
+			mode = (mode + NUMMODES - 1) % NUMMODES;
+			break;
+		}
+
+		Toast.makeText(this, strModes[mode], Toast.LENGTH_SHORT).show();
+		xacFeatureMaker.setLabel(mode);
+		return true;
+	}
+
+}

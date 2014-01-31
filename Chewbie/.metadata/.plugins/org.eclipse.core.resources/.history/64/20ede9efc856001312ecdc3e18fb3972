@@ -1,0 +1,54 @@
+package me.xiangchen.app.chewbie;
+
+import me.xiangchen.app.duetos.LauncherManager;
+import me.xiangchen.ml.xacFeatureMaker;
+import android.os.Bundle;
+import android.app.Activity;
+import android.view.KeyEvent;
+import android.view.Menu;
+
+public class ChewbieTrainer extends Activity {
+
+	public int UNKNOWN 		= 0;
+	public int NUMMODES 	= 4;
+	public int INATTENTIVE 	= NUMMODES;
+	public int PERIPHERAL 	= NUMMODES - 1;
+	public int VIEWING 		= NUMMODES - 2;
+	public int INTIMATE 	= NUMMODES - 3;
+	
+	int mode = UNKNOWN;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		xacFeatureMaker.createFeatureTable();
+		
+		xacFeatureMaker.setLabel(mode);
+		setContentView(R.layout.activity_chewbie_trainer);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.chewbie_trainer, menu);
+		return true;
+	}
+	
+	public void sendData() {
+		
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_VOLUME_UP:
+			mode = (mode + 1) % NUMMODES;
+			break;
+		case KeyEvent.KEYCODE_VOLUME_DOWN:
+			mode = (mode + NUMMODES - 1) % NUMMODES;
+			break;
+		}
+
+		return true;
+	}
+
+}
